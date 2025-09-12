@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import {ApiGatewayModule} from './api-gateway.module';
 import { Transport } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
 
@@ -10,7 +10,7 @@ async function bootstrap() {
   const httpPort = process.env.HTTP_PORT || 3000;
   const tcpPort = process.env.TCP_PORT || 4000;
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(ApiGatewayModule);
 
   app.connectMicroservice({
     transport: Transport.TCP,
