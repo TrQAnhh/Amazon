@@ -5,11 +5,11 @@ dotenv.config();
 
 const dataSourceOptions: DataSourceOptions = {
     type: 'mysql',
-    host: process.env.MYSQL_HOST,
-    port: Number(process.env.MYSQL_PORT),
-    database: process.env.MYSQL_DATABASE,
-    username: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
+    host: process.env.MYSQL_IDENTITY_HOST,
+    port: Number(process.env.MYSQL_IDENTITY_PORT),
+    database: process.env.MYSQL_IDENTITY_DATABASE,
+    username: process.env.MYSQL_IDENTITY_USER,
+    password: process.env.MYSQL_IDENTITY_PASSWORD,
     entities: ['dist/**/*.entity.js'],
     migrations: ['dist/db/migrations/*.js'],
     synchronize: false,
