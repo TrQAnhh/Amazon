@@ -1,4 +1,4 @@
-import {Inject, Injectable, OnModuleInit} from '@nestjs/common';
+import {BadRequestException, Inject, Injectable, OnModuleInit} from '@nestjs/common';
 import type {ClientGrpc} from "@nestjs/microservices";
 import {AuthResponse, IDENTITY_SERVICE_NAME, IdentityServiceClient, SignInDto, SignUpDto} from "@app/common";
 import {SERVICE_NAMES} from "../common/constants/service-names";

@@ -1,6 +1,7 @@
 import { DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
+import {IdentityEntity} from "../entity/identity.entity";
 dotenv.config();
 
 const dataSourceOptions: DataSourceOptions = {
@@ -10,10 +11,10 @@ const dataSourceOptions: DataSourceOptions = {
     database: process.env.MYSQL_IDENTITY_DATABASE,
     username: process.env.MYSQL_IDENTITY_USER,
     password: process.env.MYSQL_IDENTITY_PASSWORD,
-    entities: ['dist/**/*.entity.js'],
-    migrations: ['dist/db/migrations/*.js'],
+    entities: [IdentityEntity],
+    migrations: [__dirname + '/../db/migrations/*.{ts,js}'],
     synchronize: false,
-    migrationsRun: true,
+    migrationsRun: false,
 };
 
 export default dataSourceOptions;

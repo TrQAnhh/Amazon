@@ -1,12 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import {Controller, Get, UseFilters} from '@nestjs/common';
 import { IdentityService } from '../service/identity.service';
-import {
-    AuthResponse,
-    IdentityServiceController,
-    IdentityServiceControllerMethods,
-    SignInDto,
-    SignUpDto
-} from "@app/common";
+import type { AuthResponse, SignInDto, SignUpDto } from "@app/common";
+import { IdentityServiceController, IdentityServiceControllerMethods } from "@app/common";
+
 
 @Controller()
 @IdentityServiceControllerMethods()

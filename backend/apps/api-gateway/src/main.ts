@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import {ApiGatewayModule} from './api-gateway.module';
 import { Transport } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
+import {GrpcToHttpInterceptor} from "nestjs-grpc-exceptions";
 
 const logger = new Logger('Blog');
 
@@ -19,6 +20,7 @@ async function bootstrap() {
     },
   });
 
+  app.useGlobalInterceptors(new GrpcToHttpInterceptor());
   await app.startAllMicroservices();
   await app.listen(httpPort);
 
