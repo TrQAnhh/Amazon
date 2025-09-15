@@ -3,19 +3,21 @@ import {IdentityService} from './identity.service';
 import {IdentityController} from './identity.controller';
 import {ClientsModule, Transport} from "@nestjs/microservices";
 import {SERVICE_NAMES} from "../common/constants/service-names";
-import {IDENTITY_PACKAGE_NAME} from "@app/common";
-import {join} from "path";
+import * as dotenv from 'dotenv';
+import * as process from 'node:process';
+
+dotenv.config();
 
 @Module({
   imports: [
       ClientsModule.register([
         {
             name: SERVICE_NAMES.IDENTITY,
-            transport: Transport.GRPC,
+            transport: Transport.TCP,
             options: {
-                package: IDENTITY_PACKAGE_NAME,
-                protoPath: join(__dirname, '../identity.proto'),
-            }
+                host: process.env.IDENTITY_SERVICE_HOST,
+                port: Number(process.env.IDENTITY_SERVICE_PORT),
+            },
         }
       ])
   ],

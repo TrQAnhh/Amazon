@@ -1,22 +1,24 @@
-import {NestFactory} from '@nestjs/core';
-import {IdentityModule} from './identity.module';
-import {MicroserviceOptions, Transport} from "@nestjs/microservices";
-import {join} from 'path';
-import {IDENTITY_PACKAGE_NAME} from "@app/common";
-import {ExceptionFilter} from "@app/common/filters/rpc-exception.filter";
+import { NestFactory } from '@nestjs/core';
+import { IdentityModule } from './identity.module';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('Blog');
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-      IdentityModule,
-      {
-          transport: Transport.GRPC,
-          options: {
-              protoPath: join(__dirname,'../identity.proto'),
-              package: IDENTITY_PACKAGE_NAME
-          }
-      }
+    IdentityModule,
+    {
+      transport: Transport.TCP,
+      options: {
+        port: 4001,
+      },
+    },
   );
 
   await app.listen();
+  logger.log(`TCP Microservice is now running.`);
 }
+
 bootstrap();

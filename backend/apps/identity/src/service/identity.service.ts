@@ -1,73 +1,104 @@
-import {Injectable} from '@nestjs/common';
-import {AuthResponse, SignInDto, SignUpDto} from "@app/common";
-import {InjectRepository} from "@nestjs/typeorm";
-import {IdentityEntity} from "../entity/identity.entity";
-import {Repository} from "typeorm";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { IdentityEntity } from '../entity/identity.entity';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import {GrpcAlreadyExistsException} from "nestjs-grpc-exceptions";
-import {JwtService} from "@nestjs/jwt";
+import { JwtService } from '@nestjs/jwt';
+import { SignInDto } from '@app/common/dto/identity/sign-in.dto';
+import { AuthResponseDto } from '@app/common/dto/identity/auth-response.dto';
+import { SignUpDto } from '@app/common/dto/identity/sign-up.dto';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class IdentityService {
+  constructor(
+    @InjectRepository(IdentityEntity)
+    private readonly identityRepo: Repository<IdentityEntity>,
+    private readonly jwtService: JwtService,
+  ) {}
 
-    constructor(
-        @InjectRepository(IdentityEntity)
-        private readonly identityRepo: Repository<IdentityEntity>,
-        private jwtService: JwtService,
-    ) {}
+  async findUserByEmail(email: string): Promise<IdentityEntity | null> {
+    return this.identityRepo.findOne({
+      where: { email },
+    });
+  }
 
-    async findUserByEmail(email: string): Promise<IdentityEntity | null> {
-        return this.identityRepo.findOne({
-            where: {
-                email: email
-            },
-        })
+  async signIn(signInDto: SignInDto): Promise<AuthResponseDto> {
+    const user = await this.findUserByEmail(signInDto.email);
+
+    if (!user) {
+      throw new RpcException(new NotFoundException('User does not exist!'));
     }
 
-    async signIn(signInDto: SignInDto): Promise<AuthResponse> {
-
-        return {
-            message: "login successfully!",
-            accessToken: "accessToken",
-            refreshToken: "refreshToken",
-        }
+    const passwordMatches = await bcrypt.compare(
+      signInDto.password,
+      user.password,
+    );
+    if (!passwordMatches) {
+      throw new RpcException(
+        new BadRequestException('Invalid email or password!'),
+      );
     }
 
-    async signUp(signUpDto: SignUpDto): Promise<AuthResponse> {
+    const payload = this.createJwtPayload(user);
+    const { accessToken, refreshToken } = this.generateToken(payload);
 
-        const userByEmail = await this.findUserByEmail(signUpDto.email);
+    return {
+      message: 'Login successfully!',
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
+  }
 
-        if (userByEmail) {
-            throw new GrpcAlreadyExistsException("Email has already been registered!");
-        }
+  async signUp(signUpDto: SignUpDto): Promise<AuthResponseDto> {
+    const existingUser = await this.findUserByEmail(signUpDto.email);
 
-        const hashedPassword = await bcrypt.hash(signUpDto.password, 10);
-        const user = this.identityRepo.create({
-            ...signUpDto,
-            password: hashedPassword,
-        });
-
-        const result = await this.identityRepo.save(user);
-
-        return {
-            message: "register successfully!",
-            accessToken: "accessToken",
-            refreshToken: "refreshToken",
-        }
+    if (existingUser) {
+      throw new RpcException({
+        message: 'Email has been already registered!',
+        errorCode: 'URR_001',
+        errorStatus: 404,
+      });
     }
 
-    async validateUser(
-        email: string,
-        password: string,
-    ): Promise<IdentityEntity | null> {
-        const existingUser = await this.findUserByEmail(email);
+    const hashedPassword = await bcrypt.hash(
+      signUpDto.password,
+      Number(process.env.BCRYPT_SALT_ROUNDS) || 10,
+    );
 
-        if (
-            existingUser &&
-            (await bcrypt.compare(password, existingUser.password))
-        ) {
-            return existingUser;
-        }
-        return null;
-    }
+    const user = this.identityRepo.create({
+      ...signUpDto,
+      password: hashedPassword,
+    });
+
+    const savedUser = await this.identityRepo.save(user);
+
+    const payload = this.createJwtPayload(savedUser);
+    const { accessToken, refreshToken } = this.generateToken(payload);
+
+    return {
+      message: 'Login successfully!',
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
+  }
+
+  private createJwtPayload(user: IdentityEntity) {
+    return {
+      sub: user.id,
+      role: user.role,
+    };
+  }
+
+  private generateToken(payload: any) {
+    const accessToken = this.jwtService.sign(payload);
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: process.env.JWT_REFRESH_TOKEN_DURATION,
+    });
+    return { accessToken, refreshToken };
+  }
 }

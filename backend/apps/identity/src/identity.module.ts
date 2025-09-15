@@ -4,22 +4,27 @@ import { IdentityService } from './service/identity.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {IdentityEntity} from "./entity/identity.entity";
 import {typeOrmConfigAsync} from "./config/typeorm.config";
+import {JwtModule} from "@nestjs/jwt";
 import {APP_FILTER} from "@nestjs/core";
-import {GrpcServerExceptionFilter} from "nestjs-grpc-exceptions";
+import { IdentityExceptionFilter } from "./exception/identity-exception.filter";
 
 @Module({
   imports: [
       TypeOrmModule.forRootAsync(typeOrmConfigAsync),
       TypeOrmModule.forFeature([IdentityEntity]),
-
+      JwtModule.register({
+          secret: process.env.JWT_SECRET_KEY,
+          signOptions: {
+              expiresIn: process.env.JWT_ACCESS_TOKEN_DURATION
+          }
+      })
   ],
   controllers: [IdentityController],
   providers: [
       IdentityService,
       {
           provide: APP_FILTER,
-          useClass: GrpcServerExceptionFilter,
-      },
-  ],
+          useClass: IdentityExceptionFilter,
+      }],
 })
 export class IdentityModule {}

@@ -1,18 +1,23 @@
-import {Controller, Get, UseFilters} from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
 import { IdentityService } from '../service/identity.service';
-import type { AuthResponse, SignInDto, SignUpDto } from "@app/common";
-import { IdentityServiceController, IdentityServiceControllerMethods } from "@app/common";
-
+import { MessagePattern } from '@nestjs/microservices';
+import { IdentityExceptionFilter } from '../exception/identity-exception.filter';
+import { SignUpDto } from '@app/common/dto/identity/sign-up.dto';
+import { AuthResponseDto } from '@app/common/dto/identity/auth-response.dto';
+import { SignInDto } from '@app/common/dto/identity/sign-in.dto';
 
 @Controller()
-@IdentityServiceControllerMethods()
-export class IdentityController implements IdentityServiceController {
-    constructor(private readonly identityService: IdentityService) {}
+@UseFilters(IdentityExceptionFilter)
+export class IdentityController {
+  constructor(private readonly identityService: IdentityService) {}
 
-    signUp(signUpDto: SignUpDto): Promise<AuthResponse> {
-        return this.identityService.signUp(signUpDto);
-    }
-    signIn(signInDto: SignInDto): Promise<AuthResponse> {
-        return this.identityService.signIn(signInDto);
-    }
+  @MessagePattern({ cmd: 'signUp' })
+  async signUp(signUpDto: SignUpDto): Promise<AuthResponseDto> {
+    return this.identityService.signUp(signUpDto);
+  }
+
+  @MessagePattern({ cmd: 'signIn' })
+  async signIn(signInDto: SignInDto): Promise<AuthResponseDto> {
+    return this.identityService.signIn(signInDto);
+  }
 }

@@ -1,25 +1,47 @@
-import {BadRequestException, Inject, Injectable, OnModuleInit} from '@nestjs/common';
-import type {ClientGrpc} from "@nestjs/microservices";
-import {AuthResponse, IDENTITY_SERVICE_NAME, IdentityServiceClient, SignInDto, SignUpDto} from "@app/common";
-import {SERVICE_NAMES} from "../common/constants/service-names";
-import {Observable} from "rxjs";
+import {
+  Injectable,
+  OnModuleInit,
+  Inject,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { SERVICE_NAMES } from '../common/constants/service-names';
+import { catchError, lastValueFrom, Observable, throwError } from 'rxjs';
+import { SignUpDto } from '@app/common/dto/identity/sign-up.dto';
+import { SignInDto } from '@app/common/dto/identity/sign-in.dto';
+import { AuthResponseDto } from '@app/common/dto/identity/auth-response.dto';
 
 @Injectable()
 export class IdentityService implements OnModuleInit {
-    private identityServiceClient: IdentityServiceClient
+  constructor(@Inject(SERVICE_NAMES.IDENTITY) private client: ClientProxy) {}
 
-    constructor(@Inject(SERVICE_NAMES.IDENTITY) private client: ClientGrpc) {}
+  async onModuleInit() {
+    await this.client.connect();
+  }
 
-    onModuleInit() {
-        this.identityServiceClient = this.client.getService<IdentityServiceClient>(IDENTITY_SERVICE_NAME);
-    }
+  // signUp(dto: SignUpDto): Observable<AuthResponseDto> {
+  //     return this.client.send<AuthResponseDto, SignUpDto>({ cmd: 'signUp' }, dto).pipe(
+  //         catchError(err => throwError(() => new HttpException(err.message, HttpStatus.BAD_REQUEST)))
+  //     );
+  // }
 
-    signUp(signUpDto: SignUpDto): Observable<AuthResponse> {
-        return this.identityServiceClient.signUp(signUpDto);
-    }
+  // async signUp(dto: SignUpDto): Promise<AuthResponseDto> {
+  //     try {
+  //         return await lastValueFrom(this.client.send<AuthResponseDto, SignUpDto>(
+  //             { cmd: 'signUp' },
+  //             dto
+  //         ));
+  //     } catch (err) {
+  //         throw new RpcException(err);
+  //     }
+  // }
 
-    signIn(signInDto: SignInDto): Observable<AuthResponse> {
-        return this.identityServiceClient.signIn(signInDto);
-    }
+  signUp(dto: SignUpDto): Observable<AuthResponseDto> {
+    return this.client.send<AuthResponseDto, SignUpDto>({ cmd: 'signUp' }, dto);
+  }
 
+  signIn(dto: SignInDto): Observable<AuthResponseDto> {
+    return this.client.send({ cmd: 'signIn' }, dto);
+  }
 }
