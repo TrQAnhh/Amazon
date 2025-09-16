@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IdentityEntity } from '../entity/identity.entity';
 import { Repository } from 'typeorm';
@@ -12,6 +8,7 @@ import { SignInDto } from '@app/common/dto/identity/sign-in.dto';
 import { AuthResponseDto } from '@app/common/dto/identity/auth-response.dto';
 import { SignUpDto } from '@app/common/dto/identity/sign-up.dto';
 import { RpcException } from '@nestjs/microservices';
+import { ErrorCode } from '@app/common/constants/error-code';
 
 @Injectable()
 export class IdentityService {
@@ -31,17 +28,12 @@ export class IdentityService {
     const user = await this.findUserByEmail(signInDto.email);
 
     if (!user) {
-      throw new RpcException(new NotFoundException('User does not exist!'));
+      throw new RpcException(ErrorCode.USER_NOT_FOUND);
     }
 
-    const passwordMatches = await bcrypt.compare(
-      signInDto.password,
-      user.password,
-    );
-    if (!passwordMatches) {
-      throw new RpcException(
-        new BadRequestException('Invalid email or password!'),
-      );
+    const success = await bcrypt.compare(signInDto.password, user.password);
+    if (!success) {
+      throw new RpcException(ErrorCode.INVALID_CREDENTIALS);
     }
 
     const payload = this.createJwtPayload(user);
@@ -58,17 +50,10 @@ export class IdentityService {
     const existingUser = await this.findUserByEmail(signUpDto.email);
 
     if (existingUser) {
-      throw new RpcException({
-        message: 'Email has been already registered!',
-        errorCode: 'URR_001',
-        errorStatus: 404,
-      });
+      throw new RpcException(ErrorCode.EMAIL_EXISTED);
     }
 
-    const hashedPassword = await bcrypt.hash(
-      signUpDto.password,
-      Number(process.env.BCRYPT_SALT_ROUNDS) || 10,
-    );
+    const hashedPassword = await bcrypt.hash(signUpDto.password, Number(process.env.BCRYPT_SALT_ROUNDS) || 10);
 
     const user = this.identityRepo.create({
       ...signUpDto,

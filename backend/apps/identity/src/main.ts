@@ -7,15 +7,12 @@ import { Logger } from '@nestjs/common';
 const logger = new Logger('Blog');
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    IdentityModule,
-    {
-      transport: Transport.TCP,
-      options: {
-        port: 4001,
-      },
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(IdentityModule, {
+    transport: Transport.TCP,
+    options: {
+      port: 4001,
     },
-  );
+  });
 
   await app.listen();
   logger.log(`TCP Microservice is now running.`);

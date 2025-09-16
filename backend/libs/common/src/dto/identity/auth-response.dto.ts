@@ -1,5 +1,5 @@
 export class AuthResponseDto {
-    message: string;
-    accessToken: string;
-    refreshToken: string;
+  message: string;
+  accessToken: string;
+  refreshToken: string;
 }

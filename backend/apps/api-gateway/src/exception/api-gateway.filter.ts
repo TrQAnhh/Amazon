@@ -1,27 +1,22 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-} from '@nestjs/common';
-import { Response } from 'express';
+import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import { Response, Request } from 'express';
+import { AppException } from './app.exception';
+import { ErrorCode } from '@app/common/constants/error-code';
 
-@Catch()
-export class ApiGatewayRpcExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+@Catch(AppException)
+export class RpcToHttpExceptionFilter implements ExceptionFilter {
+  catch(exception: AppException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const status = exception.getStatus();
-    const message = exception.message;
-    console.log('ApiGatewayRpcExceptionFilter', exception.getResponse());
+
+    const error = exception.getResponse() as any;
+    const status = error.status ?? ErrorCode.UNCATEGORIZED.status;
 
     response.status(status).json({
       success: false,
-      message,
-      code: exception.getResponse()?.['errorCode'],
+      message: error.message ?? ErrorCode.UNCATEGORIZED.message,
+      code: error.code ?? ErrorCode.UNCATEGORIZED.code,
       timestamp: new Date().toISOString(),
       path: request.url,
     });
