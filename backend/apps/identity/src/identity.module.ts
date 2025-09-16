@@ -7,6 +7,12 @@ import { typeOrmConfigAsync } from './config/typeorm.config';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_FILTER } from '@nestjs/core';
 import { IdentityExceptionFilter } from './exception/identity-exception.filter';
+import * as dotenv from 'dotenv';
+import * as process from 'node:process';
+import {ClientsModule, Transport} from "@nestjs/microservices";
+import {SERVICE_NAMES} from "@app/common/constants/service-names";
+
+dotenv.config();
 
 @Module({
   imports: [
@@ -18,6 +24,16 @@ import { IdentityExceptionFilter } from './exception/identity-exception.filter';
         expiresIn: process.env.JWT_ACCESS_TOKEN_DURATION,
       },
     }),
+  ClientsModule.register([
+      {
+          name: SERVICE_NAMES.PROFILE,
+          transport: Transport.TCP,
+          options: {
+              host: process.env.PROFILE_SERVICE_HOST,
+              port: Number(process.env.PROFILE_SERVICE_PORT),
+          },
+      },
+  ]),
   ],
   controllers: [IdentityController],
   providers: [
