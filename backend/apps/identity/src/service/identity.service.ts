@@ -76,6 +76,28 @@ export class IdentityService {
     };
   }
 
+  async validateToken(token: string) {
+     try {
+        const decoded = this.jwtService.verify(token);
+
+        if (!decoded) {
+            throw new RpcException(ErrorCode.INVALID_JWT_TOKEN);
+        }
+
+        return {
+            valid: true,
+            userId: decoded.sub,
+            role: decoded.role,
+        };
+     } catch (error) {
+        return {
+            valid: false,
+            userId: null,
+            role: null,
+        };
+     }
+  }
+
   private createJwtPayload(user: IdentityEntity) {
     return {
       sub: user.id,

@@ -6,11 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfigAsync } from './config/typeorm.config';
 import {APP_FILTER} from "@nestjs/core";
 import {ProfileExceptionFilter} from "./exception/profile-exception.filter";
+import {CloudinaryModule} from "./modules/cloudinary/cloudinary.module";
 
 @Module({
   imports: [
       TypeOrmModule.forRootAsync(typeOrmConfigAsync),
-      TypeOrmModule.forFeature([ProfileEntity])],
+      TypeOrmModule.forFeature([ProfileEntity]),
+      CloudinaryModule,
+  ],
   controllers: [ProfileController],
   providers: [
       ProfileService,

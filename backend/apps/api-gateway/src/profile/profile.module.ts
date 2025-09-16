@@ -3,9 +3,12 @@ import { ProfileController } from './profile.controller';
 import {ClientsModule, Transport} from "@nestjs/microservices";
 import {SERVICE_NAMES} from "@app/common/constants/service-names";
 import process from "node:process";
+import {IdentityModule} from "../identity/identity.module";
+import {AuthGuard} from "../guard/auth.guard";
 
 @Module({
   imports: [
+      IdentityModule,
       ClientsModule.register([
           {
               name: SERVICE_NAMES.PROFILE,
@@ -18,6 +21,6 @@ import process from "node:process";
       ]),
   ],
   controllers: [ProfileController],
-  providers: [],
+  providers: [AuthGuard],
 })
 export class ProfileModule {}
