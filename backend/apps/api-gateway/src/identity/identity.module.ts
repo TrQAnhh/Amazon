@@ -22,5 +22,6 @@ dotenv.config();
   ],
   controllers: [IdentityController],
   providers: [],
+  exports: [ClientsModule],
 })
 export class IdentityModule {}

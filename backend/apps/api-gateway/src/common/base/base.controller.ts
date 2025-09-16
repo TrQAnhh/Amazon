@@ -1,4 +1,3 @@
-import { OnModuleInit } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { AppException } from '../../exception/app.exception';

@@ -20,4 +20,9 @@ export class IdentityController {
   async signIn(signInDto: SignInDto): Promise<AuthResponseDto> {
     return this.identityService.signIn(signInDto);
   }
+
+  @MessagePattern({ cmd: 'validate_token' })
+  async validateToken(token: string){
+      return this.identityService.validateToken(token);
+  }
 }
