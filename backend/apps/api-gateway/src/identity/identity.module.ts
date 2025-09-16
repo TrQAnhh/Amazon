@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { IdentityController } from './identity.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { SERVICE_NAMES } from '../common/constants/service-names';
+import { SERVICE_NAMES } from '@app/common/constants/service-names';
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
 

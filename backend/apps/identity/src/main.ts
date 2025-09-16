@@ -15,7 +15,7 @@ async function bootstrap() {
   });
 
   await app.listen();
-  logger.log(`TCP Microservice is now running.`);
+  logger.log(`TCP Microservice of Identity Service is now running.`);
 }
 
 bootstrap();

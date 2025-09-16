@@ -11,12 +11,12 @@ import { SignInDto } from '@app/common/dto/identity/sign-in.dto';
 export class IdentityController {
   constructor(private readonly identityService: IdentityService) {}
 
-  @MessagePattern({ cmd: 'signUp' })
+  @MessagePattern({ cmd: 'sign_up' })
   async signUp(signUpDto: SignUpDto): Promise<AuthResponseDto> {
     return this.identityService.signUp(signUpDto);
   }
 
-  @MessagePattern({ cmd: 'signIn' })
+  @MessagePattern({ cmd: 'sign_in' })
   async signIn(signInDto: SignInDto): Promise<AuthResponseDto> {
     return this.identityService.signIn(signInDto);
   }

@@ -10,7 +10,7 @@ export class ErrorCode {
   static readonly FAIL_TO_GENERATE_TOKEN = new ErrorCode(406, 'Failed to generate token', HttpStatus.NOT_ACCEPTABLE);
   static readonly INVALID_JWT_TOKEN = new ErrorCode(401, 'Invalid or expired JWT token', HttpStatus.UNAUTHORIZED);
   static readonly EMAIL_EXISTED = new ErrorCode(409, 'Email has already been registered', HttpStatus.CONFLICT);
-  static readonly USER_EXISTED = new ErrorCode(409, 'User already exists', HttpStatus.CONFLICT);
+  static readonly USER_PROFILE_EXISTED = new ErrorCode(409, 'User profile already exists', HttpStatus.CONFLICT);
   static readonly PHONE_NUMBER_EXISTED = new ErrorCode(409, 'Phone number already exists', HttpStatus.CONFLICT);
   static readonly ROLE_ALREADY_EXISTS = new ErrorCode(409, 'Role already exists', HttpStatus.CONFLICT);
   static readonly UNCATEGORIZED = new ErrorCode(500, 'Uncategorized error', HttpStatus.INTERNAL_SERVER_ERROR);
