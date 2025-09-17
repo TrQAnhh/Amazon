@@ -2,8 +2,8 @@ import {Controller, Get, Req, UseFilters} from '@nestjs/common';
 import { ProfileService } from '../service/profile.service';
 import {ProfileExceptionFilter} from "../exception/profile-exception.filter";
 import {MessagePattern} from "@nestjs/microservices";
-import {SignUpDto} from "@app/common/dto/identity/sign-up.dto";
-import {UpdateProfileDto} from "@app/common/dto/profile/update-profile.dto";
+import {SignUpDto} from "@app/common/dto/identity/request/sign-up.dto";
+import {UpdateProfileDto} from "@app/common/dto/profile/request/update-profile.dto";
 import {parseUri} from "@grpc/grpc-js/build/src/uri-parser";
 
 @Controller()

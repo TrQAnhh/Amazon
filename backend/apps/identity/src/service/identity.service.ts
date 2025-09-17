@@ -4,13 +4,14 @@ import { IdentityEntity } from '../entity/identity.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { SignInDto } from '@app/common/dto/identity/sign-in.dto';
-import { AuthResponseDto } from '@app/common/dto/identity/auth-response.dto';
-import { SignUpDto } from '@app/common/dto/identity/sign-up.dto';
+import { SignInDto } from '@app/common/dto/identity/request/sign-in.dto';
+import { AuthResponseDto } from '@app/common/dto/identity/response/auth-response.dto';
+import { SignUpDto } from '@app/common/dto/identity/request/sign-up.dto';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { ErrorCode } from '@app/common/constants/error-code';
 import {SERVICE_NAMES} from "@app/common/constants/service-names";
 import {firstValueFrom} from "rxjs";
+import {RpcResponseDto} from "@app/common/dto/common/rpc-response.dto";
 
 @Injectable()
 export class IdentityService {
@@ -26,7 +27,7 @@ export class IdentityService {
     });
   }
 
-  async signIn(signInDto: SignInDto): Promise<AuthResponseDto> {
+  async signIn(signInDto: SignInDto): Promise<RpcResponseDto<AuthResponseDto>> {
     const user = await this.findUserByEmail(signInDto.email);
 
     if (!user) {
@@ -43,12 +44,14 @@ export class IdentityService {
 
     return {
       message: 'Login successfully!',
-      accessToken: accessToken,
-      refreshToken: refreshToken,
+      data: {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      }
     };
   }
 
-  async signUp(signUpDto: SignUpDto): Promise<AuthResponseDto> {
+  async signUp(signUpDto: SignUpDto): Promise<RpcResponseDto<AuthResponseDto>> {
     const existingUser = await this.findUserByEmail(signUpDto.email);
 
     if (existingUser) {
@@ -71,8 +74,10 @@ export class IdentityService {
 
     return {
       message: 'Register successfully!',
-      accessToken: accessToken,
-      refreshToken: refreshToken,
+      data: {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      }
     };
   }
 
@@ -90,6 +95,7 @@ export class IdentityService {
             role: decoded.role,
         };
      } catch (error) {
+        console.log(error);
         return {
             valid: false,
             userId: null,

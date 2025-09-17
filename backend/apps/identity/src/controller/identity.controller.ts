@@ -2,9 +2,9 @@ import { Controller, UseFilters } from '@nestjs/common';
 import { IdentityService } from '../service/identity.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { IdentityExceptionFilter } from '../exception/identity-exception.filter';
-import { SignUpDto } from '@app/common/dto/identity/sign-up.dto';
-import { AuthResponseDto } from '@app/common/dto/identity/auth-response.dto';
-import { SignInDto } from '@app/common/dto/identity/sign-in.dto';
+import { SignUpDto } from '@app/common/dto/identity/request/sign-up.dto';
+import { AuthResponseDto } from '@app/common/dto/identity/response/auth-response.dto';
+import { SignInDto } from '@app/common/dto/identity/request/sign-in.dto';
 
 @Controller()
 @UseFilters(IdentityExceptionFilter)
