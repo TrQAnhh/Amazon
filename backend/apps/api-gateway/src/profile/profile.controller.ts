@@ -2,7 +2,7 @@ import { Body, Controller, Get, Inject, Patch, Req, UploadedFile, UseGuards, Use
 import { BaseController } from "../common/base/base.controller";
 import { SERVICE_NAMES } from "@app/common/constants/service-names";
 import { ClientProxy } from "@nestjs/microservices";
-import { UpdateProfileDto } from "@app/common/dto/profile/update-profile.dto";
+import { UpdateProfileDto } from "@app/common/dto/profile/request/update-profile.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { UserRole } from "@app/common/constants/user-role.enum";
 import { Roles } from "../common/decorators/roles.decorator";

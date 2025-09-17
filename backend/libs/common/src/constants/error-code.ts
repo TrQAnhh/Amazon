@@ -14,8 +14,7 @@ export class ErrorCode {
   static readonly USER_PROFILE_EXISTED = new ErrorCode(409, 'User profile already exists', HttpStatus.CONFLICT);
   static readonly PHONE_NUMBER_EXISTED = new ErrorCode(409, 'Phone number already exists', HttpStatus.CONFLICT);
   static readonly ROLE_ALREADY_EXISTS = new ErrorCode(409, 'Role already exists', HttpStatus.CONFLICT);
-
-    static readonly CLOUDINARY_NO_RESULT = new ErrorCode(500, 'No result returned from Cloudinary', HttpStatus.INTERNAL_SERVER_ERROR);
+  static readonly CLOUDINARY_NO_RESULT = new ErrorCode(500, 'No result returned from Cloudinary', HttpStatus.INTERNAL_SERVER_ERROR);
   static readonly UNCATEGORIZED = new ErrorCode(500, 'Uncategorized error', HttpStatus.INTERNAL_SERVER_ERROR);
 
   private constructor(

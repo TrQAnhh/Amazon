@@ -1,6 +1,5 @@
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { AppException } from '../../exception/app.exception';
 
 export abstract class BaseController {
   protected constructor(protected readonly client: ClientProxy) {}
@@ -11,7 +10,7 @@ export abstract class BaseController {
       return response;
     } catch (error) {
       console.error(`[ERROR] `, error);
-      throw new AppException(error);
+      throw error;
     }
   }
 }

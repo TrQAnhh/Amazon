@@ -4,8 +4,8 @@ import {ProfileEntity} from "../entity/profile.identity";
 import {Repository} from "typeorm";
 import {RpcException} from "@nestjs/microservices";
 import {ErrorCode} from "@app/common/constants/error-code";
-import {SignUpDto} from "@app/common/dto/identity/sign-up.dto";
-import {UpdateProfileDto} from "@app/common/dto/profile/update-profile.dto";
+import {SignUpDto} from "@app/common/dto/identity/request/sign-up.dto";
+import {UpdateProfileDto} from "@app/common/dto/profile/request/update-profile.dto";
 import {CloudinaryService} from "../modules/cloudinary/service/cloudinary.service";
 import {Readable} from "node:stream";
 

@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { IdentityModule } from './identity/identity.module';
-import {APP_FILTER, APP_GUARD} from '@nestjs/core';
+import {APP_FILTER, APP_GUARD, APP_INTERCEPTOR} from '@nestjs/core';
 import { RpcToHttpExceptionFilter } from './exception/api-gateway.filter';
 import { ProfileModule } from "./profile/profile.module";
-import {JwtAuthGuard} from "./guard/jwt-auth.guard";
-import {RolesGuard} from "./guard/roles.guard";
+import { JwtAuthGuard } from "./guard/jwt-auth.guard";
+import { RolesGuard } from "./guard/roles.guard";
+import { TransformInterceptor } from "./common/interceptors/transform/transform.interceptor";
+import { ErrorsInterceptor } from "./common/interceptors/errors/errors.interceptor";
 
 @Module({
   imports: [IdentityModule, ProfileModule],
@@ -20,12 +22,16 @@ import {RolesGuard} from "./guard/roles.guard";
     },
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
+      useClass: RolesGuard,
     },
     {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    }
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ErrorsInterceptor,
+    },
   ],
 })
 export class ApiGatewayModule {}
