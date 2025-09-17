@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package auth;
+
+service IdentityService {
+    rpc SignUp (SignUpDto) returns (AuthResponse);
+    rpc SignIn (SignInDto) returns (AuthResponse);
+} 
+
+message SignUpDto {
+    string email = 1;
+    string password = 2;
+}
+
+message SignInDto {
+    string email = 1;
+    string password = 2;
+}
+
+enum UserRole {
+  USER = 0;
+  ADMIN = 1;
+}
+
+message AuthResponse {
+    string message = 1;
+    string accessToken = 2;
+    string refreshToken = 3;
+}

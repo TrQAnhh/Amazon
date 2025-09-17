@@ -18,9 +18,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/api-gateway/tsconfig.app.json",
-        "assets": [
-          "proto/*.proto"
-        ],
+        "assets": ["proto/*.proto"],
         "watchAssets": true
       }
     },
@@ -33,29 +31,14 @@
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     },
-    "identity": {
+    "identity-service": {
       "type": "application",
-      "root": "apps/identity",
+      "root": "apps/identity-service",
       "entryFile": "src/main",
       "sourceRoot": "./",
       "compilerOptions": {
-        "tsConfigPath": "apps/identity/tsconfig.app.json",
-        "assets": [
-          "proto/*.proto"
-        ],
-        "watchAssets": true
-      }
-    },
-    "profile": {
-      "type": "application",
-      "root": "apps/profile",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
-      "compilerOptions": {
-        "tsConfigPath": "apps/profile/tsconfig.app.json",
-        "assets": [
-          "proto/*.proto"
-        ],
+        "tsConfigPath": "apps/identity-service/tsconfig.app.json",
+        "assets": ["proto/*.proto"],
         "watchAssets": true
       }
     }
