@@ -5,8 +5,10 @@ import { AuthResponseDto } from '@app/common/dto/identity/auth-response.dto';
 import { SERVICE_NAMES } from '@app/common/constants/service-names';
 import { ClientProxy } from '@nestjs/microservices';
 import { BaseController } from '../common/base/base.controller';
+import {Public} from "../common/decorators/public.decorator";
 
 @Controller('auth')
+@Public()
 export class IdentityController extends BaseController {
   constructor(@Inject(SERVICE_NAMES.IDENTITY) protected client: ClientProxy) {
     super(client);

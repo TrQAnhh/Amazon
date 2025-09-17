@@ -26,7 +26,6 @@ import {RolesGuard} from "../guard/roles.guard";
   ],
   controllers: [ProfileController],
   providers: [
-      JwtAuthGuard,
       IdentityStrategy,
       RolesGuard,
   ],

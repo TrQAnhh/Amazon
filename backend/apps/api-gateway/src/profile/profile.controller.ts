@@ -1,24 +1,20 @@
-import {Body, Controller, Get, Inject, Patch, Req, UploadedFile, UseGuards, UseInterceptors} from '@nestjs/common';
-import {BaseController} from "../common/base/base.controller";
-import {SERVICE_NAMES} from "@app/common/constants/service-names";
-import {ClientProxy} from "@nestjs/microservices";
-import {UpdateProfileDto} from "@app/common/dto/profile/update-profile.dto";
-import {FileInterceptor} from "@nestjs/platform-express";
-import {JwtAuthGuard} from "../guard/jwt-auth.guard";
-import {Roles} from "../common/decorators/roles.decorator";
-import {UserRole} from "@app/common/constants/user-role.enum";
-import {RolesGuard} from "../guard/roles.guard";
+import { Body, Controller, Get, Inject, Patch, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BaseController } from "../common/base/base.controller";
+import { SERVICE_NAMES } from "@app/common/constants/service-names";
+import { ClientProxy } from "@nestjs/microservices";
+import { UpdateProfileDto } from "@app/common/dto/profile/update-profile.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { UserRole } from "@app/common/constants/user-role.enum";
+import { Roles } from "../common/decorators/roles.decorator";
 
 @Controller('profile')
-@UseGuards(JwtAuthGuard)
 export class ProfileController extends BaseController {
   constructor(@Inject(SERVICE_NAMES.PROFILE) protected client: ClientProxy) {
       super(client);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Get()
   @Roles(UserRole.ADMIN)
+  @Get()
   async getAllUserProfiles(@Req() request: any) {
         console.log(request);
   }
