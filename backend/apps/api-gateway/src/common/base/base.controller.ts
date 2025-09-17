@@ -4,10 +4,15 @@ import { firstValueFrom } from 'rxjs';
 export abstract class BaseController {
   protected constructor(protected readonly client: ClientProxy) {}
 
-  protected async sendCommand<T>(pattern: any, payload: unknown): Promise<T> {
+  protected async sendCommand<T>(pattern: any, payload?: unknown): Promise<T> {
     try {
-      const response = await firstValueFrom(this.client.send<T>(pattern, payload));
+
+      const safePayload = payload || {};
+
+      const response = await firstValueFrom(this.client.send<T>(pattern, safePayload));
+
       return response;
+
     } catch (error) {
       console.error(`[ERROR] `, error);
       throw error;
