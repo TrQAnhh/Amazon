@@ -3,24 +3,24 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface Response<T> {
-    success: boolean;
-    message: string;
-    data: T;
+  success: boolean;
+  message: string;
+  data: T;
 }
 
 @Injectable()
 export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> {
-    intercept(context: ExecutionContext, next: CallHandler): Observable<Response<T>> {
-        return next.handle().pipe(
-            map((response: any) => {
-                const { message, data } = response;
+  intercept(context: ExecutionContext, next: CallHandler): Observable<Response<T>> {
+    return next.handle().pipe(
+      map((response: any) => {
+        const { message, data } = response;
 
-                return {
-                    success: true,
-                    message: message,
-                    data: data,
-                }
-            })
-        );
-    }
+        return {
+          success: true,
+          message: message,
+          data: data,
+        };
+      }),
+    );
+  }
 }

@@ -5,7 +5,7 @@ import { IdentityExceptionFilter } from '../exception/identity-exception.filter'
 import { SignUpDto } from '@app/common/dto/identity/request/sign-up.dto';
 import { AuthResponseDto } from '@app/common/dto/identity/response/auth-response.dto';
 import { SignInDto } from '@app/common/dto/identity/request/sign-in.dto';
-import { IdentityResponseDto } from "@app/common/dto/identity/response/identity-response.dto";
+import { IdentityResponseDto } from '@app/common/dto/identity/response/identity-response.dto';
 
 @Controller()
 @UseFilters(IdentityExceptionFilter)
@@ -29,13 +29,12 @@ export class IdentityController {
 
   @MessagePattern({ cmd: 'get_users_identity' })
   async getUsersIdentity(payload: { userIds: number[] }): Promise<Record<number, IdentityResponseDto>> {
-      console.log(payload.userIds);
-      return this.identityService.getUsersIdentity(payload.userIds);
+    console.log(payload.userIds);
+    return this.identityService.getUsersIdentity(payload.userIds);
   }
 
   @MessagePattern({ cmd: 'validate_token' })
   async validateToken(token: string): Promise<any> {
     return this.identityService.validateToken(token);
   }
-
 }

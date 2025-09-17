@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { IdentityModule } from './identity/identity.module';
-import {APP_FILTER, APP_GUARD, APP_INTERCEPTOR} from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { RpcToHttpExceptionFilter } from './exception/api-gateway.filter';
-import { ProfileModule } from "./profile/profile.module";
-import { JwtAuthGuard } from "./guard/jwt-auth.guard";
-import { RolesGuard } from "./guard/roles.guard";
-import { TransformInterceptor } from "./common/interceptors/transform/transform.interceptor";
-import { ErrorsInterceptor } from "./common/interceptors/errors/errors.interceptor";
-import {TimeoutInterceptor} from "./common/interceptors/errors/timeout.interceptor";
+import { ProfileModule } from './profile/profile.module';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { RolesGuard } from './guard/roles.guard';
+import { TransformInterceptor } from './common/interceptors/transform/transform.interceptor';
+import { ErrorsInterceptor } from './common/interceptors/errors/errors.interceptor';
+import { TimeoutInterceptor } from './common/interceptors/errors/timeout.interceptor';
 
 @Module({
   imports: [IdentityModule, ProfileModule],

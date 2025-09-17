@@ -1,3 +1,3 @@
 export class IdentityResponseDto {
-    email: string;
+  email: string;
 }
