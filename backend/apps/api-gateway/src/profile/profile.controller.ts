@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Patch, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Patch, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { BaseController } from "../common/base/base.controller";
 import { SERVICE_NAMES } from "@app/common/constants/service-names";
 import { ClientProxy } from "@nestjs/microservices";
@@ -6,6 +6,8 @@ import { UpdateProfileDto } from "@app/common/dto/profile/request/update-profile
 import { FileInterceptor } from "@nestjs/platform-express";
 import { UserRole } from "@app/common/constants/user-role.enum";
 import { Roles } from "../common/decorators/roles.decorator";
+import { Response } from "../common/interceptors/transform/transform.interceptor";
+import {ProfileResponseDto} from "@app/common/dto/profile/response/profile-response.dto";
 
 @Controller('profile')
 export class ProfileController extends BaseController {
@@ -15,14 +17,24 @@ export class ProfileController extends BaseController {
 
   @Roles(UserRole.ADMIN)
   @Get()
-  async getAllUserProfiles(@Req() request: any) {
-        console.log(request);
+  async getAllUserProfiles(): Promise<Response<ProfileResponseDto[]>> {
+      const result = await this.sendCommand<ProfileResponseDto[]>({ cmd: 'get_all_user_profiles' });
+      return {
+          message: 'Get all users profile successfully!',
+          success: true,
+          data: result,
+      }
   }
 
   @Get('/me')
-  async getUserProfile(@Req() request:any) {
+  async getUserProfile(@Req() request:any): Promise<Response<ProfileResponseDto>> {
       const userId = request.user.userId;
-      return await this.sendCommand({ cmd: 'get_user_profile'},userId);
+      const result = await this.sendCommand<ProfileResponseDto>({ cmd: 'get_user_profile'},{ userId });
+      return {
+          message: 'Get user profile successfully!',
+          success: true,
+          data: result,
+      }
   }
 
   @Patch('/update')
@@ -30,7 +42,7 @@ export class ProfileController extends BaseController {
   async updateProfile(
       @Req() request: any,
       @Body() updateProfileDto: UpdateProfileDto,
-      @UploadedFile() avatar?: Express.Multer.File)
+      @UploadedFile() avatar?: Express.Multer.File): Promise<Response<ProfileResponseDto>>
   {
       const userId = request.user.userId;
 
@@ -42,6 +54,11 @@ export class ProfileController extends BaseController {
               buffer: avatar.buffer.toString('base64'),
           };
       }
-      return await this.sendCommand({ cmd: 'update_user_profile'}, { userId, updateProfileDto, avatarPayload });
+      const result = await this.sendCommand<ProfileResponseDto>({ cmd: 'update_user_profile'}, { userId, updateProfileDto, avatarPayload });
+      return {
+          message: 'Update user profile successfully!',
+          success: true,
+          data: result,
+      }
   }
 }

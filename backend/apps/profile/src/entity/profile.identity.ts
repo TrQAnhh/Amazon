@@ -9,13 +9,13 @@ export class ProfileEntity {
   userId: number;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
-  firstName?: string;
+  firstName: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   middleName?: string;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
-  lastName?: string;
+  lastName: string;
 
   @Column({ type: 'varchar', nullable: true })
   avatarUrl?: string;

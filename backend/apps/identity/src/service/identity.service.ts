@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IdentityEntity } from '../entity/identity.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SignInDto } from '@app/common/dto/identity/request/sign-in.dto';
@@ -9,9 +9,9 @@ import { AuthResponseDto } from '@app/common/dto/identity/response/auth-response
 import { SignUpDto } from '@app/common/dto/identity/request/sign-up.dto';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { ErrorCode } from '@app/common/constants/error-code';
-import {SERVICE_NAMES} from "@app/common/constants/service-names";
-import {firstValueFrom} from "rxjs";
-import {RpcResponseDto} from "@app/common/dto/common/rpc-response.dto";
+import { SERVICE_NAMES } from "@app/common/constants/service-names";
+import { firstValueFrom } from "rxjs";
+import { IdentityResponseDto } from "@app/common/dto/identity/response/identity-response.dto";
 
 @Injectable()
 export class IdentityService {
@@ -21,37 +21,75 @@ export class IdentityService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async findUserByEmail(email: string): Promise<IdentityEntity | null> {
-    return this.identityRepo.findOne({
-      where: { email },
-    });
+  async findUserById(userId: number): Promise<IdentityEntity | null> {
+      if (userId == null) {
+          console.log(userId);
+          throw new RpcException(ErrorCode.INVALID_INPUT_VALUE);
+      }
+
+      return this.identityRepo.findOne({
+          where: {
+              id: userId,
+          }
+      })
   }
 
-  async signIn(signInDto: SignInDto): Promise<RpcResponseDto<AuthResponseDto>> {
-    const user = await this.findUserByEmail(signInDto.email);
+  async findUserByEmail(email: string): Promise<IdentityEntity | null> {
+      if (!email) throw new RpcException(ErrorCode.INVALID_INPUT_VALUE);
 
-    if (!user) {
+      return this.identityRepo.findOne({
+          where: { email },
+      });
+  }
+
+  async getUserIdentity(userId: number): Promise<IdentityResponseDto> {
+      const userById = await this.findUserById(userId);
+
+      if (!userById) {
+          throw new RpcException(ErrorCode.USER_NOT_FOUND);
+      }
+
+      const { email } = userById;
+      return { email };
+  }
+
+  async getUsersIdentity(userIds: number[]): Promise<Record<number, IdentityResponseDto>> {
+    if (!userIds || userIds.length === 0) {
+        throw new RpcException(ErrorCode.INVALID_INPUT_VALUE);
+    }
+
+    const users = await this.identityRepo.find({
+       where: { id: In(userIds) },
+    });
+
+    const result: Record<number, IdentityResponseDto> = {};
+    users.forEach(user => (result[user.id] = { email: user.email }));
+
+    return result;
+  }
+
+  async signIn(signInDto: SignInDto): Promise<AuthResponseDto> {
+    const userByEmail = await this.findUserByEmail(signInDto.email);
+
+    if (!userByEmail) {
       throw new RpcException(ErrorCode.USER_NOT_FOUND);
     }
 
-    const success = await bcrypt.compare(signInDto.password, user.password);
+    const success = await bcrypt.compare(signInDto.password, userByEmail.password);
     if (!success) {
       throw new RpcException(ErrorCode.INVALID_CREDENTIALS);
     }
 
-    const payload = this.createJwtPayload(user);
+    const payload = this.createJwtPayload(userByEmail);
     const { accessToken, refreshToken } = this.generateToken(payload);
 
     return {
-      message: 'Login successfully!',
-      data: {
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-      }
+      accessToken: accessToken,
+      refreshToken: refreshToken,
     };
   }
 
-  async signUp(signUpDto: SignUpDto): Promise<RpcResponseDto<AuthResponseDto>> {
+  async signUp(signUpDto: SignUpDto): Promise<AuthResponseDto> {
     const existingUser = await this.findUserByEmail(signUpDto.email);
 
     if (existingUser) {
@@ -67,21 +105,18 @@ export class IdentityService {
 
     const savedUser = await this.identityRepo.save(user);
 
-    const userProfile = await firstValueFrom(this.profileClient.send({ cmd: 'create_profile'},{ userId: savedUser.id, signUpDto }));
+    await firstValueFrom(this.profileClient.send({ cmd: 'create_profile'},{ userId: savedUser.id, signUpDto }));
 
     const payload = this.createJwtPayload(savedUser);
     const { accessToken, refreshToken } = this.generateToken(payload);
 
     return {
-      message: 'Register successfully!',
-      data: {
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-      }
+      accessToken: accessToken,
+      refreshToken: refreshToken,
     };
   }
 
-  async validateToken(token: string) {
+  async validateToken(token: string): Promise<any> {
      try {
         const decoded = this.jwtService.verify(token);
 
