@@ -7,13 +7,9 @@ export class ErrorCode {
   static readonly UNAUTHORIZED = new ErrorCode(403, 'Unauthorized access', HttpStatus.FORBIDDEN);
   static readonly USER_NOT_FOUND = new ErrorCode(404, 'User not found', HttpStatus.NOT_FOUND);
   static readonly PROFILE_NOT_FOUND = new ErrorCode(404, "User's profile not found", HttpStatus.NOT_FOUND);
-  static readonly ROLE_NOT_FOUND = new ErrorCode(404, 'Role not found', HttpStatus.NOT_FOUND);
-  static readonly FAIL_TO_GENERATE_TOKEN = new ErrorCode(406, 'Failed to generate token', HttpStatus.NOT_ACCEPTABLE);
   static readonly INVALID_JWT_TOKEN = new ErrorCode(401, 'Invalid or expired JWT token', HttpStatus.UNAUTHORIZED);
   static readonly EMAIL_EXISTED = new ErrorCode(409, 'Email has already been registered', HttpStatus.CONFLICT);
   static readonly USER_PROFILE_EXISTED = new ErrorCode(409, 'User profile already exists', HttpStatus.CONFLICT);
-  static readonly PHONE_NUMBER_EXISTED = new ErrorCode(409, 'Phone number already exists', HttpStatus.CONFLICT);
-  static readonly ROLE_ALREADY_EXISTS = new ErrorCode(409, 'Role already exists', HttpStatus.CONFLICT);
   static readonly CLOUDINARY_NO_RESULT = new ErrorCode(500, 'No result returned from Cloudinary', HttpStatus.INTERNAL_SERVER_ERROR);
   static readonly UNCATEGORIZED = new ErrorCode(500, 'Uncategorized error', HttpStatus.INTERNAL_SERVER_ERROR);
 
