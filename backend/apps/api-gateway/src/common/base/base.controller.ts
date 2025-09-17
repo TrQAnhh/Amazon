@@ -6,13 +6,11 @@ export abstract class BaseController {
 
   protected async sendCommand<T>(pattern: any, payload?: unknown): Promise<T> {
     try {
-
       const safePayload = payload || {};
 
       const response = await firstValueFrom(this.client.send<T>(pattern, safePayload));
 
       return response;
-
     } catch (error) {
       console.error(`[ERROR] `, error);
       throw error;

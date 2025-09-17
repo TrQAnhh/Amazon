@@ -1,10 +1,10 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class InitSchema1758003241457 implements MigrationInterface {
-    name = 'InitSchema1758003241457'
+  name = 'InitSchema1758003241457';
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
             CREATE TABLE \`profile_entity\` (
                 \`id\` int NOT NULL AUTO_INCREMENT,
                 \`userId\` int NOT NULL,
@@ -17,15 +17,14 @@ export class InitSchema1758003241457 implements MigrationInterface {
                 PRIMARY KEY (\`id\`)
             ) ENGINE = InnoDB
         `);
-    }
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
             DROP INDEX \`IDX_9c0353760c806d01b6f61657a2\` ON \`profile_entity\`
         `);
-        await queryRunner.query(`
+    await queryRunner.query(`
             DROP TABLE \`profile_entity\`
         `);
-    }
-
+  }
 }

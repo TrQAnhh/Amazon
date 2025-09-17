@@ -9,9 +9,9 @@ import { AuthResponseDto } from '@app/common/dto/identity/response/auth-response
 import { SignUpDto } from '@app/common/dto/identity/request/sign-up.dto';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { ErrorCode } from '@app/common/constants/error-code';
-import { SERVICE_NAMES } from "@app/common/constants/service-names";
-import { firstValueFrom } from "rxjs";
-import { IdentityResponseDto } from "@app/common/dto/identity/response/identity-response.dto";
+import { SERVICE_NAMES } from '@app/common/constants/service-names';
+import { firstValueFrom } from 'rxjs';
+import { IdentityResponseDto } from '@app/common/dto/identity/response/identity-response.dto';
 
 @Injectable()
 export class IdentityService {
@@ -22,48 +22,48 @@ export class IdentityService {
   ) {}
 
   async findUserById(userId: number): Promise<IdentityEntity | null> {
-      if (userId == null) {
-          console.log(userId);
-          throw new RpcException(ErrorCode.INVALID_INPUT_VALUE);
-      }
+    if (userId == null) {
+      console.log(userId);
+      throw new RpcException(ErrorCode.INVALID_INPUT_VALUE);
+    }
 
-      return this.identityRepo.findOne({
-          where: {
-              id: userId,
-          }
-      })
+    return this.identityRepo.findOne({
+      where: {
+        id: userId,
+      },
+    });
   }
 
   async findUserByEmail(email: string): Promise<IdentityEntity | null> {
-      if (!email) throw new RpcException(ErrorCode.INVALID_INPUT_VALUE);
+    if (!email) throw new RpcException(ErrorCode.INVALID_INPUT_VALUE);
 
-      return this.identityRepo.findOne({
-          where: { email },
-      });
+    return this.identityRepo.findOne({
+      where: { email },
+    });
   }
 
   async getUserIdentity(userId: number): Promise<IdentityResponseDto> {
-      const userById = await this.findUserById(userId);
+    const userById = await this.findUserById(userId);
 
-      if (!userById) {
-          throw new RpcException(ErrorCode.USER_NOT_FOUND);
-      }
+    if (!userById) {
+      throw new RpcException(ErrorCode.USER_NOT_FOUND);
+    }
 
-      const { email } = userById;
-      return { email };
+    const { email } = userById;
+    return { email };
   }
 
   async getUsersIdentity(userIds: number[]): Promise<Record<number, IdentityResponseDto>> {
     if (!userIds || userIds.length === 0) {
-        throw new RpcException(ErrorCode.INVALID_INPUT_VALUE);
+      throw new RpcException(ErrorCode.INVALID_INPUT_VALUE);
     }
 
     const users = await this.identityRepo.find({
-       where: { id: In(userIds) },
+      where: { id: In(userIds) },
     });
 
     const result: Record<number, IdentityResponseDto> = {};
-    users.forEach(user => (result[user.id] = { email: user.email }));
+    users.forEach((user) => (result[user.id] = { email: user.email }));
 
     return result;
   }
@@ -105,7 +105,7 @@ export class IdentityService {
 
     const savedUser = await this.identityRepo.save(user);
 
-    await firstValueFrom(this.profileClient.send({ cmd: 'create_profile'},{ userId: savedUser.id, signUpDto }));
+    await firstValueFrom(this.profileClient.send({ cmd: 'create_profile' }, { userId: savedUser.id, signUpDto }));
 
     const payload = this.createJwtPayload(savedUser);
     const { accessToken, refreshToken } = this.generateToken(payload);
@@ -117,26 +117,26 @@ export class IdentityService {
   }
 
   async validateToken(token: string): Promise<any> {
-     try {
-        const decoded = this.jwtService.verify(token);
+    try {
+      const decoded = this.jwtService.verify(token);
 
-        if (!decoded) {
-            throw new RpcException(ErrorCode.INVALID_JWT_TOKEN);
-        }
+      if (!decoded) {
+        throw new RpcException(ErrorCode.INVALID_JWT_TOKEN);
+      }
 
-        return {
-            valid: true,
-            userId: decoded.sub,
-            role: decoded.role,
-        };
-     } catch (error) {
-        console.log(error);
-        return {
-            valid: false,
-            userId: null,
-            role: null,
-        };
-     }
+      return {
+        valid: true,
+        userId: decoded.sub,
+        role: decoded.role,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        valid: false,
+        userId: null,
+        role: null,
+      };
+    }
   }
 
   private createJwtPayload(user: IdentityEntity) {

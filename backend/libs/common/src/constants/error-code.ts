@@ -6,7 +6,7 @@ export class ErrorCode {
   static readonly UNAUTHENTICATED = new ErrorCode(401, 'Unauthenticated access', HttpStatus.UNAUTHORIZED);
   static readonly UNAUTHORIZED = new ErrorCode(403, 'Unauthorized access', HttpStatus.FORBIDDEN);
   static readonly USER_NOT_FOUND = new ErrorCode(404, 'User not found', HttpStatus.NOT_FOUND);
-  static readonly PROFILE_NOT_FOUND = new ErrorCode(404, 'User\'s profile not found', HttpStatus.NOT_FOUND);
+  static readonly PROFILE_NOT_FOUND = new ErrorCode(404, "User's profile not found", HttpStatus.NOT_FOUND);
   static readonly ROLE_NOT_FOUND = new ErrorCode(404, 'Role not found', HttpStatus.NOT_FOUND);
   static readonly FAIL_TO_GENERATE_TOKEN = new ErrorCode(406, 'Failed to generate token', HttpStatus.NOT_ACCEPTABLE);
   static readonly INVALID_JWT_TOKEN = new ErrorCode(401, 'Invalid or expired JWT token', HttpStatus.UNAUTHORIZED);
