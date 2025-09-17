@@ -1,14 +1,18 @@
 import { Module } from '@nestjs/common';
 import { ProfileController } from './profile.controller';
-import {ClientsModule, Transport} from "@nestjs/microservices";
-import {SERVICE_NAMES} from "@app/common/constants/service-names";
+import { ClientsModule, Transport } from "@nestjs/microservices";
+import { SERVICE_NAMES } from "@app/common/constants/service-names";
 import process from "node:process";
-import {IdentityModule} from "../identity/identity.module";
-import {AuthGuard} from "../guard/auth.guard";
+import { IdentityModule } from "../identity/identity.module";
+import { JwtAuthGuard } from "../guard/jwt-auth.guard";
+import {IdentityStrategy} from "../strategy/identity.strategy";
+import {PassportModule} from "@nestjs/passport";
+import {RolesGuard} from "../guard/roles.guard";
 
 @Module({
   imports: [
       IdentityModule,
+      PassportModule,
       ClientsModule.register([
           {
               name: SERVICE_NAMES.PROFILE,
@@ -21,6 +25,9 @@ import {AuthGuard} from "../guard/auth.guard";
       ]),
   ],
   controllers: [ProfileController],
-  providers: [AuthGuard],
+  providers: [
+      IdentityStrategy,
+      RolesGuard,
+  ],
 })
 export class ProfileModule {}
