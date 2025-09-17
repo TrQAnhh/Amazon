@@ -55,6 +55,7 @@
     "dotenv": "^17.2.2",
     "mysql2": "^3.14.5",
     "passport": "^0.7.0",
+    "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.2",
