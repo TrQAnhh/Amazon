@@ -1,8 +1,5 @@
 import { Controller, Post, Body, Inject } from '@nestjs/common';
-import { SignUpDto } from '@app/common/dto/identity/request/sign-up.dto';
-import { SignInDto } from '@app/common/dto/identity/request/sign-in.dto';
-import { AuthResponseDto } from '@app/common/dto/identity/response/auth-response.dto';
-import { SERVICE_NAMES } from '@app/common/constants/service-names';
+import {AuthResponseDto, SERVICE_NAMES, SignInDto, SignUpDto} from "@app/common";
 import { ClientProxy } from '@nestjs/microservices';
 import { BaseController } from '../common/base/base.controller';
 import { Public } from '../common/decorators/public.decorator';

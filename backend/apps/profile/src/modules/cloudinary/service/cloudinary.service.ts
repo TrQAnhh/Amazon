@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UploadApiErrorResponse, UploadApiResponse, v2 } from 'cloudinary';
 import toStream from 'buffer-to-stream';
 import { RpcException } from '@nestjs/microservices';
-import { ErrorCode } from '@app/common/constants/error-code';
+import { ErrorCode } from '@app/common';
 
 @Injectable()
 export class CloudinaryService {
@@ -16,7 +16,6 @@ export class CloudinaryService {
 
       toStream(file.buffer).pipe(upload);
     });
-    console.log(result);
 
     return result.secure_url;
   }

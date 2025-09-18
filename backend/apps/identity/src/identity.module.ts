@@ -1,16 +1,21 @@
 import { Module } from '@nestjs/common';
 import { IdentityController } from './controller/identity.controller';
-import { IdentityService } from './service/identity.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IdentityEntity } from './entity/identity.entity';
 import { typeOrmConfigAsync } from './config/typeorm.config';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_FILTER } from '@nestjs/core';
 import { IdentityExceptionFilter } from './exception/identity-exception.filter';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { CqrsModule } from "@nestjs/cqrs";
+import { GetUserIdentityHandler } from "./queries/get-user-identity/get-user-identity.handler";
+import { GetUserIdentitiesHandler } from "./queries/get-user-identities/get-user-identities.handler";
+import { SignUpHandler } from "./commands/sign-up/sign-up.handler";
+import { SignInHandler } from "./commands/sign-in/sign-in.handler";
+import { ValidateTokenHandler } from "./queries/validate-token/validate-token.handler";
+import { SERVICE_NAMES } from "@app/common";
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { SERVICE_NAMES } from '@app/common/constants/service-names';
 
 dotenv.config();
 
@@ -34,14 +39,19 @@ dotenv.config();
         },
       },
     ]),
+    CqrsModule,
   ],
   controllers: [IdentityController],
   providers: [
-    IdentityService,
     {
       provide: APP_FILTER,
       useClass: IdentityExceptionFilter,
     },
+    GetUserIdentityHandler,
+    GetUserIdentitiesHandler,
+    SignUpHandler,
+    SignInHandler,
+    ValidateTokenHandler,
   ],
 })
 export class IdentityModule {}
