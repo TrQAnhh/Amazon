@@ -1,13 +1,10 @@
 import { Body, Controller, Get, Inject, Patch, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { ProfileResponseDto, SERVICE_NAMES, UpdateProfileDto, UserRole } from "@app/common";
 import { BaseController } from '../common/base/base.controller';
-import { SERVICE_NAMES } from '@app/common/constants/service-names';
 import { ClientProxy } from '@nestjs/microservices';
-import { UpdateProfileDto } from '@app/common/dto/profile/request/update-profile.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UserRole } from '@app/common/constants/user-role.enum';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Response } from '../common/interceptors/transform/transform.interceptor';
-import { ProfileResponseDto } from '@app/common/dto/profile/response/profile-response.dto';
 
 @Controller('profile')
 export class ProfileController extends BaseController {
@@ -54,6 +51,7 @@ export class ProfileController extends BaseController {
         buffer: avatar.buffer.toString('base64'),
       };
     }
+
     const result = await this.sendCommand<ProfileResponseDto>({ cmd: 'update_user_profile' }, { userId, updateProfileDto, avatarPayload });
     return {
       message: 'Update user profile successfully!',

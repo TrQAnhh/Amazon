@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { ErrorCode, SERVICE_NAMES } from "@app/common";
 import { PassportStrategy } from '@nestjs/passport';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { Inject } from '@nestjs/common';
-import { SERVICE_NAMES } from '@app/common/constants/service-names';
 import { Strategy } from 'passport-custom';
-import { ErrorCode } from '@app/common/constants/error-code';
 import { AppException } from '../exception/app.exception';
 
 @Injectable()
