@@ -1,20 +1,20 @@
 import { Controller, UseFilters } from '@nestjs/common';
-import { ProfileResponseDto, SignUpDto, UpdateProfileDto } from "@app/common";
+import { ProfileResponseDto, SignUpDto, UpdateProfileDto } from '@app/common';
 import { ProfileExceptionFilter } from '../exception/profile-exception.filter';
 import { MessagePattern } from '@nestjs/microservices';
 import { ProfileEntity } from '../entity/profile.identity';
-import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { CreateProfileCommand } from "../commands/create-profile/create-profile.command";
-import { GetUserProfileQuery } from "../queries/get-user-profile/get-user-profile.query";
-import { GetAllUserProfilesQuery } from "../queries/get-all-user-profiles/get-all-user-profiles.query";
-import {UpdateProfileCommand} from "../commands/update-profile/update-profile.command";
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CreateProfileCommand } from '../commands/create-profile/create-profile.command';
+import { GetUserProfileQuery } from '../queries/get-user-profile/get-user-profile.query';
+import { GetAllUserProfilesQuery } from '../queries/get-all-user-profiles/get-all-user-profiles.query';
+import { UpdateProfileCommand } from '../commands/update-profile/update-profile.command';
 
 @Controller()
 @UseFilters(ProfileExceptionFilter)
 export class ProfileController {
   constructor(
-      private readonly commandBus: CommandBus,
-      private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
   ) {}
 
   @MessagePattern({ cmd: 'get_all_user_profiles' })

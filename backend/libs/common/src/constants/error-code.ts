@@ -12,7 +12,7 @@ export class ErrorCode {
   static readonly USER_PROFILE_EXISTED = new ErrorCode(409, 'User profile already exists', HttpStatus.CONFLICT);
   static readonly CLOUDINARY_NO_RESULT = new ErrorCode(500, 'No result returned from Cloudinary', HttpStatus.INTERNAL_SERVER_ERROR);
   static readonly UNCATEGORIZED = new ErrorCode(500, 'Uncategorized error', HttpStatus.INTERNAL_SERVER_ERROR);
-  static readonly IDENTITY_SERVICE_UNAVAILABLE = new ErrorCode(503, 'Failed to call Identity Service', HttpStatus.SERVICE_UNAVAILABLE,);
+  static readonly IDENTITY_SERVICE_UNAVAILABLE = new ErrorCode(503, 'Failed to call Identity Service', HttpStatus.SERVICE_UNAVAILABLE);
 
   private constructor(
     public readonly code: number,

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ErrorCode, SERVICE_NAMES } from "@app/common";
+import { ErrorCode, SERVICE_NAMES } from '@app/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';

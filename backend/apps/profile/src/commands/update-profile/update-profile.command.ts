@@ -1,9 +1,9 @@
-import { UpdateProfileDto } from "@app/common";
+import { UpdateProfileDto } from '@app/common';
 
 export class UpdateProfileCommand {
-    constructor(
-        public readonly userId: number,
-        public readonly updateProfileDto: UpdateProfileDto,
-        public readonly avatarPayload?: any,
-    ) {}
+  constructor(
+    public readonly userId: number,
+    public readonly updateProfileDto: UpdateProfileDto,
+    public readonly avatarPayload?: any,
+  ) {}
 }

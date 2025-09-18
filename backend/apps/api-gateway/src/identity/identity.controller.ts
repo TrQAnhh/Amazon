@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Inject } from '@nestjs/common';
-import {AuthResponseDto, SERVICE_NAMES, SignInDto, SignUpDto} from "@app/common";
+import { AuthResponseDto, SERVICE_NAMES, SignInDto, SignUpDto } from '@app/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { BaseController } from '../common/base/base.controller';
 import { Public } from '../common/decorators/public.decorator';
