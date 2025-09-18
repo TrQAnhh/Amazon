@@ -22,7 +22,6 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/api-gateway/test/jest-e2e.json",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli",
-
     "migration:identity:generate:init": "cross-env npm run typeorm -- migration:generate apps/identity/src/db/migrations/init/%npm_config_name% -d apps/identity/src/config/data-source.ts --pretty",
     "migration:identity:generate:dev": "cross-env npm run typeorm -- migration:generate apps/identity/src/db/migrations/dev/%npm_config_name% -d apps/identity/src/config/data-source.ts --pretty",
     "migration:identity:create:init": "cross-env npm run typeorm -- migration:create apps/identity/src/db/migrations/init/%npm_config_name%",
@@ -31,7 +30,6 @@
     "migration:identity:revert": "npm run typeorm -- migration:revert -d apps/identity/src/config/data-source.ts",
     "migration:identity:show": "npm run typeorm -- migration:show -d apps/identity/src/config/data-source.ts",
     "migration:identity:drop": "npm run typeorm -- schema:drop -d apps/identity/src/config/data-source.ts",
-
     "migration:profile:generate:init": "cross-env npm run typeorm -- migration:generate apps/profile/src/db/migrations/init/%npm_config_name% -d apps/profile/src/config/data-source.ts --pretty",
     "migration:profile:generate:dev": "cross-env npm run typeorm -- migration:generate apps/profile/src/db/migrations/dev/%npm_config_name% -d apps/profile/src/config/data-source.ts --pretty",
     "migration:profile:create:init": "cross-env npm run typeorm -- migration:create apps/profile/src/db/migrations/init/%npm_config_name%",
@@ -44,6 +42,7 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.13.4",
     "@grpc/proto-loader": "^0.8.0",
+    "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^10.4.20",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^10.4.20",
@@ -56,6 +55,7 @@
     "@nestjs/typeorm": "^11.0.0",
     "bcrypt": "^6.0.0",
     "buffer-to-stream": "^1.0.0",
+    "cache-manager": "^7.2.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "cloudinary": "^2.7.0",
