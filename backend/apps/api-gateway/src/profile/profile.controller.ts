@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Inject, Patch, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { ProfileResponseDto, SERVICE_NAMES, UpdateProfileDto, UserRole } from "@app/common";
+import { ProfileResponseDto, SERVICE_NAMES, UpdateProfileDto, UserRole } from '@app/common';
 import { BaseController } from '../common/base/base.controller';
 import { ClientProxy } from '@nestjs/microservices';
 import { FileInterceptor } from '@nestjs/platform-express';

@@ -10,11 +10,11 @@ import { SERVICE_NAMES } from '@app/common/constants/service-names';
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { CreateProfileHandler } from "./commands/create-profile/create-profile.handler";
-import { CqrsModule } from "@nestjs/cqrs";
-import {GetUserProfileHandler} from "./queries/get-user-profile/get-user-profile.handler";
-import {GetAllUserProfilesHandler} from "./queries/get-all-user-profiles/get-all-user-profiles.handler";
-import {UpdateProfileHandler} from "./commands/update-profile/update-profile.handler";
+import { CreateProfileHandler } from './commands/create-profile/create-profile.handler';
+import { CqrsModule } from '@nestjs/cqrs';
+import { GetUserProfileHandler } from './queries/get-user-profile/get-user-profile.handler';
+import { GetAllUserProfilesHandler } from './queries/get-all-user-profiles/get-all-user-profiles.handler';
+import { UpdateProfileHandler } from './commands/update-profile/update-profile.handler';
 
 dotenv.config();
 
