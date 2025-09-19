@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AppException } from './app.exception';
-import { ErrorCode } from '@app/common/constants/error-code';
+import { ErrorCode } from '@app/common';
 
 @Catch(AppException)
 export class RpcToHttpExceptionFilter implements ExceptionFilter {

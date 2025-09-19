@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { ErrorCode, SERVICE_NAMES } from '@app/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { Inject } from '@nestjs/common';
-import { SERVICE_NAMES } from '@app/common/constants/service-names';
 import { Strategy } from 'passport-custom';
-import { ErrorCode } from '@app/common/constants/error-code';
 import { AppException } from '../exception/app.exception';
 
 @Injectable()
@@ -19,9 +18,9 @@ export class IdentityStrategy extends PassportStrategy(Strategy, 'identity') {
     if (!authHeader) throw new AppException(ErrorCode.UNAUTHENTICATED);
 
     const token = authHeader.split(' ')[1];
-    const result = await firstValueFrom(this.client.send({ cmd: 'validate_token' }, token));
+    const result = await firstValueFrom(this.client.send({ cmd: 'validate_token' }, { token }));
 
-    if (!result.valid) throw new AppException(ErrorCode.UNAUTHORIZED);
+    if (!result.valid) throw new AppException(ErrorCode.INVALID_JWT_TOKEN);
 
     return { userId: result.userId, role: result.role };
   }

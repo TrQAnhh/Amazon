@@ -2,7 +2,7 @@ import process from 'node:process';
 import { Module } from '@nestjs/common';
 import { ProfileController } from './profile.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { SERVICE_NAMES } from '@app/common/constants/service-names';
+import { SERVICE_NAMES } from '@app/common';
 import { IdentityModule } from '../identity/identity.module';
 import { IdentityStrategy } from '../strategy/identity.strategy';
 import { PassportModule } from '@nestjs/passport';

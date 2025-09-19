@@ -8,6 +8,9 @@ import { RolesGuard } from './guard/roles.guard';
 import { TransformInterceptor } from './common/interceptors/transform/transform.interceptor';
 import { ErrorsInterceptor } from './common/interceptors/errors/errors.interceptor';
 import { TimeoutInterceptor } from './common/interceptors/errors/timeout.interceptor';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Module({
   imports: [IdentityModule, ProfileModule],

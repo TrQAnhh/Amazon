@@ -12,7 +12,7 @@ const dataSourceOptions: DataSourceOptions = {
   username: process.env.MYSQL_PROFILE_USER,
   password: process.env.MYSQL_PROFILE_PASSWORD,
   entities: [ProfileEntity],
-  migrations: [__dirname + '/../db/migrations/*.{ts,js}'],
+  migrations: [__dirname + '/../db/migrations/init/*.{ts,js}', __dirname + '/../db/migrations/dev/*.{ts,js}'],
   synchronize: false,
   migrationsRun: false,
 };

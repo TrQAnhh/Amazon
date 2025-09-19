@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ProfileController } from './controller/profile.controller';
-import { ProfileService } from './service/profile.service';
 import { ProfileEntity } from './entity/profile.identity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfigAsync } from './config/typeorm.config';
@@ -11,6 +10,11 @@ import { SERVICE_NAMES } from '@app/common/constants/service-names';
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { CreateProfileHandler } from './commands/create-profile/create-profile.handler';
+import { CqrsModule } from '@nestjs/cqrs';
+import { GetUserProfileHandler } from './queries/get-user-profile/get-user-profile.handler';
+import { GetAllUserProfilesHandler } from './queries/get-all-user-profiles/get-all-user-profiles.handler';
+import { UpdateProfileHandler } from './commands/update-profile/update-profile.handler';
 
 dotenv.config();
 
@@ -29,14 +33,18 @@ dotenv.config();
         },
       },
     ]),
+    CqrsModule,
   ],
   controllers: [ProfileController],
   providers: [
-    ProfileService,
     {
       provide: APP_FILTER,
       useClass: ProfileExceptionFilter,
     },
+    CreateProfileHandler,
+    GetUserProfileHandler,
+    GetAllUserProfilesHandler,
+    UpdateProfileHandler,
   ],
 })
 export class ProfileModule {}
