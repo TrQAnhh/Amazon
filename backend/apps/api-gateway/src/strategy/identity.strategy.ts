@@ -18,9 +18,9 @@ export class IdentityStrategy extends PassportStrategy(Strategy, 'identity') {
     if (!authHeader) throw new AppException(ErrorCode.UNAUTHENTICATED);
 
     const token = authHeader.split(' ')[1];
-    const result = await firstValueFrom(this.client.send({ cmd: 'validate_token' }, token));
+    const result = await firstValueFrom(this.client.send({ cmd: 'validate_token' }, { token }));
 
-    if (!result.valid) throw new AppException(ErrorCode.UNAUTHORIZED);
+    if (!result.valid) throw new AppException(ErrorCode.INVALID_JWT_TOKEN);
 
     return { userId: result.userId, role: result.role };
   }
