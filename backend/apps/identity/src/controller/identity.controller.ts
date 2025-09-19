@@ -8,6 +8,8 @@ import { GetUserIdentitiesQuery } from '../queries/get-user-identities/get-user-
 import { SignUpCommand } from '../commands/sign-up/sign-up.command';
 import { SignInCommand } from '../commands/sign-in/sign-in.command';
 import { ValidateTokenQuery } from '../queries/validate-token/validate-token.query';
+import { RefreshTokenCommand } from '../commands/refresh-token/refresh-token.command';
+import { SignOutCommand } from '../commands/sign-out/sign-out.command';
 
 @Controller()
 @UseFilters(IdentityExceptionFilter)
@@ -27,6 +29,11 @@ export class IdentityController {
     return this.commandBus.execute(new SignInCommand(signInDto));
   }
 
+  @MessagePattern({ cmd: 'sign_out' })
+  async signOut(payload: { accessToken: string }): Promise<string> {
+    return this.commandBus.execute(new SignOutCommand(payload.accessToken));
+  }
+
   @MessagePattern({ cmd: 'get_user_identity' })
   async getUserIdentity(payload: { userId: number }): Promise<IdentityResponseDto> {
     return this.queryBus.execute(new GetUserIdentityQuery(payload.userId));
@@ -38,7 +45,12 @@ export class IdentityController {
   }
 
   @MessagePattern({ cmd: 'validate_token' })
-  async validateToken(token: string): Promise<any> {
-    return this.queryBus.execute(new ValidateTokenQuery(token));
+  async validateToken(payload: { token: string }): Promise<any> {
+    return this.queryBus.execute(new ValidateTokenQuery(payload.token));
+  }
+
+  @MessagePattern({ cmd: 'refresh_token' })
+  async refreshToken(payload: { refreshToken: string }): Promise<AuthResponseDto> {
+    return this.commandBus.execute(new RefreshTokenCommand(payload.refreshToken));
   }
 }

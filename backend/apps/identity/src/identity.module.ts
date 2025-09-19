@@ -13,9 +13,11 @@ import { GetUserIdentitiesHandler } from './queries/get-user-identities/get-user
 import { SignUpHandler } from './commands/sign-up/sign-up.handler';
 import { SignInHandler } from './commands/sign-in/sign-in.handler';
 import { ValidateTokenHandler } from './queries/validate-token/validate-token.handler';
-import { SERVICE_NAMES } from '@app/common';
+import { RedisConfig, RedisModule, SERVICE_NAMES } from '@app/common';
+import { RefreshTokenHandler } from './commands/refresh-token/refresh-token.handler';
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
+import { SignOutHandler } from './commands/sign-out/sign-out.handler';
 
 dotenv.config();
 
@@ -39,6 +41,11 @@ dotenv.config();
         },
       },
     ]),
+    RedisModule.register({
+      host: process.env.REDIS_HOST,
+      port: Number(process.env.REDIS_PORT),
+      accessKey: process.env.REDIS_ACCESS_KEY,
+    } as RedisConfig),
     CqrsModule,
   ],
   controllers: [IdentityController],
@@ -51,7 +58,9 @@ dotenv.config();
     GetUserIdentitiesHandler,
     SignUpHandler,
     SignInHandler,
+    SignOutHandler,
     ValidateTokenHandler,
+    RefreshTokenHandler,
   ],
 })
 export class IdentityModule {}

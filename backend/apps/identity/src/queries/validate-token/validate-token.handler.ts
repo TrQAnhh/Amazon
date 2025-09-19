@@ -2,11 +2,14 @@ import { ValidateTokenQuery } from './validate-token.query';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
-import { ErrorCode } from '@app/common';
+import { ErrorCode, RedisHelper } from '@app/common';
 
 @QueryHandler(ValidateTokenQuery)
 export class ValidateTokenHandler implements IQueryHandler<ValidateTokenQuery> {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly redisHelper: RedisHelper,
+  ) {}
 
   async execute(query: ValidateTokenQuery): Promise<any> {
     try {
@@ -14,6 +17,12 @@ export class ValidateTokenHandler implements IQueryHandler<ValidateTokenQuery> {
 
       if (!decoded) {
         throw new RpcException(ErrorCode.INVALID_JWT_TOKEN);
+      }
+
+      const redisKey = `access:${decoded.sub}`;
+      const isBlacklisted = await this.redisHelper.get(redisKey);
+      if (isBlacklisted) {
+        return { valid: false, userId: null, role: null };
       }
 
       return {

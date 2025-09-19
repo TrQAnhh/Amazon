@@ -1,5 +1,5 @@
-import { AuthResponseDto, ErrorCode, SERVICE_NAMES } from '@app/common';
-import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
+import { AuthResponseDto, ErrorCode, RedisHelper, SERVICE_NAMES } from '@app/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SignUpCommand } from './sign-up.command';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IdentityEntity } from '../../entity/identity.entity';
@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { firstValueFrom } from 'rxjs';
 import { Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { v4 as uuidv4 } from 'uuid';
 
 @CommandHandler(SignUpCommand)
 export class SignUpHandler implements ICommandHandler<SignUpCommand> {
@@ -17,7 +18,7 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand> {
     private readonly identityRepo: Repository<IdentityEntity>,
     @Inject(SERVICE_NAMES.PROFILE) private readonly profileClient: ClientProxy,
     private readonly jwtService: JwtService,
-    private readonly publisher: EventPublisher,
+    private readonly redisHelper: RedisHelper,
   ) {}
 
   async execute(command: SignUpCommand): Promise<AuthResponseDto> {
@@ -45,12 +46,16 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand> {
     const payload = {
       sub: savedUser.id,
       role: savedUser.role,
+      tokenId: uuidv4(),
     };
 
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = this.jwtService.sign(payload, {
       expiresIn: process.env.JWT_REFRESH_TOKEN_DURATION,
     });
+
+    const redisKey = `refresh:${savedUser.id}`;
+    await this.redisHelper.set(redisKey, payload.tokenId, Number(process.env.JWT_REFRESH_TOKEN_DURATION));
 
     return {
       accessToken: accessToken,
