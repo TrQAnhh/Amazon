@@ -13,7 +13,7 @@ export class CreateProfileHandler implements ICommandHandler<CreateProfileComman
     private readonly profileRepo: Repository<ProfileEntity>,
   ) {}
 
-  async execute(payload: CreateProfileCommand): Promise<ProfileEntity> {
+  async execute(payload: CreateProfileCommand): Promise<void> {
     const { userId, signUpDto } = payload;
 
     const existingProfile = await this.profileRepo.findOneBy({ userId });
@@ -31,6 +31,6 @@ export class CreateProfileHandler implements ICommandHandler<CreateProfileComman
       lastName,
     });
 
-    return this.profileRepo.save(profile);
+    await this.profileRepo.save(profile);
   }
 }

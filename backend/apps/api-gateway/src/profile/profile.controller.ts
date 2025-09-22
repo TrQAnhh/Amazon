@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Inject, Patch, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { ProfileResponseDto, SERVICE_NAMES, UpdateProfileDto, UserRole } from '@app/common';
+import { AdminProfileResponseDto, ProfileResponseDto, SERVICE_NAMES, UpdateProfileDto, UserRole } from '@app/common';
 import { BaseController } from '../common/base/base.controller';
 import { ClientProxy } from '@nestjs/microservices';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -14,8 +14,8 @@ export class ProfileController extends BaseController {
 
   @Roles(UserRole.ADMIN)
   @Get()
-  async getAllUserProfiles(): Promise<Response<ProfileResponseDto[]>> {
-    const result = await this.sendCommand<ProfileResponseDto[]>({ cmd: 'get_all_user_profiles' });
+  async getAllUserProfiles(): Promise<Response<AdminProfileResponseDto[]>> {
+    const result = await this.sendCommand<AdminProfileResponseDto[]>({ cmd: 'get_all_user_profiles' });
     return {
       message: 'Get all users profile successfully!',
       success: true,
@@ -38,11 +38,14 @@ export class ProfileController extends BaseController {
   async updateProfile(
     @Req() request: any,
     @Body() updateProfileDto: UpdateProfileDto,
-    @UploadedFile() avatar?: Express.Multer.File,
   ): Promise<Response<ProfileResponseDto>> {
     const userId = request.user.userId;
 
-    const result = await this.sendCommand<ProfileResponseDto>({ cmd: 'update_user_profile' }, { userId, updateProfileDto });
+    const result = await this.sendCommand<ProfileResponseDto>(
+      { cmd: 'update_user_profile' },
+      { userId, updateProfileDto },
+    );
+
     return {
       message: 'Update user profile successfully!',
       success: true,

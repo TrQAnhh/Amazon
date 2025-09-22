@@ -8,6 +8,7 @@ import { ProfileEntity } from '../../entity/profile.identity';
 import { Repository } from 'typeorm';
 import { Inject } from '@nestjs/common';
 import { getUserIdentity } from '../../helpers/get-identity.helper';
+import { plainToInstance } from 'class-transformer';
 
 @QueryHandler(GetUserProfileQuery)
 export class GetUserProfileHandler implements IQueryHandler<GetUserProfileQuery> {
@@ -20,13 +21,19 @@ export class GetUserProfileHandler implements IQueryHandler<GetUserProfileQuery>
   async execute(query: GetUserProfileQuery): Promise<ProfileResponseDto> {
     const { userId } = query;
 
-    const existingProfile = await assertExists<ProfileEntity>(this.profileRepo, { userId }, ErrorCode.PROFILE_NOT_FOUND);
+    const existingProfile = await assertExists<ProfileEntity>(
+      this.profileRepo,
+      { userId },
+      ErrorCode.PROFILE_NOT_FOUND,
+    );
 
     const { email } = await getUserIdentity(this.identityClient, userId);
 
-    return {
-      email: email,
-      ...existingProfile,
-    };
+    const profileDto = plainToInstance(ProfileResponseDto, existingProfile, {
+      excludeExtraneousValues: true,
+    });
+
+    profileDto.email = email;
+    return profileDto;
   }
 }

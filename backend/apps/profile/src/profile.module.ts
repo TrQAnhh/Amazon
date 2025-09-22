@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfigAsync } from './config/typeorm.config';
 import { APP_FILTER } from '@nestjs/core';
 import { ProfileExceptionFilter } from './exception/profile-exception.filter';
-import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { SERVICE_NAMES } from '@app/common/constants/service-names';
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
@@ -16,6 +15,7 @@ import { GetUserProfileHandler } from './queries/get-user-profile/get-user-profi
 import { GetAllUserProfilesHandler } from './queries/get-all-user-profiles/get-all-user-profiles.handler';
 import { UpdateProfileHandler } from './commands/update-profile/update-profile.handler';
 import { UploadAvatarHandler } from './commands/upload-avatar/upload-avatar.handler';
+import { CloudinaryModule } from '@app/common';
 
 dotenv.config();
 

@@ -4,9 +4,10 @@ import { ProfileEntity } from '../../entity/profile.identity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inject } from '@nestjs/common';
-import { ErrorCode, ProfileResponseDto, SERVICE_NAMES } from '@app/common';
+import { AdminProfileResponseDto, ErrorCode, ProfileResponseDto, SERVICE_NAMES } from '@app/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { plainToInstance } from 'class-transformer';
 
 @QueryHandler(GetAllUserProfilesQuery)
 export class GetAllUserProfilesHandler implements IQueryHandler<GetAllUserProfilesQuery> {
@@ -16,7 +17,7 @@ export class GetAllUserProfilesHandler implements IQueryHandler<GetAllUserProfil
     @Inject(SERVICE_NAMES.IDENTITY) private readonly identityClient: ClientProxy,
   ) {}
 
-  async execute(): Promise<ProfileResponseDto[]> {
+  async execute(): Promise<AdminProfileResponseDto[]> {
     const profiles = await this.profileRepo.find();
     const userIds = profiles.map((profile) => profile.userId);
 
@@ -28,9 +29,12 @@ export class GetAllUserProfilesHandler implements IQueryHandler<GetAllUserProfil
       throw new RpcException(ErrorCode.IDENTITY_SERVICE_UNAVAILABLE);
     }
 
-    return profiles.map((p) => ({
-      ...p,
-      email: identities[p.userId]?.email,
-    }));
+    return profiles.map((profile) => {
+      const dto = plainToInstance(AdminProfileResponseDto, profile, {
+        excludeExtraneousValues: true,
+      });
+      dto.email = identities[profile.userId]?.email;
+      return dto;
+    });
   }
 }
