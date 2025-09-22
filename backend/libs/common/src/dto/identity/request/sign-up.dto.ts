@@ -19,4 +19,7 @@ export class SignUpDto {
   @IsString()
   @MaxLength(255)
   lastName: string;
+
+  @IsNotEmpty()
+  deviceId: string;
 }

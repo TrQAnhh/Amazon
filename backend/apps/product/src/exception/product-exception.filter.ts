@@ -4,9 +4,9 @@ import { RpcException } from '@nestjs/microservices';
 
 @Catch(RpcException)
 export class ProductExceptionFilter implements RpcExceptionFilter<RpcException> {
-    catch(exception: RpcException, host: ArgumentsHost): Observable<any> {
-        console.log('Identity service error: ', exception.getError());
-        console.log('Error type: ', host.getType());
-        return throwError(() => exception.getError());
-    }
+  catch(exception: RpcException, host: ArgumentsHost): Observable<any> {
+    console.log('Identity service error: ', exception.getError());
+    console.log('Error type: ', host.getType());
+    return throwError(() => exception.getError());
+  }
 }

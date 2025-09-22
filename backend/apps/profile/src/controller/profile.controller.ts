@@ -8,6 +8,7 @@ import { CreateProfileCommand } from '../commands/create-profile/create-profile.
 import { GetUserProfileQuery } from '../queries/get-user-profile/get-user-profile.query';
 import { GetAllUserProfilesQuery } from '../queries/get-all-user-profiles/get-all-user-profiles.query';
 import { UpdateProfileCommand } from '../commands/update-profile/update-profile.command';
+import { UploadAvatarCommand } from '../commands/upload-avatar/upload-avatar.command';
 
 @Controller()
 @UseFilters(ProfileExceptionFilter)
@@ -33,7 +34,12 @@ export class ProfileController {
   }
 
   @MessagePattern({ cmd: 'update_user_profile' })
-  async updateProfile(payload: { userId: number; updateProfileDto: UpdateProfileDto; avatarPayload?: any }): Promise<ProfileResponseDto> {
-    return this.commandBus.execute(new UpdateProfileCommand(payload.userId, payload.updateProfileDto, payload.avatarPayload));
+  async updateProfile(payload: { userId: number; updateProfileDto: UpdateProfileDto }): Promise<ProfileResponseDto> {
+    return this.commandBus.execute(new UpdateProfileCommand(payload.userId, payload.updateProfileDto));
+  }
+
+  @MessagePattern({ cmd: 'upload_user_avatar' })
+  async uploadUserAvatar(payload: { userId: number; avatarPayload: any }): Promise<string> {
+    return this.commandBus.execute(new UploadAvatarCommand(payload.userId, payload.avatarPayload));
   }
 }

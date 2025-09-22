@@ -1,12 +1,13 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetUserProfileQuery } from './get-user-profile.query';
-import { ErrorCode, ProfileResponseDto, SERVICE_NAMES } from '@app/common';
+import { assertExists, ErrorCode, ProfileResponseDto, SERVICE_NAMES } from '@app/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProfileEntity } from '../../entity/profile.identity';
 import { Repository } from 'typeorm';
 import { Inject } from '@nestjs/common';
+import { getUserIdentity } from '../../helpers/get-identity.helper';
 
 @QueryHandler(GetUserProfileQuery)
 export class GetUserProfileHandler implements IQueryHandler<GetUserProfileQuery> {
@@ -17,24 +18,11 @@ export class GetUserProfileHandler implements IQueryHandler<GetUserProfileQuery>
   ) {}
 
   async execute(query: GetUserProfileQuery): Promise<ProfileResponseDto> {
-    const existingProfile = await this.profileRepo.findOne({
-      where: {
-        userId: query.userId,
-      },
-    });
+    const { userId } = query;
 
-    if (!existingProfile) {
-      throw new RpcException(ErrorCode.PROFILE_NOT_FOUND);
-    }
+    const existingProfile = await assertExists<ProfileEntity>(this.profileRepo, { userId }, ErrorCode.PROFILE_NOT_FOUND);
 
-    let email: string;
-    try {
-      const identity = await firstValueFrom(this.identityClient.send({ cmd: 'get_user_identity' }, { userId: query.userId }));
-      email = identity.email;
-    } catch (error) {
-      console.error(`[ERROR] `, error);
-      throw new RpcException(ErrorCode.IDENTITY_SERVICE_UNAVAILABLE);
-    }
+    const { email } = await getUserIdentity(this.identityClient, userId);
 
     return {
       email: email,

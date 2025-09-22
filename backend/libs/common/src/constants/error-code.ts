@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 
 export class ErrorCode {
   static readonly INVALID_INPUT_VALUE = new ErrorCode(400, 'Invalid input value', HttpStatus.BAD_REQUEST);
+  static readonly NO_FILE_PROVIDED = new ErrorCode(400, 'No file provided', HttpStatus.BAD_REQUEST);
   static readonly INVALID_CREDENTIALS = new ErrorCode(401, 'Invalid email or password', HttpStatus.UNAUTHORIZED);
   static readonly UNAUTHENTICATED = new ErrorCode(401, 'Unauthenticated access', HttpStatus.UNAUTHORIZED);
   static readonly UNAUTHORIZED = new ErrorCode(403, 'Unauthorized access', HttpStatus.FORBIDDEN);

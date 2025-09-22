@@ -28,8 +28,8 @@ export class IdentityController {
   }
 
   @MessagePattern({ cmd: 'sign_out' })
-  async signOut(payload: { accessToken: string }): Promise<string> {
-    return this.commandBus.execute(new SignOutCommand(payload.accessToken));
+  async signOut(user: any): Promise<string> {
+    return this.commandBus.execute(new SignOutCommand(user));
   }
 
   @MessagePattern({ cmd: 'get_user_identity' })

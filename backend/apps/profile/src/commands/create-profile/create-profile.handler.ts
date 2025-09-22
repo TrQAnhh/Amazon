@@ -16,11 +16,7 @@ export class CreateProfileHandler implements ICommandHandler<CreateProfileComman
   async execute(payload: CreateProfileCommand): Promise<ProfileEntity> {
     const { userId, signUpDto } = payload;
 
-    const existingProfile = await this.profileRepo.findOne({
-      where: {
-        userId: userId,
-      },
-    });
+    const existingProfile = await this.profileRepo.findOneBy({ userId });
 
     if (existingProfile) {
       throw new RpcException(ErrorCode.USER_PROFILE_EXISTED);

@@ -47,6 +47,7 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand> {
       sub: savedUser.id,
       role: savedUser.role,
       tokenId: uuidv4(),
+      deviceId: signUpDto.deviceId,
     };
 
     const accessToken = this.jwtService.sign(payload);
@@ -54,7 +55,7 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand> {
       expiresIn: process.env.JWT_REFRESH_TOKEN_DURATION,
     });
 
-    const redisKey = `refresh:${savedUser.id}`;
+    const redisKey = `refresh:${payload.deviceId}`;
     await this.redisHelper.set(redisKey, payload.tokenId, Number(process.env.JWT_REFRESH_TOKEN_DURATION));
 
     return {

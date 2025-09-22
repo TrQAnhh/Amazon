@@ -22,6 +22,11 @@ export class IdentityStrategy extends PassportStrategy(Strategy, 'identity') {
 
     if (!result.valid) throw new AppException(ErrorCode.INVALID_JWT_TOKEN);
 
-    return { userId: result.userId, role: result.role };
+    return {
+      userId: result.userId,
+      role: result.role,
+      tokenId: result.tokenId,
+      deviceId: result.deviceId,
+    };
   }
 }
