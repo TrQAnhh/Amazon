@@ -15,7 +15,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { GetUserProfileHandler } from './queries/get-user-profile/get-user-profile.handler';
 import { GetAllUserProfilesHandler } from './queries/get-all-user-profiles/get-all-user-profiles.handler';
 import { UpdateProfileHandler } from './commands/update-profile/update-profile.handler';
-import { UploadAvatarEventHandler } from './events/upload-avatar.handler';
+import { UploadAvatarHandler } from './commands/upload-avatar/upload-avatar.handler';
 
 dotenv.config();
 
@@ -46,7 +46,7 @@ dotenv.config();
     GetUserProfileHandler,
     GetAllUserProfilesHandler,
     UpdateProfileHandler,
-    UploadAvatarEventHandler,
+    UploadAvatarHandler,
   ],
 })
 export class ProfileModule {}

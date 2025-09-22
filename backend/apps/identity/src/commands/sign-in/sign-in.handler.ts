@@ -1,4 +1,4 @@
-import { AuthResponseDto, ErrorCode, RedisHelper } from '@app/common';
+import { assertExists, AuthResponseDto, ErrorCode, RedisHelper } from '@app/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SignInCommand } from './sign-in.command';
 import { IdentityEntity } from '../../entity/identity.entity';
@@ -21,15 +21,10 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
   async execute(command: SignInCommand): Promise<AuthResponseDto> {
     const { signInDto } = command;
 
-    const userByEmail = await this.identityRepo.findOneBy({
-      email: signInDto.email,
-    });
-
-    if (!userByEmail) {
-      throw new RpcException(ErrorCode.USER_NOT_FOUND);
-    }
+    const userByEmail = await assertExists<IdentityEntity>(this.identityRepo, { email: signInDto.email }, ErrorCode.USER_NOT_FOUND);
 
     const success = await bcrypt.compare(signInDto.password, userByEmail.password);
+
     if (!success) {
       throw new RpcException(ErrorCode.INVALID_CREDENTIALS);
     }
@@ -38,6 +33,7 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
       sub: userByEmail.id,
       role: userByEmail.role,
       tokenId: uuidv4(),
+      deviceId: signInDto.deviceId,
     };
 
     const accessToken = this.jwtService.sign(payload);
@@ -45,7 +41,7 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
       expiresIn: process.env.JWT_REFRESH_TOKEN_DURATION,
     });
 
-    const redisKey = `refresh:${userByEmail.id}`;
+    const redisKey = `refresh:${signInDto.deviceId}`;
     await this.redisHelper.set(redisKey, payload.tokenId, Number(process.env.JWT_REFRESH_TOKEN_DURATION));
 
     return {

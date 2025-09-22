@@ -1,7 +1,6 @@
 import { AuthResponseDto, IdentityResponseDto, SignInDto, SignUpDto } from '@app/common';
-import { Controller, UseFilters } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { IdentityExceptionFilter } from '../exception/identity-exception.filter';
 import { GetUserIdentityQuery } from '../queries/get-user-identity/get-user-identity.query';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { GetUserIdentitiesQuery } from '../queries/get-user-identities/get-user-identities.query';
@@ -12,7 +11,6 @@ import { RefreshTokenCommand } from '../commands/refresh-token/refresh-token.com
 import { SignOutCommand } from '../commands/sign-out/sign-out.command';
 
 @Controller()
-@UseFilters(IdentityExceptionFilter)
 export class IdentityController {
   constructor(
     private readonly queryBus: QueryBus,
@@ -30,8 +28,8 @@ export class IdentityController {
   }
 
   @MessagePattern({ cmd: 'sign_out' })
-  async signOut(payload: { accessToken: string }): Promise<string> {
-    return this.commandBus.execute(new SignOutCommand(payload.accessToken));
+  async signOut(user: any): Promise<string> {
+    return this.commandBus.execute(new SignOutCommand(user));
   }
 
   @MessagePattern({ cmd: 'get_user_identity' })

@@ -6,4 +6,7 @@ export class SignInDto {
 
   @IsNotEmpty()
   password: string;
+
+  @IsNotEmpty()
+  deviceId: string;
 }

@@ -16,37 +16,47 @@ export class ValidateTokenHandler implements IQueryHandler<ValidateTokenQuery> {
     try {
       const decoded = this.jwtService.decode(query.token);
 
-      if (!decoded || !decoded.tokenId || !decoded.sub) {
+      if (!decoded) {
         throw new RpcException(ErrorCode.INVALID_JWT_TOKEN);
       }
 
-      const validatedKey = `validated:${decoded.tokenId}`;
+      const validatedKey = `validated:${decoded.deviceId}`;
       const cached = await this.redisHelper.get(validatedKey);
 
-      if (cached) {
+      if (cached === decoded.tokenId) {
         return {
           valid: true,
           userId: decoded.sub,
           role: decoded.role,
+          tokenId: decoded.tokenId,
+          deviceId: decoded.deviceId,
         };
       }
 
-      const blacklistKey = `access:${decoded.sub}`;
+      const blacklistKey = `access:${decoded.deviceId}`;
       const isBlacklisted = await this.redisHelper.get(blacklistKey);
 
-      if (isBlacklisted) {
-        return { valid: false, userId: null, role: null };
+      if (isBlacklisted === decoded.tokenId) {
+        return {
+          valid: false,
+          userId: null,
+          role: null,
+          tokenId: null,
+          deviceId: null,
+        };
       }
 
       const verified = await this.jwtService.verify(query.token);
 
       const ttl = verified.exp - Math.floor(Date.now() / 1000);
-      await this.redisHelper.set(validatedKey, '1', ttl);
+      await this.redisHelper.set(validatedKey, verified.tokenId, ttl);
 
       return {
         valid: true,
-        userId: decoded.sub,
-        role: decoded.role,
+        userId: verified.sub,
+        role: verified.role,
+        tokenId: verified.tokenId,
+        deviceId: verified.deviceId,
       };
     } catch (error) {
       console.error(`[JWT ERROR] `, error);
@@ -54,6 +64,8 @@ export class ValidateTokenHandler implements IQueryHandler<ValidateTokenQuery> {
         valid: false,
         userId: null,
         role: null,
+        tokenId: null,
+        deviceId: null,
       };
     }
   }

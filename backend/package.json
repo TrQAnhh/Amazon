@@ -12,6 +12,7 @@
     "start:dev": "nest start --watch",
     "start:dev:gateway": "nest start api-gateway --watch",
     "start:dev:identity": "nest start identity --watch",
+    "start:dev:product": "nest start product --watch",
     "start:dev:profile": "nest start profile --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/api-gateway/main",
@@ -30,6 +31,7 @@
     "migration:identity:revert": "npm run typeorm -- migration:revert -d apps/identity/src/config/data-source.ts",
     "migration:identity:show": "npm run typeorm -- migration:show -d apps/identity/src/config/data-source.ts",
     "migration:identity:drop": "npm run typeorm -- schema:drop -d apps/identity/src/config/data-source.ts",
+
     "migration:profile:generate:init": "cross-env npm run typeorm -- migration:generate apps/profile/src/db/migrations/init/%npm_config_name% -d apps/profile/src/config/data-source.ts --pretty",
     "migration:profile:generate:dev": "cross-env npm run typeorm -- migration:generate apps/profile/src/db/migrations/dev/%npm_config_name% -d apps/profile/src/config/data-source.ts --pretty",
     "migration:profile:create:init": "cross-env npm run typeorm -- migration:create apps/profile/src/db/migrations/init/%npm_config_name%",
@@ -37,7 +39,16 @@
     "migration:profile:run": "npm run typeorm -- migration:run -d apps/profile/src/config/data-source.ts",
     "migration:profile:revert": "npm run typeorm -- migration:revert -d apps/profile/src/config/data-source.ts",
     "migration:profile:show": "npm run typeorm -- migration:show -d apps/profile/src/config/data-source.ts",
-    "migration:profile:drop": "npm run typeorm -- schema:drop -d apps/profile/src/config/data-source.ts"
+    "migration:profile:drop": "npm run typeorm -- schema:drop -d apps/profile/src/config/data-source.ts",
+
+    "migration:product:generate:init": "cross-env npm run typeorm -- migration:generate apps/product/src/db/migrations/init/%npm_config_name% -d apps/product/src/config/data-source.ts --pretty",
+    "migration:product:generate:dev": "cross-env npm run typeorm -- migration:generate apps/product/src/db/migrations/dev/%npm_config_name% -d apps/product/src/config/data-source.ts --pretty",
+    "migration:product:create:init": "cross-env npm run typeorm -- migration:create apps/product/src/db/migrations/init/%npm_config_name%",
+    "migration:product:create:dev": "cross-env npm run typeorm -- migration:create apps/product/src/db/migrations/dev/%npm_config_name%",
+    "migration:product:run": "npm run typeorm -- migration:run -d apps/product/src/config/data-source.ts",
+    "migration:product:revert": "npm run typeorm -- migration:revert -d apps/product/src/config/data-source.ts",
+    "migration:product:show": "npm run typeorm -- migration:show -d apps/product/src/config/data-source.ts",
+    "migration:product:drop": "npm run typeorm -- schema:drop -d apps/product/src/config/data-source.ts"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.13.4",

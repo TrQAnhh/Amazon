@@ -1,20 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { ProfileModule } from './profile.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-
 import { Logger } from '@nestjs/common';
-
+import * as dotenv from 'dotenv';
 const logger = new Logger('Blog');
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(ProfileModule, {
     transport: Transport.TCP,
     options: {
-      port: 4002,
+      port: Number(process.env.PROFILE_SERVICE_PORT),
     },
   });
 
   await app.listen();
-  logger.log(`TCP Microservice of Profile Service is now running.`);
+  logger.log(`TCP Microservice of Profile Service is now running on port ${process.env.PROFILE_SERVICE_PORT}.`);
 }
 bootstrap();

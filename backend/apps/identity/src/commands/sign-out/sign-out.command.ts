@@ -1,3 +1,3 @@
 export class SignOutCommand {
-  constructor(public readonly accessToken: string) {}
+  constructor(public readonly user: any) {}
 }

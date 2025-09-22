@@ -2,9 +2,9 @@ import { Body, Controller, Get, Inject, Patch, Req, UploadedFile, UseInterceptor
 import { ProfileResponseDto, SERVICE_NAMES, UpdateProfileDto, UserRole } from '@app/common';
 import { BaseController } from '../common/base/base.controller';
 import { ClientProxy } from '@nestjs/microservices';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Response } from '../common/interceptors/transform/transform.interceptor';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('profile')
 export class ProfileController extends BaseController {
@@ -35,12 +35,24 @@ export class ProfileController extends BaseController {
   }
 
   @Patch('/update')
-  @UseInterceptors(FileInterceptor('avatar'))
   async updateProfile(
     @Req() request: any,
     @Body() updateProfileDto: UpdateProfileDto,
     @UploadedFile() avatar?: Express.Multer.File,
   ): Promise<Response<ProfileResponseDto>> {
+    const userId = request.user.userId;
+
+    const result = await this.sendCommand<ProfileResponseDto>({ cmd: 'update_user_profile' }, { userId, updateProfileDto });
+    return {
+      message: 'Update user profile successfully!',
+      success: true,
+      data: result,
+    };
+  }
+
+  @Patch('/avatar')
+  @UseInterceptors(FileInterceptor('avatar'))
+  async uploadUserAvatar(@Req() request: any, @UploadedFile() avatar: Express.Multer.File): Promise<Response<string>> {
     const userId = request.user.userId;
 
     let avatarPayload: any = null;
@@ -52,9 +64,9 @@ export class ProfileController extends BaseController {
       };
     }
 
-    const result = await this.sendCommand<ProfileResponseDto>({ cmd: 'update_user_profile' }, { userId, updateProfileDto, avatarPayload });
+    const result = await this.sendCommand<string>({ cmd: 'upload_user_avatar' }, { userId, avatarPayload });
     return {
-      message: 'Update user profile successfully!',
+      message: 'Upload avatar successfully!',
       success: true,
       data: result,
     };

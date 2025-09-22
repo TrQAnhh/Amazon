@@ -4,6 +4,5 @@ export class UpdateProfileCommand {
   constructor(
     public readonly userId: number,
     public readonly updateProfileDto: UpdateProfileDto,
-    public readonly avatarPayload?: any,
   ) {}
 }

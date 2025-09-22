@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IdentityEntity } from '../../entity/identity.entity';
 import { Repository } from 'typeorm';
 import { RpcException } from '@nestjs/microservices';
-import { ErrorCode, IdentityResponseDto } from '@app/common';
+import { assertExists, ErrorCode, IdentityResponseDto } from '@app/common';
 
 @QueryHandler(GetUserIdentityQuery)
 export class GetUserIdentityHandler implements IQueryHandler<GetUserIdentityQuery> {
@@ -17,13 +17,7 @@ export class GetUserIdentityHandler implements IQueryHandler<GetUserIdentityQuer
       throw new RpcException(ErrorCode.INVALID_INPUT_VALUE);
     }
 
-    const user = await this.identityRepo.findOne({
-      where: { id },
-    });
-
-    if (!user) {
-      throw new RpcException(ErrorCode.USER_NOT_FOUND);
-    }
+    const user = await assertExists<IdentityEntity>(this.identityRepo, { id }, ErrorCode.USER_NOT_FOUND);
 
     return { email: user.email };
   }

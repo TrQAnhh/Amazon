@@ -9,11 +9,12 @@ import { TransformInterceptor } from './common/interceptors/transform/transform.
 import { ErrorsInterceptor } from './common/interceptors/errors/errors.interceptor';
 import { TimeoutInterceptor } from './common/interceptors/errors/timeout.interceptor';
 import * as dotenv from 'dotenv';
+import { ProductModule } from './product/product.module';
 
 dotenv.config();
 
 @Module({
-  imports: [IdentityModule, ProfileModule],
+  imports: [IdentityModule, ProductModule, ProfileModule],
   controllers: [],
   providers: [
     {

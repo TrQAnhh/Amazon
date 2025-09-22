@@ -15,6 +15,10 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
   async execute(command: RefreshTokenCommand): Promise<AuthResponseDto> {
     const { refreshToken } = command;
 
+    if (!refreshToken) {
+      throw new RpcException(ErrorCode.INVALID_INPUT_VALUE);
+    }
+
     let payload: any;
     try {
       payload = this.jwtService.verify(refreshToken);
@@ -22,10 +26,10 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
       throw new RpcException(ErrorCode.INVALID_JWT_TOKEN);
     }
 
-    const redisKey = `refresh:${payload.sub}`;
-    const savedTokenId = await this.redisHelper.get(redisKey);
+    const redisKey = `refresh:${payload.deviceId}`;
+    const tokenId = await this.redisHelper.get(redisKey);
 
-    if (!savedTokenId || savedTokenId !== payload.tokenId) {
+    if (!tokenId || tokenId !== payload.tokenId) {
       throw new RpcException(ErrorCode.INVALID_JWT_TOKEN);
     }
 
@@ -33,6 +37,7 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
       sub: payload.sub,
       role: payload.role,
       tokenId: uuidv4(),
+      deviceId: payload.deviceId,
     };
 
     const accessToken = this.jwtService.sign(newPayload);
