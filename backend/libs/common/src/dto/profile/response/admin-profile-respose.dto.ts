@@ -1,8 +1,11 @@
 import { Expose } from 'class-transformer';
 
-export class ProfileResponseDto {
+export class AdminProfileResponseDto {
   @Expose()
   email: string;
+
+  @Expose()
+  userId: number;
 
   @Expose()
   firstName: string;

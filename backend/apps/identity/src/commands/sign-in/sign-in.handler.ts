@@ -21,7 +21,11 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
   async execute(command: SignInCommand): Promise<AuthResponseDto> {
     const { signInDto } = command;
 
-    const userByEmail = await assertExists<IdentityEntity>(this.identityRepo, { email: signInDto.email }, ErrorCode.USER_NOT_FOUND);
+    const userByEmail = await assertExists<IdentityEntity>(
+      this.identityRepo,
+      { email: signInDto.email },
+      ErrorCode.USER_NOT_FOUND,
+    );
 
     const success = await bcrypt.compare(signInDto.password, userByEmail.password);
 

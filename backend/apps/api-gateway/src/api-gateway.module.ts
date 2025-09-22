@@ -10,6 +10,7 @@ import { ErrorsInterceptor } from './common/interceptors/errors/errors.intercept
 import { TimeoutInterceptor } from './common/interceptors/errors/timeout.interceptor';
 import * as dotenv from 'dotenv';
 import { ProductModule } from './product/product.module';
+import { AppGuard } from './guard/global.guard';
 
 dotenv.config();
 
@@ -17,17 +18,15 @@ dotenv.config();
   imports: [IdentityModule, ProductModule, ProfileModule],
   controllers: [],
   providers: [
+    JwtAuthGuard,
+    RolesGuard,
     {
       provide: APP_FILTER,
       useClass: RpcToHttpExceptionFilter,
     },
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
+      useClass: AppGuard,
     },
     {
       provide: APP_INTERCEPTOR,

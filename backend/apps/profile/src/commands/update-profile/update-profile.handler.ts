@@ -20,7 +20,11 @@ export class UpdateProfileHandler implements ICommandHandler<UpdateProfileComman
   async execute(command: UpdateProfileCommand): Promise<ProfileResponseDto> {
     const { userId, updateProfileDto } = command;
 
-    const existingProfile = await assertExists<ProfileEntity>(this.profileRepo, { userId }, ErrorCode.PROFILE_NOT_FOUND);
+    const existingProfile = await assertExists<ProfileEntity>(
+      this.profileRepo,
+      { userId },
+      ErrorCode.PROFILE_NOT_FOUND,
+    );
 
     const updated = this.profileRepo.merge(existingProfile, updateProfileDto);
     const profile = await this.profileRepo.save(updated);

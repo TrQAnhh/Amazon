@@ -1,5 +1,5 @@
 import { Controller, UseFilters } from '@nestjs/common';
-import { ProfileResponseDto, SignUpDto, UpdateProfileDto } from '@app/common';
+import { AdminProfileResponseDto, ProfileResponseDto, SignUpDto, UpdateProfileDto } from '@app/common';
 import { ProfileExceptionFilter } from '../exception/profile-exception.filter';
 import { MessagePattern } from '@nestjs/microservices';
 import { ProfileEntity } from '../entity/profile.identity';
@@ -19,7 +19,7 @@ export class ProfileController {
   ) {}
 
   @MessagePattern({ cmd: 'get_all_user_profiles' })
-  async getAllUserProfiles(): Promise<ProfileResponseDto[]> {
+  async getAllUserProfiles(): Promise<AdminProfileResponseDto[]> {
     return this.queryBus.execute(new GetAllUserProfilesQuery());
   }
 
@@ -29,7 +29,7 @@ export class ProfileController {
   }
 
   @MessagePattern({ cmd: 'create_profile' })
-  async createProfile(payload: { userId: number; signUpDto: SignUpDto }): Promise<ProfileEntity> {
+  async createProfile(payload: { userId: number; signUpDto: SignUpDto }): Promise<void> {
     return this.commandBus.execute(new CreateProfileCommand(payload.userId, payload.signUpDto));
   }
 
