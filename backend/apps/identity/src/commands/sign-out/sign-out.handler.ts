@@ -2,7 +2,6 @@ import { SignOutCommand } from './sign-out.command';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RedisHelper } from '@app/common';
 
-
 @CommandHandler(SignOutCommand)
 export class SignOutHandler implements ICommandHandler<SignOutCommand> {
   constructor(private readonly redisHelper: RedisHelper) {}

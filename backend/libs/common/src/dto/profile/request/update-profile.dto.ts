@@ -14,6 +14,10 @@ export class UpdateProfileDto {
   lastName?: string;
 
   @IsOptional()
+  @IsString()
+  address?: string;
+
+  @IsOptional()
   avatar?: Express.Multer.File;
 
   @IsOptional()

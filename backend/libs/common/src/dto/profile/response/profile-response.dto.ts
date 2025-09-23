@@ -14,6 +14,9 @@ export class ProfileResponseDto {
   lastName: string;
 
   @Expose()
+  address: string;
+
+  @Expose()
   avatarUrl?: string;
 
   @Expose()

@@ -12,6 +12,7 @@ import { CloudinaryModule } from '@app/common';
 import { UpdateProductHandler } from './commands/update-product/update-product.handler';
 import { GetProductDetailHandler } from './queries/get-product-detail/get-product-detail.handler';
 import { DeleteProductHandler } from './commands/delete-product/delete-product.handler';
+import { GetOrderProductsHandler } from './queries/get-order-products/get-order-products.handler';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DeleteProductHandler } from './commands/delete-product/delete-product.h
     CreateProductHandler,
     GetAllProductsHandler,
     GetProductDetailHandler,
+    GetOrderProductsHandler,
     UpdateProductHandler,
     DeleteProductHandler,
     {

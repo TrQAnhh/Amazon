@@ -1,15 +1,15 @@
-import {assertExists, AuthResponseDto, ErrorCode, RedisHelper, SERVICE_NAMES} from '@app/common';
+import { assertExists, AuthResponseDto, ErrorCode, RedisHelper, SERVICE_NAMES } from '@app/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SignInCommand } from './sign-in.command';
 import { IdentityEntity } from '../../entity/identity.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
-import {ClientProxy, RpcException} from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-import { getUserProfile } from "../../helpers/get-profile.helper";
-import { Inject } from "@nestjs/common";
+import { getUserProfile } from '../../helpers/get-profile.helper';
+import { Inject } from '@nestjs/common';
 
 @CommandHandler(SignInCommand)
 export class SignInHandler implements ICommandHandler<SignInCommand> {

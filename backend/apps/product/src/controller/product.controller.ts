@@ -1,12 +1,13 @@
 import { Controller } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { MessagePattern } from '@nestjs/microservices';
-import { CreateProductDto, ProductResponseDto, UpdateProductDto } from '@app/common';
+import { CreateProductDto, OrderProductResponseDto, ProductResponseDto, UpdateProductDto } from '@app/common';
 import { CreateProductCommand } from '../commands/create-product/create-product.command';
 import { GetAllProductsQuery } from '../queries/get-all-products/get-all-products.query';
 import { UpdateProductCommand } from '../commands/update-product/update-product.command';
 import { GetProductDetailQuery } from '../queries/get-product-detail/get-product-detail.query';
 import { DeleteProductCommand } from '../commands/delete-product/delete-product.command';
+import { GetOrderProductsQuery } from '../queries/get-order-products/get-order-products.query';
 
 @Controller()
 export class ProductController {
@@ -28,6 +29,11 @@ export class ProductController {
   @MessagePattern({ cmd: 'get_product_detail' })
   async getProductDetail(payload: { sku: string }): Promise<ProductResponseDto> {
     return this.queryBus.execute(new GetProductDetailQuery(payload.sku));
+  }
+
+  @MessagePattern({ cmd: 'get_order_products' })
+  async getOrderProducts(payload: { productId: number[] }): Promise<OrderProductResponseDto> {
+    return this.queryBus.execute(new GetOrderProductsQuery(payload.productId));
   }
 
   @MessagePattern({ cmd: 'update_product' })

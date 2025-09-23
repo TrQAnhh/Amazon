@@ -5,7 +5,7 @@ import { ProfileEntity } from '../../entity/profile.identity';
 import { Repository } from 'typeorm';
 import { RpcException } from '@nestjs/microservices';
 import { ErrorCode, ProfileResponseDto } from '@app/common';
-import {plainToInstance} from "class-transformer";
+import { plainToInstance } from 'class-transformer';
 
 @CommandHandler(CreateProfileCommand)
 export class CreateProfileHandler implements ICommandHandler<CreateProfileCommand> {
@@ -34,8 +34,8 @@ export class CreateProfileHandler implements ICommandHandler<CreateProfileComman
 
     const savedProfile = await this.profileRepo.save(profile);
 
-    return plainToInstance(ProfileResponseDto, savedProfile,{
-        excludeExtraneousValues: true,
+    return plainToInstance(ProfileResponseDto, savedProfile, {
+      excludeExtraneousValues: true,
     });
   }
 }

@@ -15,9 +15,9 @@ import { SignInHandler } from './commands/sign-in/sign-in.handler';
 import { ValidateTokenHandler } from './queries/validate-token/validate-token.handler';
 import { RedisConfig, RedisModule, SERVICE_NAMES } from '@app/common';
 import { RefreshTokenHandler } from './commands/refresh-token/refresh-token.handler';
+import { SignOutHandler } from './commands/sign-out/sign-out.handler';
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
-import { SignOutHandler } from './commands/sign-out/sign-out.handler';
 
 dotenv.config();
 

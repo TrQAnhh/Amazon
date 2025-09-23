@@ -1,5 +1,5 @@
-import { ProfileResponseDto } from "@app/common/dto";
-import { UserRole } from "@app/common/constants";
+import { ProfileResponseDto } from '@app/common/dto';
+import { UserRole } from '@app/common/constants';
 
 export class AuthResponseDto {
   accessToken: string;

@@ -13,12 +13,37 @@ export class ErrorCode {
   static readonly EMAIL_EXISTED = new ErrorCode(409, 'Email has already been registered', HttpStatus.CONFLICT);
   static readonly USER_PROFILE_EXISTED = new ErrorCode(409, 'User profile already exists', HttpStatus.CONFLICT);
   static readonly PRODUCT_EXISTED = new ErrorCode(409, 'Product with this SKU already exists', HttpStatus.CONFLICT);
-  static readonly REDIS_COMMAND_ERROR = new ErrorCode(500, 'Redis command execution error', HttpStatus.INTERNAL_SERVER_ERROR);
-  static readonly CLOUDINARY_NO_RESULT = new ErrorCode(500, 'No result returned from Cloudinary', HttpStatus.INTERNAL_SERVER_ERROR,);
+  static readonly REDIS_COMMAND_ERROR = new ErrorCode(
+    500,
+    'Redis command execution error',
+    HttpStatus.INTERNAL_SERVER_ERROR,
+  );
+  static readonly CLOUDINARY_NO_RESULT = new ErrorCode(
+    500,
+    'No result returned from Cloudinary',
+    HttpStatus.INTERNAL_SERVER_ERROR,
+  );
   static readonly UNCATEGORIZED = new ErrorCode(500, 'Uncategorized error', HttpStatus.INTERNAL_SERVER_ERROR);
-  static readonly PROFILE_SERVICE_UNAVAILABLE = new ErrorCode(503, 'Failed to call Profile Service', HttpStatus.SERVICE_UNAVAILABLE,);
-  static readonly IDENTITY_SERVICE_UNAVAILABLE = new ErrorCode(503, 'Failed to call Identity Service', HttpStatus.SERVICE_UNAVAILABLE);
-  static readonly REDIS_CONNECTION_FAILED = new ErrorCode(503, 'Redis connection failed', HttpStatus.SERVICE_UNAVAILABLE);
+  static readonly PROFILE_SERVICE_UNAVAILABLE = new ErrorCode(
+    503,
+    'Failed to call Profile Service',
+    HttpStatus.SERVICE_UNAVAILABLE,
+  );
+  static readonly IDENTITY_SERVICE_UNAVAILABLE = new ErrorCode(
+    503,
+    'Failed to call Identity Service',
+    HttpStatus.SERVICE_UNAVAILABLE,
+  );
+  static readonly PRODUCT_SERVICE_UNAVAILABLE = new ErrorCode(
+    503,
+    'Failed to call Product Service',
+    HttpStatus.SERVICE_UNAVAILABLE,
+  );
+  static readonly REDIS_CONNECTION_FAILED = new ErrorCode(
+    503,
+    'Redis connection failed',
+    HttpStatus.SERVICE_UNAVAILABLE,
+  );
 
   private constructor(
     public readonly code: number,
