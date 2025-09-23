@@ -29,7 +29,7 @@ export class ProfileController {
   }
 
   @MessagePattern({ cmd: 'create_profile' })
-  async createProfile(payload: { userId: number; signUpDto: SignUpDto }): Promise<void> {
+  async createProfile(payload: { userId: number; signUpDto: SignUpDto }): Promise<ProfileResponseDto> {
     return this.commandBus.execute(new CreateProfileCommand(payload.userId, payload.signUpDto));
   }
 

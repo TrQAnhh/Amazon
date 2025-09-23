@@ -1,13 +1,15 @@
-import { assertExists, AuthResponseDto, ErrorCode, RedisHelper } from '@app/common';
+import {assertExists, AuthResponseDto, ErrorCode, RedisHelper, SERVICE_NAMES} from '@app/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SignInCommand } from './sign-in.command';
 import { IdentityEntity } from '../../entity/identity.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { RpcException } from '@nestjs/microservices';
+import {ClientProxy, RpcException} from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import { getUserProfile } from "../../helpers/get-profile.helper";
+import { Inject } from "@nestjs/common";
 
 @CommandHandler(SignInCommand)
 export class SignInHandler implements ICommandHandler<SignInCommand> {
@@ -16,6 +18,8 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
     private readonly identityRepo: Repository<IdentityEntity>,
     private readonly jwtService: JwtService,
     private readonly redisHelper: RedisHelper,
+    @Inject(SERVICE_NAMES.PROFILE)
+    private readonly profileClient: ClientProxy,
   ) {}
 
   async execute(command: SignInCommand): Promise<AuthResponseDto> {
@@ -32,6 +36,8 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
     if (!success) {
       throw new RpcException(ErrorCode.INVALID_CREDENTIALS);
     }
+
+    const profile = await getUserProfile(this.profileClient, userByEmail.id);
 
     const payload = {
       sub: userByEmail.id,
@@ -51,6 +57,8 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
     return {
       accessToken: accessToken,
       refreshToken: refreshToken,
+      role: userByEmail.role,
+      user: profile,
     };
   }
 }

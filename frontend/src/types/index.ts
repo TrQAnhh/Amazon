@@ -1,22 +1,30 @@
 export interface User {
-  id: string;
   email: string;
-  name: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  avatarUrl: string;
+  bio: string;
 }
 
 export interface AuthResponse {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
+  success: boolean;
+  message: string;
+  role: string;
+  data: {
+    user: User;
+    accessToken: string;
+    refreshToken: string;
+  };
 }
 
 export interface Product {
-  id: string;
+  sku: string;
   name: string;
   description: string;
+  imageUrl: string;
   price: number;
-  stock: number;
-  createdAt: string;
+  quantity: number;
 }
 
 export interface CreateProductRequest {

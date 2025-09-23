@@ -1,6 +1,6 @@
 import { CreateProductRequest, UpdateProductRequest, CreateOrderRequest, PaymentRequest } from '../types';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3001';
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export class ApiService {
   private getAuthHeaders() {
@@ -11,9 +11,8 @@ export class ApiService {
     };
   }
 
-  // Product APIs
   async getProducts() {
-    const response = await fetch(`${API_BASE}/products`, {
+    const response = await fetch(`${API_BASE}/product`, {
       headers: this.getAuthHeaders(),
     });
 
@@ -25,7 +24,7 @@ export class ApiService {
   }
 
   async createProduct(product: CreateProductRequest) {
-    const response = await fetch(`${API_BASE}/products`, {
+    const response = await fetch(`${API_BASE}/product/create`, {
       method: 'POST',
       headers: this.getAuthHeaders(),
       body: JSON.stringify(product),
@@ -39,7 +38,7 @@ export class ApiService {
   }
 
   async updateProduct(product: UpdateProductRequest) {
-    const response = await fetch(`${API_BASE}/products/${product.id}`, {
+    const response = await fetch(`${API_BASE}/product/${product.id}`, {
       method: 'PUT',
       headers: this.getAuthHeaders(),
       body: JSON.stringify(product),
