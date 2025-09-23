@@ -21,6 +21,18 @@ export class RedisHelper {
     }
   }
 
+  async sadd(key: Redis.RedisKey, value: any, ttl?: number): Promise<void> {
+    await this.redis.sadd(key, value);
+    if (ttl && ttl > 0) {
+        await this.redis.expire(key, ttl);
+    }
+  }
+
+  async sismember(key: Redis.RedisKey, value: any): Promise<boolean> {
+    const result = await this.redis.sismember(key, value);
+    return result === 1;
+  }
+
   async del(key: Redis.RedisKey): Promise<number> {
     return this.redis.del(key);
   }

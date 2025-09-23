@@ -34,9 +34,9 @@ export class ValidateTokenHandler implements IQueryHandler<ValidateTokenQuery> {
       }
 
       const blacklistKey = `access:${decoded.deviceId}`;
-      const isBlacklisted = await this.redisHelper.get(blacklistKey);
+      const isBlacklisted = await this.redisHelper.sismember(blacklistKey, decoded.tokenId);
 
-      if (isBlacklisted === decoded.tokenId) {
+      if (isBlacklisted) {
         return {
           valid: false,
           userId: null,

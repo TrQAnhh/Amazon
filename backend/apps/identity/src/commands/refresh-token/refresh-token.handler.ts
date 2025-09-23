@@ -1,7 +1,7 @@
 import { RefreshTokenCommand } from './refresh-token.command';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
-import { AuthResponseDto, ErrorCode, RedisHelper } from '@app/common';
+import { ErrorCode, RedisHelper, RefreshTokenResponseDto } from '@app/common';
 import { RpcException } from '@nestjs/microservices';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -12,7 +12,7 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
     private readonly redisHelper: RedisHelper,
   ) {}
 
-  async execute(command: RefreshTokenCommand): Promise<AuthResponseDto> {
+  async execute(command: RefreshTokenCommand): Promise<RefreshTokenResponseDto> {
     const { refreshToken } = command;
 
     if (!refreshToken) {

@@ -6,7 +6,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   signin: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, name: string) => Promise<void>;
+  signup: (email: string, password: string, firstName: string, middleName: string, lastName: string) => Promise<void>;
   signout: () => Promise<void>;
   isAuthenticated: boolean;
 }
@@ -61,7 +61,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initAuth();
   }, []);
 
-  // Auto refresh token
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -79,16 +78,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           await signout();
         }
       }
-    }, 14 * 60 * 1000); // Refresh every 14 minutes
+    }, 14 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, [isAuthenticated]);
 
   const handleAuthSuccess = (response: AuthResponse) => {
-    localStorage.setItem('accessToken', response.accessToken);
-    localStorage.setItem('refreshToken', response.refreshToken);
-    localStorage.setItem('user', JSON.stringify(response.user));
-    setUser(response.user);
+    const { accessToken, refreshToken, user } = response.data;
+
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+    localStorage.setItem('user', JSON.stringify(user));
+    setUser(user);
   };
 
   const clearAuthData = () => {
@@ -100,18 +101,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signin = async (email: string, password: string) => {
     const response = await authService.signin(email, password);
+
+    if (!response.success) {
+      throw new Error(response.message);
+    }
+
     handleAuthSuccess(response);
   };
 
-  const signup = async (email: string, password: string, name: string) => {
-    const response = await authService.signup(email, password, name);
+  const signup = async (email: string, password: string, firstName: string, middleName: string, lastName: string) => {
+    const response = await authService.signup(email, password, firstName, middleName, lastName);
+
+    if (!response.success) {
+      throw new Error(response.message);
+    }
+
     handleAuthSuccess(response);
   };
 
   const signout = async () => {
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (refreshToken) {
-      await authService.signout(refreshToken);
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      await authService.signout(accessToken);
     }
     clearAuthData();
   };

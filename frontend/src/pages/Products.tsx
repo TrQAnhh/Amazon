@@ -25,8 +25,8 @@ export const Products: React.FC = () => {
   const loadProducts = async () => {
     try {
       setLoading(true);
-      const data = await apiService.getProducts();
-      setProducts(data);
+      const response = await apiService.getProducts();
+      setProducts(response.data);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to load products');
     } finally {
@@ -55,7 +55,7 @@ export const Products: React.FC = () => {
 
       if (editingProduct) {
         const updateData: UpdateProductRequest = {
-          id: editingProduct.id,
+          id: editingProduct.sku,
           ...productData,
         };
         await apiService.updateProduct(updateData);
@@ -71,17 +71,6 @@ export const Products: React.FC = () => {
     }
   };
 
-  const handleEdit = (product: Product) => {
-    setEditingProduct(product);
-    setFormData({
-      name: product.name,
-      description: product.description,
-      price: product.price.toString(),
-      stock: product.stock.toString(),
-    });
-    setShowForm(true);
-  };
-
   if (loading) {
     return <div className="text-center">Loading products...</div>;
   }
@@ -90,12 +79,6 @@ export const Products: React.FC = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Products</h1>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Add Product
-        </button>
       </div>
 
       {error && (
@@ -175,30 +158,29 @@ export const Products: React.FC = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
-          <div key={product.id} className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-            <p className="text-gray-600 mb-3">{product.description}</p>
-            <div className="flex justify-between items-center mb-3">
-              <span className="text-xl font-bold">${product.price}</span>
-              <span className="text-sm text-gray-500">Stock: {product.stock}</span>
+            <div key={product.sku} className="bg-white p-6 rounded-lg shadow-md h-80 flex flex-col">
+                <img
+                    src={product.imageUrl}
+                    className="w-full h-40 object-cover rounded mb-2"
+                    alt={product.name}
+                />
+                <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+                <div className="flex justify-between items-center mb-2 mt-auto">
+                    <span className="text-xl font-bold text-red-500">${product.price}</span>
+                    <span className="text-sm text-gray-500">Stock: {product.quantity}</span>
+                </div>
             </div>
-            <button
-              onClick={() => handleEdit(product)}
-              className="w-full bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
-            >
-              Edit Product
-            </button>
-          </div>
         ))}
-      </div>
+    </div>
 
-      {products.length === 0 && !loading && (
-        <div className="text-center text-gray-500 mt-8">
-          No products found. Add your first product above.
-        </div>
-      )}
+    {products.length === 0 && !loading && (
+      <div className="text-center text-gray-500 mt-8">
+        No products found. Add your first product above.
+      </div>
+    )}
+
     </div>
   );
 };

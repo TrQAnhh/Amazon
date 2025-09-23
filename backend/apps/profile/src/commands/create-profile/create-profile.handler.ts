@@ -4,7 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProfileEntity } from '../../entity/profile.identity';
 import { Repository } from 'typeorm';
 import { RpcException } from '@nestjs/microservices';
-import { ErrorCode } from '@app/common';
+import { ErrorCode, ProfileResponseDto } from '@app/common';
+import {plainToInstance} from "class-transformer";
 
 @CommandHandler(CreateProfileCommand)
 export class CreateProfileHandler implements ICommandHandler<CreateProfileCommand> {
@@ -13,7 +14,7 @@ export class CreateProfileHandler implements ICommandHandler<CreateProfileComman
     private readonly profileRepo: Repository<ProfileEntity>,
   ) {}
 
-  async execute(payload: CreateProfileCommand): Promise<void> {
+  async execute(payload: CreateProfileCommand): Promise<ProfileResponseDto> {
     const { userId, signUpDto } = payload;
 
     const existingProfile = await this.profileRepo.findOneBy({ userId });
@@ -31,6 +32,10 @@ export class CreateProfileHandler implements ICommandHandler<CreateProfileComman
       lastName,
     });
 
-    await this.profileRepo.save(profile);
+    const savedProfile = await this.profileRepo.save(profile);
+
+    return plainToInstance(ProfileResponseDto, savedProfile,{
+        excludeExtraneousValues: true,
+    });
   }
 }

@@ -1,4 +1,6 @@
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3001';
+import {getDeviceId} from "../utils/device.ts";
+
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export class AuthService {
   private static instance: AuthService;
@@ -11,39 +13,64 @@ export class AuthService {
   }
 
   async signin(email: string, password: string) {
-    const response = await fetch(`${API_BASE}/auth/signin`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+        const deviceId = getDeviceId();
 
-    if (!response.ok) {
-      throw new Error('Invalid credentials');
+        const response = await fetch(`${API_BASE}/auth/sign-in`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email,
+                password,
+                deviceId,
+            }),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw error;
+        }
+
+        return response.json();
+    } catch (err: any) {
+        console.error("Sig-in error: ", err);
+        return { message: err.message };
     }
-
-    return response.json();
   }
 
-  async signup(email: string, password: string, name: string) {
-    const response = await fetch(`${API_BASE}/auth/signup`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password, name }),
-    });
+  async signup(email: string, password: string, firstName: string, middleName: string, lastName: string) {
+      try {
+          const deviceId = getDeviceId();
 
-    if (!response.ok) {
-      throw new Error('Registration failed');
-    }
+          const response = await fetch("http://localhost:3000/auth/sign-up", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                  email,
+                  password,
+                  firstName,
+                  lastName,
+                  deviceId,
+                  ...(middleName ? { middleName } : {}),
+              }),
+          });
 
-    return response.json();
+          if (!response.ok) {
+              const error = await response.json();
+              throw error;
+          }
+
+          return await response.json();
+      } catch (err: any) {
+          console.error("Sign-up error:", err);
+          return { message: err.message };
+      }
   }
 
   async refreshToken(refreshToken: string) {
-    const response = await fetch(`${API_BASE}/auth/refresh`, {
+    const response = await fetch(`${API_BASE}/auth/refresh-token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -58,14 +85,14 @@ export class AuthService {
     return response.json();
   }
 
-  async signout(refreshToken: string) {
+  async signout(accessToken: string) {
     try {
-      await fetch(`${API_BASE}/auth/signout`, {
+      await fetch(`${API_BASE}/auth/sign-out`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ refreshToken }),
       });
     } catch (error) {
       console.error('Signout failed:', error);

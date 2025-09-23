@@ -3,7 +3,9 @@ import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export const SignUp: React.FC = () => {
-  const [name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,7 +29,7 @@ export const SignUp: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await signup(email, password, name);
+      await signup(email, password, firstName,middleName,lastName);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Sign up failed');
     } finally {
@@ -47,15 +49,38 @@ export const SignUp: React.FC = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
-            <input
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-            />
+          <div className="flex gap-4">
+              <div className="flex-1">
+                  <label className="block text-sm font-medium mb-1">Last name</label>
+                  <input
+                      type="text"
+                      required
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                  />
+              </div>
+
+              <div className="flex-1">
+                  <label className="block text-sm font-medium mb-1">Middle name</label>
+                  <input
+                      type="text"
+                      value={middleName}
+                      onChange={(e) => setMiddleName(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                  />
+              </div>
+
+              <div className="flex-1">
+                  <label className="block text-sm font-medium mb-1">First name</label>
+                  <input
+                      type="text"
+                      required
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                  />
+              </div>
           </div>
 
           <div>

@@ -41,7 +41,7 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand> {
 
     const savedUser = await this.identityRepo.save(user);
 
-    await firstValueFrom(this.profileClient.send({ cmd: 'create_profile' }, { userId: savedUser.id, signUpDto }));
+    const profile = await firstValueFrom(this.profileClient.send({ cmd: 'create_profile' }, { userId: savedUser.id, signUpDto }));
 
     const payload = {
       sub: savedUser.id,
@@ -61,6 +61,8 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand> {
     return {
       accessToken: accessToken,
       refreshToken: refreshToken,
+      role: savedUser.role,
+      user: profile,
     };
   }
 }
