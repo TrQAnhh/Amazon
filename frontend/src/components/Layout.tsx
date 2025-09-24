@@ -45,8 +45,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                         {isAuthenticated ? (
                             <div className="flex items-center space-x-4" ref={menuRef}>
-                                <Link to="/products" className="hover:text-blue-600">
-                                    Products
+                                <Link to="/cart" className="hover:text-blue-600">
+                                    Cart
                                 </Link>
                                 <Link to="/orders" className="hover:text-blue-600">
                                     Orders

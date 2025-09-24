@@ -53,7 +53,7 @@ export class ApiService {
 
   // Order APIs
   async getOrders() {
-    const response = await fetch(`${API_BASE}/orders`, {
+    const response = await fetch(`${API_BASE}/order/my-orders`, {
       headers: this.getAuthHeaders(),
     });
 

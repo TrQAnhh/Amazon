@@ -160,7 +160,7 @@ export const Products: React.FC = () => {
 
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
-            <div key={product.sku} className="bg-white p-6 rounded-lg shadow-md h-80 flex flex-col">
+            <div key={product.id} className="bg-white p-6 rounded-lg shadow-md h-80 flex flex-col">
                 <img
                     src={product.imageUrl}
                     className="w-full h-40 object-cover rounded mb-2"
@@ -169,7 +169,7 @@ export const Products: React.FC = () => {
                 <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
                 <div className="flex justify-between items-center mb-2 mt-auto">
                     <span className="text-xl font-bold text-red-500">${product.price}</span>
-                    <span className="text-sm text-gray-500">Stock: {product.quantity}</span>
+                    <span className="text-sm text-gray-500">Stock: {product.availableStock}</span>
                 </div>
             </div>
         ))}
