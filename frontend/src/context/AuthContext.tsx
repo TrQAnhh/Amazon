@@ -69,16 +69,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (refreshToken) {
         try {
           const response = await authService.refreshToken(refreshToken);
-          localStorage.setItem('accessToken', response.accessToken);
+          localStorage.setItem('accessToken', response.data.accessToken);
           if (response.refreshToken) {
-            localStorage.setItem('refreshToken', response.refreshToken);
+            localStorage.setItem('refreshToken', response.data.refreshToken);
           }
         } catch (error) {
           console.error('Auto token refresh failed:', error);
           await signout();
         }
       }
-    }, 14 * 60 * 1000);
+    }, 30 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, [isAuthenticated]);

@@ -23,6 +23,18 @@ export class ApiService {
     return response.json();
   }
 
+  async getProductDetails(sku: string) {
+      const response = await fetch(`${API_BASE}/product/${sku}`, {
+          headers: this.getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to fetch products');
+      }
+
+      return response.json();
+  }
+
   async createProduct(product: CreateProductRequest) {
     const response = await fetch(`${API_BASE}/product/create`, {
       method: 'POST',

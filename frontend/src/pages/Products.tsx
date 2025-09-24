@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Product, CreateProductRequest, UpdateProductRequest } from '../types';
 import { ApiService } from '../services/api';
+import {useNavigate} from "react-router-dom";
 
 export const Products: React.FC = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -160,7 +162,11 @@ export const Products: React.FC = () => {
 
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
-            <div key={product.id} className="bg-white p-6 rounded-lg shadow-md h-80 flex flex-col">
+            <div
+                key={product.id}
+                className="bg-white p-6 rounded-lg shadow-md h-80 flex flex-col"
+                onClick={() => navigate(`/products/${product.sku}`)}
+            >
                 <img
                     src={product.imageUrl}
                     className="w-full h-40 object-cover rounded mb-2"
