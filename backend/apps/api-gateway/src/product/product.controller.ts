@@ -77,10 +77,10 @@ export class ProductController extends BaseController {
     };
   }
 
-  @Patch('/update/:sku')
+  @Patch('/update/:id')
   @UseInterceptors(FileInterceptor('image'))
   async updateProduct(
-    @Param('sku') sku: string,
+    @Param('id') id: number,
     @Body() updateProductDto: UpdateProductDto,
     @UploadedFile() image?: Express.Multer.File,
   ): Promise<Response<any>> {
@@ -94,7 +94,7 @@ export class ProductController extends BaseController {
       };
     }
 
-    const message = await this.sendCommand<string>({ cmd: 'update_product' }, { sku, updateProductDto, imagePayload });
+    const message = await this.sendCommand<string>({ cmd: 'update_product' }, { id, updateProductDto, imagePayload });
     return {
       message: message,
       success: true,
@@ -102,9 +102,9 @@ export class ProductController extends BaseController {
     };
   }
 
-  @Delete('/:sku')
-  async deleteProduct(@Param('sku') sku: string): Promise<Response<any>> {
-    const message = await this.sendCommand<string>({ cmd: 'delete_product' }, { sku });
+  @Delete('/:id')
+  async deleteProduct(@Param('id') id: number): Promise<Response<any>> {
+    const message = await this.sendCommand<string>({ cmd: 'delete_product' }, { id });
     return {
       message: message,
       success: true,

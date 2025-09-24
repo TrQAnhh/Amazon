@@ -3,7 +3,7 @@ import { GetOrderProductsQuery } from './get-order-products.query';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from '../../entity/product.entity';
 import { In, Repository } from 'typeorm';
-import { OrderProductResponseDto } from '@app/common';
+import { OrderProductDto } from '@app/common';
 import { plainToInstance } from 'class-transformer';
 
 @QueryHandler(GetOrderProductsQuery)
@@ -13,7 +13,7 @@ export class GetOrderProductsHandler implements IQueryHandler<GetOrderProductsQu
     private readonly productRepo: Repository<ProductEntity>,
   ) {}
 
-  async execute(query: GetOrderProductsQuery): Promise<OrderProductResponseDto[]> {
+  async execute(query: GetOrderProductsQuery): Promise<OrderProductDto[]> {
     const { productIds } = query;
 
     const products = await this.productRepo.find({
@@ -21,7 +21,7 @@ export class GetOrderProductsHandler implements IQueryHandler<GetOrderProductsQu
     });
 
     return products.map((product) => {
-      return plainToInstance(OrderProductResponseDto, product, {
+      return plainToInstance(OrderProductDto, product, {
         excludeExtraneousValues: true,
       });
     });

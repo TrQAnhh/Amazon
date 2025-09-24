@@ -15,9 +15,9 @@ export class UpdateProductHandler implements ICommandHandler<UpdateProductComman
   ) {}
 
   async execute(command: UpdateProductCommand): Promise<string> {
-    const { sku, updateProductDto, imagePayload } = command;
+    const { id, updateProductDto, imagePayload } = command;
 
-    await assertExists<ProductEntity>(this.productRepo, { sku }, ErrorCode.PRODUCT_NOT_FOUND);
+    await assertExists<ProductEntity>(this.productRepo, { id }, ErrorCode.PRODUCT_NOT_FOUND);
 
     let imageUrl: string | undefined;
     if (imagePayload) {
@@ -29,13 +29,13 @@ export class UpdateProductHandler implements ICommandHandler<UpdateProductComman
     }
 
     await this.productRepo.update(
-      { sku },
+      { id },
       {
         ...updateProductDto,
         ...(imageUrl ? { imageUrl } : {}),
       },
     );
 
-    return `Update product with sku ${sku} successfully!`;
+    return `Update product with id ${id} successfully!`;
   }
 }

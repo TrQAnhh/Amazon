@@ -20,5 +20,5 @@ export class ProductResponseDto {
   price: number;
 
   @Expose()
-  quantity: number;
+  availableStock: number;
 }

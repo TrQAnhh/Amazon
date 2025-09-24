@@ -1,11 +1,11 @@
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { ErrorCode, OrderProductResponseDto } from '@app/common';
+import { ErrorCode, OrderProductDto } from '@app/common';
 
-export async function getProducts(
+export async function getOrderProducts(
   productClient: ClientProxy,
   productIds: number[],
-): Promise<OrderProductResponseDto[]> {
+): Promise<OrderProductDto[]> {
   try {
     return await firstValueFrom(productClient.send({ cmd: 'get_order_products' }, { productIds }));
   } catch (err) {

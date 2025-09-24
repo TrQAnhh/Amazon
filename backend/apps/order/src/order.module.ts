@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { OrderController } from './controller/order.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeOrmConfigAsync } from '../../product/src/config/typeorm.config';
 import { OrderEntity } from './entity/order.entity';
 import { OrderItemEntity } from './entity/order-items.entity';
 import { APP_FILTER } from '@nestjs/core';
@@ -14,6 +13,9 @@ import * as dotenv from 'dotenv';
 import * as process from 'node:process';
 import { CreateOrderHandler } from './commands/create-order/create-order.handler';
 import { CqrsModule } from '@nestjs/cqrs';
+import { typeOrmConfigAsync } from "./config/typeorm.config";
+import {GetAllOrdersHandler} from "./queries/get-all-orders/get-all-orders.handler";
+import {GetOrderHandler} from "./queries/get-order/get-order.handler";
 
 dotenv.config();
 
@@ -38,6 +40,8 @@ dotenv.config();
   controllers: [OrderController],
   providers: [
     CreateOrderHandler,
+    GetAllOrdersHandler,
+    GetOrderHandler,
     {
       provide: APP_FILTER,
       useClass: OrderExceptionFilter,
