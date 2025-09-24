@@ -22,6 +22,7 @@ export class ErrorCode {
   static readonly IDENTITY_SERVICE_UNAVAILABLE = new ErrorCode(503, 'Failed to call Identity Service', HttpStatus.SERVICE_UNAVAILABLE);
   static readonly PRODUCT_SERVICE_UNAVAILABLE = new ErrorCode(503, 'Failed to call Product Service', HttpStatus.SERVICE_UNAVAILABLE);
   static readonly REDIS_CONNECTION_FAILED = new ErrorCode(503, 'Redis connection failed', HttpStatus.SERVICE_UNAVAILABLE);
+  static readonly STRIPE_SERVICE_UNAVAILABLE = new ErrorCode(503, 'Failed to call Stripe Payment Service', HttpStatus.SERVICE_UNAVAILABLE,);
 
   private constructor(
     public readonly code: number,
