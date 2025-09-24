@@ -16,7 +16,7 @@ export class StripeModule {
       module: StripeModule,
       controllers: [],
       providers: [stripeProvider, StripeService],
-      exports: [stripeProvider],
+      exports: [stripeProvider, StripeService],
     };
   }
 }

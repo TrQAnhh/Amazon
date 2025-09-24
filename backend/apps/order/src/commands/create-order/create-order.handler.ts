@@ -74,7 +74,7 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
       items: orderItemEntities,
     });
 
-    // await this.orderRepo.save(order);
+    await this.orderRepo.save(order);
 
     try {
       await firstValueFrom(this.productClient.send({ cmd: 'update_stock' }, { items: updateStockItems }));

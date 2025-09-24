@@ -19,12 +19,13 @@ export interface AuthResponse {
 }
 
 export interface Product {
+  id: number;
   sku: string;
   name: string;
   description: string;
   imageUrl: string;
   price: number;
-  quantity: number;
+  availableStock: number;
 }
 
 export interface CreateProductRequest {
@@ -43,12 +44,12 @@ export interface UpdateProductRequest {
 }
 
 export interface Order {
-  id: string;
-  userId: string;
-  products: OrderItem[];
-  total: number;
-  status: 'pending' | 'paid' | 'shipped' | 'delivered';
-  createdAt: string;
+    id: number;
+    createdAt: string;
+    totalAmount: string;
+    status: 'PENDING' | 'PAID' | 'SHIPPED' | 'DELIVERED';
+    paymentMethod: string;
+    paymentStatus: string;
 }
 
 export interface OrderItem {

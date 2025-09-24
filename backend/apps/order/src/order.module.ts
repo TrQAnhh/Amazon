@@ -14,8 +14,9 @@ import * as process from 'node:process';
 import { CreateOrderHandler } from './commands/create-order/create-order.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 import { typeOrmConfigAsync } from "./config/typeorm.config";
-import {GetAllOrdersHandler} from "./queries/get-all-orders/get-all-orders.handler";
-import {GetOrderHandler} from "./queries/get-order/get-order.handler";
+import { GetAllOrdersHandler } from "./queries/get-all-orders/get-all-orders.handler";
+import { GetOrderHandler } from "./queries/get-order/get-order.handler";
+import { CheckOutHandler } from "./commands/check-out/check-out.handler";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ dotenv.config();
   imports: [
     ConfigModule,
     CqrsModule,
+    StripeModule,
     TypeOrmModule.forRootAsync(typeOrmConfigAsync),
     TypeOrmModule.forFeature([OrderEntity, OrderItemEntity]),
     ClientsModule.register([
@@ -42,6 +44,7 @@ dotenv.config();
     CreateOrderHandler,
     GetAllOrdersHandler,
     GetOrderHandler,
+    CheckOutHandler,
     {
       provide: APP_FILTER,
       useClass: OrderExceptionFilter,

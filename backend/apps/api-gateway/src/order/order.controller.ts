@@ -41,4 +41,14 @@ export class OrderController extends BaseController {
           data: result,
       }
   }
+
+  @Post('/my-orders/:orderId')
+  async checkOut(@Param('orderId') orderId: number): Promise<Response<any>> {
+      const url = await this.sendCommand<string>({ cmd: 'check_out' }, { orderId });
+      return {
+          message: `Check out order ${orderId} sucessfully!`,
+          success: true,
+          data: url,
+      }
+  }
 }

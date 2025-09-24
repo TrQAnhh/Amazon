@@ -7,6 +7,7 @@ import { SignUp } from './pages/SignUp';
 import { Products } from './pages/Products';
 import { Orders } from './pages/Orders';
 import { Checkout } from './pages/Checkout';
+import {ProductDetail} from "./pages/ProductDetail.tsx";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/products" element={<Products />}/>
+            <Route path="/products/:sku" element={<ProductDetail />} />
             <Route
               path="/orders"
               element={
