@@ -13,12 +13,12 @@ export class DeleteProductHandler implements ICommandHandler<DeleteProductComman
   ) {}
 
   async execute(command: DeleteProductCommand): Promise<string> {
-    const { sku } = command;
+    const { id } = command;
 
-    await assertExists<ProductEntity>(this.productRepo, { sku }, ErrorCode.PRODUCT_NOT_FOUND);
+    await assertExists<ProductEntity>(this.productRepo, { id }, ErrorCode.PRODUCT_NOT_FOUND);
 
-    await this.productRepo.update({ sku }, { isDeleted: true });
+    await this.productRepo.update({ id }, { isDeleted: true });
 
-    return `Product with sku ${sku} has been deleted successfully!`;
+    return `Product with sku ${id} has been deleted successfully!`;
   }
 }

@@ -17,6 +17,9 @@ export class AdminProfileResponseDto {
   lastName: string;
 
   @Expose()
+  address: string;
+
+  @Expose()
   avatarUrl?: string;
 
   @Expose()

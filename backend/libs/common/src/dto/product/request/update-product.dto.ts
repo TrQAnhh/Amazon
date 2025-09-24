@@ -1,6 +1,11 @@
 import { IsString, IsOptional, IsNumber, Min } from 'class-validator';
 
 export class UpdateProductDto {
+
+  @IsOptional()
+  @IsString()
+  sku?: string;
+
   @IsOptional()
   @IsString()
   name?: string;
@@ -17,5 +22,5 @@ export class UpdateProductDto {
   @IsOptional()
   @IsNumber()
   @Min(0)
-  quantity?: number;
+  availableStock?: number;
 }

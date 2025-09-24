@@ -1,0 +1,632 @@
+{
+	"info": {
+		"_postman_id": "470bf306-4125-404c-bf94-00e031e58a51",
+		"name": "Amazon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37751783",
+		"_collection_link": "https://bigteam-7748.postman.co/workspace/E-Commerce~930edf32-b04f-4308-b3f3-fbb6d5fb613f/collection/37751783-470bf306-4125-404c-bf94-00e031e58a51?action=share&source=collection_link&creator=37751783"
+	},
+	"item": [
+		{
+			"name": "identity service",
+			"item": [
+				{
+					"name": "register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();\r",
+									"let token = response.data.accessToken;\r",
+									"pm.environment.set(\"AUTH_TOKEN\", token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"nvclong2512@gmail.com\",\r\n    \"password\": \"Tranquocanh@123\",\r\n    \"firstName\": \"Long\",\r\n    \"middleName\": \"Vu Cao\",\r\n    \"lastName\": \"Ngo\",\r\n    \"deviceId\": \"device-4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/auth/sign-up",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"auth",
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();\r",
+									"let token = response.data.accessToken;\r",
+									"pm.environment.set(\"AUTH_TOKEN\", token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"tranqanh2810@gmail.com\",\r\n    \"password\": \"Tranquocanh@123\",\r\n    \"deviceId\": \"device-1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/auth/sign-in",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"auth",
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sign-out",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/auth/sign-out",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"auth",
+								"sign-out"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh-token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();\r",
+									"let token = response.data.accessToken;\r",
+									"pm.environment.set(\"AUTH_TOKEN\", token);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsInRva2VuSWQiOiIyODUxYWRiZi0xM2M5LTRhODktYWQ1Ny00MWMxNTczODYyOTgiLCJkZXZpY2VJZCI6ImRldmljZS0xIiwiaWF0IjoxNzU4NTM1MjI2LCJleHAiOjE3NTkxNDAwMjZ9.0IRMWbZfK9cdFJ_O7ud5d4LrrFNaYdOfBHLN7IiuJek\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/auth/refresh-token",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "profile service",
+			"item": [
+				{
+					"name": "get user profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/profile/me",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"profile",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all user profiles",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/profile",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"address\": \"Ho Chi Minh City\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/profile/update",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"profile",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload avatar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/C:/Users/DEV.DESKTOP-VKRMBR2/Downloads/_DSC7786 (1).jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/profile/avatar",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"profile",
+								"avatar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "product service",
+			"item": [
+				{
+					"name": "create new product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Canon Autoboy Jet",
+									"type": "text"
+								},
+								{
+									"key": "sku",
+									"value": "CANON-AUTOBOY-JET",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "The Canon Autoboy Jet is a compact 35mm film camera featuring autofocus and automatic exposure, perfect for everyday photography.",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "179.99",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "7",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/DEV.DESKTOP-VKRMBR2/Downloads/canon-autoboy-jet.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product/create",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"product",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all products",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"The Konica Aiborg is a modern film camera with advanced autofocus and compact design.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product/update/KONICA-AIBORG",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"product",
+								"update",
+								"KONICA-AIBORG"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get product detail",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product/KONICA-AIBORG",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"product",
+								"KONICA-AIBORG"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete a product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product/KONICA-AIBORG",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"product",
+								"KONICA-AIBORG"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order service",
+			"item": [
+				{
+					"name": "create order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"paymentMethod\": \"COD\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": 22,\r\n      \"quantity\": 2\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/create",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"order",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -24,7 +24,7 @@ export class RedisHelper {
   async sadd(key: Redis.RedisKey, value: any, ttl?: number): Promise<void> {
     await this.redis.sadd(key, value);
     if (ttl && ttl > 0) {
-        await this.redis.expire(key, ttl);
+      await this.redis.expire(key, ttl);
     }
   }
 

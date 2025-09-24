@@ -1,3 +1,3 @@
 export class DeleteProductCommand {
-  constructor(public readonly sku: string) {}
+  constructor(public readonly id: number) {}
 }

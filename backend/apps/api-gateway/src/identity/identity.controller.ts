@@ -3,7 +3,6 @@ import { AuthResponseDto, RefreshTokenDto, SERVICE_NAMES, SignInDto, SignOutDto,
 import { ClientProxy } from '@nestjs/microservices';
 import { BaseController } from '../common/base/base.controller';
 import { Response } from '../common/interceptors/transform/transform.interceptor';
-import { JwtAuthGuard } from '../guard/jwt-auth.guard';
 import { Public } from '../common/decorators/public.decorator';
 
 @Controller('auth')

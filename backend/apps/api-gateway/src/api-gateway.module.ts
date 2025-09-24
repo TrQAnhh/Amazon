@@ -11,11 +11,21 @@ import { TimeoutInterceptor } from './common/interceptors/errors/timeout.interce
 import * as dotenv from 'dotenv';
 import { ProductModule } from './product/product.module';
 import { AppGuard } from './guard/global.guard';
+import { OrderModule } from './order/order.module';
+import { ConfigModule } from '@nestjs/config';
 
 dotenv.config();
 
 @Module({
-  imports: [IdentityModule, ProductModule, ProfileModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    IdentityModule,
+    ProfileModule,
+    ProductModule,
+    OrderModule,
+  ],
   controllers: [],
   providers: [
     JwtAuthGuard,

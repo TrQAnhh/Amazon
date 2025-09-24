@@ -20,8 +20,8 @@ export class ProductEntity {
   @Column('decimal', { precision: 10, scale: 2 })
   price: number;
 
-  @Column('int')
-  quantity: number;
+  @Column({ type: 'int' })
+  availableStock: number;
 
   @Column({ default: false })
   isDeleted: boolean;

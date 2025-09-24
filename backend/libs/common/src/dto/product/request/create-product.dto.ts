@@ -19,5 +19,5 @@ export class CreateProductDto {
 
   @IsNumber()
   @Min(0)
-  quantity: number;
+  availableStock: number;
 }
