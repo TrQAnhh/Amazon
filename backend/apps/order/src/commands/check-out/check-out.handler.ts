@@ -26,7 +26,6 @@ export class CheckOutHandler implements ICommandHandler<CheckOutCommand> {
             throw new RpcException(ErrorCode.ORDER_ALREADY_PAID);
         }
 
-
         const lineItems = order.items.map(item => ({
             price_data: {
                 currency: 'usd',
