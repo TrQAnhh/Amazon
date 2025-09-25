@@ -1,22 +1,23 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetProductDetailQuery } from './get-product-detail.query';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ProductEntity } from '../../entity/product.entity';
-import { Repository } from 'typeorm';
-import { assertExists, ErrorCode, ProductResponseDto } from '@app/common';
+import { ErrorCode, ProductResponseDto, RepositoryService } from '@app/common';
 import { plainToInstance } from 'class-transformer';
+import {RpcException} from "@nestjs/microservices";
 
 @QueryHandler(GetProductDetailQuery)
 export class GetProductDetailHandler implements IQueryHandler<GetProductDetailQuery> {
   constructor(
-    @InjectRepository(ProductEntity)
-    private readonly productRepo: Repository<ProductEntity>,
+    private readonly repository: RepositoryService,
   ) {}
 
   async execute(query: GetProductDetailQuery): Promise<ProductResponseDto> {
     const { sku } = query;
 
-    const existingProduct = await assertExists<ProductEntity>(this.productRepo, { sku }, ErrorCode.PRODUCT_NOT_FOUND);
+    const existingProduct = await this.repository.product.findBySku(sku);
+
+    if (!existingProduct) {
+        throw new RpcException(ErrorCode.PRODUCT_NOT_FOUND);
+    }
 
     return plainToInstance(ProductResponseDto, existingProduct, {
       excludeExtraneousValues: true,

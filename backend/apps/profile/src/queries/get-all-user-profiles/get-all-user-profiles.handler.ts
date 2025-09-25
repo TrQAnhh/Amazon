@@ -1,10 +1,7 @@
+import { AdminProfileResponseDto, ErrorCode, RepositoryService, SERVICE_NAMES } from '@app/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetAllUserProfilesQuery } from './get-all-user-profiles.query';
-import { ProfileEntity } from '../../entity/profile.identity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Inject } from '@nestjs/common';
-import { AdminProfileResponseDto, ErrorCode, ProfileResponseDto, SERVICE_NAMES } from '@app/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { plainToInstance } from 'class-transformer';
@@ -12,13 +9,14 @@ import { plainToInstance } from 'class-transformer';
 @QueryHandler(GetAllUserProfilesQuery)
 export class GetAllUserProfilesHandler implements IQueryHandler<GetAllUserProfilesQuery> {
   constructor(
-    @InjectRepository(ProfileEntity)
-    private readonly profileRepo: Repository<ProfileEntity>,
-    @Inject(SERVICE_NAMES.IDENTITY) private readonly identityClient: ClientProxy,
+    @Inject(SERVICE_NAMES.IDENTITY)
+    private readonly identityClient: ClientProxy,
+    private readonly repository: RepositoryService,
   ) {}
 
   async execute(): Promise<AdminProfileResponseDto[]> {
-    const profiles = await this.profileRepo.find();
+    const profiles = await this.repository.profile.findAll();
+
     const userIds = profiles.map((profile) => profile.userId);
 
     let identities = {};

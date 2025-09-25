@@ -7,6 +7,7 @@ import { GetAllOrdersQuery } from "../queries/get-all-orders/get-all-orders.quer
 import { GetOrderQuery } from "../queries/get-order/get-order.query";
 import {CheckOutCommand} from "../commands/check-out/check-out.command";
 import {CancelOrderCommand} from "../commands/cancel-order/cancel-order.command";
+import {StripeWebhookCommand} from "../commands/stripe-webhook/stripe-webhook.command";
 
 @Controller()
 export class OrderController {
@@ -38,5 +39,10 @@ export class OrderController {
   @MessagePattern({ cmd: 'cancel_order' })
   async cancelOrder(payload: { orderId: number, userId: number, role: string }): Promise<string> {
       return this.commandBus.execute(new CancelOrderCommand(payload.role, payload.userId,payload.orderId));
+  }
+
+  @MessagePattern({ cmd: 'stripe_webhook' })
+  async stripeWebhook(payload: { rawBody: string, signature: string }): Promise<string> {
+      return this.commandBus.execute(new StripeWebhookCommand(payload.rawBody, payload.signature));
   }
 }

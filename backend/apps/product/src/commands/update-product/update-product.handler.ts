@@ -1,23 +1,24 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UpdateProductCommand } from './update-product.command';
-import { ProductEntity } from '../../entity/product.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { assertExists, ErrorCode, ProductResponseDto } from '@app/common';
+import { ErrorCode, RepositoryService } from '@app/common';
 import { CloudinaryService } from '@app/common/cloudinary/service/cloudinary.service';
+import { RpcException } from "@nestjs/microservices";
 
 @CommandHandler(UpdateProductCommand)
 export class UpdateProductHandler implements ICommandHandler<UpdateProductCommand> {
   constructor(
-    @InjectRepository(ProductEntity)
-    private readonly productRepo: Repository<ProductEntity>,
+    private readonly repository: RepositoryService,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async execute(command: UpdateProductCommand): Promise<string> {
     const { id, updateProductDto, imagePayload } = command;
 
-    await assertExists<ProductEntity>(this.productRepo, { id }, ErrorCode.PRODUCT_NOT_FOUND);
+    const product = await this.repository.product.findById(id);
+
+    if (!product) {
+        throw new RpcException(ErrorCode.PRODUCT_NOT_FOUND);
+    }
 
     let imageUrl: string | undefined;
     if (imagePayload) {
@@ -28,8 +29,8 @@ export class UpdateProductHandler implements ICommandHandler<UpdateProductComman
       );
     }
 
-    await this.productRepo.update(
-      { id },
+    await this.repository.product.update(
+      id,
       {
         ...updateProductDto,
         ...(imageUrl ? { imageUrl } : {}),

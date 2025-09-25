@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ProfileController } from './controller/profile.controller';
-import { ProfileEntity } from './entity/profile.identity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfigAsync } from './config/typeorm.config';
 import { APP_FILTER } from '@nestjs/core';
@@ -15,15 +14,16 @@ import { GetUserProfileHandler } from './queries/get-user-profile/get-user-profi
 import { GetAllUserProfilesHandler } from './queries/get-all-user-profiles/get-all-user-profiles.handler';
 import { UpdateProfileHandler } from './commands/update-profile/update-profile.handler';
 import { UploadAvatarHandler } from './commands/upload-avatar/upload-avatar.handler';
-import { CloudinaryModule } from '@app/common';
+import { CloudinaryModule, RepositoryModule } from '@app/common';
 
 dotenv.config();
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(typeOrmConfigAsync),
-    TypeOrmModule.forFeature([ProfileEntity]),
     CloudinaryModule,
+    CqrsModule,
+    RepositoryModule,
     ClientsModule.register([
       {
         name: SERVICE_NAMES.IDENTITY,
@@ -34,7 +34,6 @@ dotenv.config();
         },
       },
     ]),
-    CqrsModule,
   ],
   controllers: [ProfileController],
   providers: [

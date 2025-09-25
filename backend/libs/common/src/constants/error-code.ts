@@ -10,7 +10,7 @@ export class ErrorCode {
   static readonly USER_NOT_FOUND = new ErrorCode(404, 'User not found', HttpStatus.NOT_FOUND);
   static readonly PROFILE_NOT_FOUND = new ErrorCode(404, "User's profile not found", HttpStatus.NOT_FOUND);
   static readonly PRODUCT_NOT_FOUND = new ErrorCode(404, 'Product with given SKU does not exis', HttpStatus.NOT_FOUND);
-  static readonly ORDER_NOT_FOUND = new ErrorCode(404, 'Order with given id does not exis', HttpStatus.NOT_FOUND);
+  static readonly ORDER_NOT_FOUND = new ErrorCode(404, 'Order with given information does not exis', HttpStatus.NOT_FOUND);
   static readonly INVALID_JWT_TOKEN = new ErrorCode(401, 'Invalid or expired JWT token', HttpStatus.UNAUTHORIZED);
   static readonly ORDER_ALREADY_PAID = new ErrorCode(409, 'Order has already been paid', HttpStatus.CONFLICT);
   static readonly EMAIL_EXISTED = new ErrorCode(409, 'Email has already been registered', HttpStatus.CONFLICT);

@@ -58,10 +58,11 @@ export class CancelOrderHandler implements ICommandHandler<CancelOrderCommand> {
             throw new RpcException(err);
         }
 
-        order.status = OrderStatus.CANCELED;
-        order.paymentStatus = PaymentStatus.CANCELED;
+        await this.orderRepo.update(order.id, {
+            status: OrderStatus.CANCELED,
+            paymentStatus: PaymentStatus.CANCELED,
+        });
 
-        await this.orderRepo.save(order);
         return 'Cancel order successfully';
     }
 }

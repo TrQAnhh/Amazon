@@ -1,4 +1,4 @@
-import { CreateProductRequest, UpdateProductRequest, CreateOrderRequest, PaymentRequest } from '../types';
+import { CreateProductRequest, UpdateProductRequest, CreateOrderRequest } from '../types';
 import { authorizedFetch } from "./authFetch.ts";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
@@ -115,17 +115,16 @@ export class ApiService {
       return response.json();
   }
 
-  async processPayment(payment: PaymentRequest) {
-    const response = await authorizedFetch(`${API_BASE}/payments`, {
-      method: 'POST',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(payment),
-    });
+  async checkout(orderId: number) {
+      const response = await authorizedFetch(`${API_BASE}/order/my-orders/${orderId}`, {
+          method: 'POST',
+          headers: this.getAuthHeaders(),
+      })
 
-    if (!response.ok) {
-      throw new Error('Payment failed');
-    }
+      if (!response.ok) {
+          throw new Error('Failed to checkout order');
+      }
 
-    return response.json();
+      return response.json();
   }
 }

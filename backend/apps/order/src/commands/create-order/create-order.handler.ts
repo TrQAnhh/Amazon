@@ -26,6 +26,12 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
   async execute(command: CreateOrderCommand): Promise<string | null> {
     const { role, userId, createOrderDto } = command;
 
+    const order = this.orderRepo.create({
+      userId,
+      paymentMethod: createOrderDto.paymentMethod,
+      totalAmount: 0,
+    });
+
     const orderItems = await getOrderProducts(this.productClient,
         createOrderDto.items.map((item) => {
             return item.productId;
@@ -69,13 +75,8 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
       });
     }
 
-    const order = this.orderRepo.create({
-      userId,
-      paymentMethod: createOrderDto.paymentMethod,
-      totalAmount,
-      items: orderItemEntities,
-    });
-
+    order.totalAmount = totalAmount;
+    order.items = orderItemEntities;
     const savedOrder = await this.orderRepo.save(order);
 
     try {

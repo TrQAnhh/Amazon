@@ -24,6 +24,9 @@ export class OrderEntity {
   paymentStatus: PaymentStatus;
 
   @Column({ nullable: true })
+  sessionId?: string;
+
+  @Column({ nullable: true })
   intentId?: string;
 
   @OneToMany(() => OrderItemEntity, (item) => item.order, { cascade: true })

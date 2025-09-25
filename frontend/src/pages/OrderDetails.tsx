@@ -45,6 +45,18 @@ export const OrderDetails: React.FC = () => {
         }
     };
 
+    const handleCheckout = async () => {
+        if (!order) return;
+
+        try {
+            const response = await apiService.checkout(order.id);
+            window.location.href = response.data;
+        } catch (error: any) {
+            alert(error.message);
+        }
+    };
+
+
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white rounded shadow">
             <Link to="/orders" className="text-blue-600 underline mb-4 inline-block">← Back to Orders</Link>
@@ -88,16 +100,16 @@ export const OrderDetails: React.FC = () => {
 
             <div className="flex justify-between mt-6 border-t pt-4 text-right text-xl font-bold">
                 <div className="space-x-4">
-                {order.status.toLowerCase() !== 'canceled' || order.paymentStatus.toLowerCase() === 'paid' && (
+                {!(order.status.toLowerCase() === 'canceled' || order.paymentStatus.toLowerCase() === 'paid') && (
                     <>
-                        <button
-                            onClick={() => {
-                                alert(`Checkout order #${order.id}`);
-                            }}
-                            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded"
-                        >
-                            Checkout
-                        </button>
+                        {!(order.paymentMethod.toLowerCase() === 'cod') && (
+                            <button
+                                onClick={() => handleCheckout()}
+                                className="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded"
+                            >
+                                Checkout
+                            </button>
+                        )}
                         <button
                             onClick={() => handleCancelOrder()}
                             className="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded"

@@ -42,10 +42,8 @@ export class CheckOutHandler implements ICommandHandler<CheckOutCommand> {
             quantity: item.quantity,
         }));
 
-        const session = await this.stripeService.checkout(lineItems);
-
-        order.intentId = session.id;
-        await this.orderRepository.save(order);
+        const session = await this.stripeService.checkout(orderId,lineItems);
+        await this.orderRepository.update({ id: orderId }, { sessionId: session.id });
 
         return session.url;
     }

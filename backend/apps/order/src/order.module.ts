@@ -18,6 +18,7 @@ import { GetAllOrdersHandler } from "./queries/get-all-orders/get-all-orders.han
 import { GetOrderHandler } from "./queries/get-order/get-order.handler";
 import { CheckOutHandler } from "./commands/check-out/check-out.handler";
 import {CancelOrderHandler} from "./commands/cancel-order/cancel-order.handler";
+import {StripeWebhookHandler} from "./commands/stripe-webhook/stripe-webhook.handler";
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ dotenv.config();
     GetOrderHandler,
     CheckOutHandler,
     CancelOrderHandler,
+    StripeWebhookHandler,
     {
       provide: APP_FILTER,
       useClass: OrderExceptionFilter,
