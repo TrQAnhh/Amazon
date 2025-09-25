@@ -1,8 +1,9 @@
-import {Body, Controller, Get, Inject, Param, Post, Req} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Inject, Param, Post, Req} from '@nestjs/common';
 import { AdminProfileResponseDto, CreateOrderDto, OrderResponseDto, SERVICE_NAMES } from '@app/common';
 import { Response } from '../common/interceptors/transform/transform.interceptor';
 import { ClientProxy } from '@nestjs/microservices';
 import { BaseController } from '../common/base/base.controller';
+import {request} from "node:http";
 
 @Controller('order')
 export class OrderController extends BaseController {
@@ -12,12 +13,13 @@ export class OrderController extends BaseController {
 
   @Post('/create')
   async createOrder(@Req() request: any, @Body() createOrderDto: CreateOrderDto): Promise<Response<any>> {
+    const role = request.user.role;
     const userId = request.user.userId;
-    const message = await this.sendCommand<string>({ cmd: 'create_order' }, { userId, createOrderDto });
+    const result = await this.sendCommand<string | null>({ cmd: 'create_order' }, { role, userId, createOrderDto });
     return {
-      message: message,
+      message: 'Create new order successfully!',
       success: true,
-      data: null,
+      data: result,
     };
   }
 
@@ -33,8 +35,14 @@ export class OrderController extends BaseController {
   }
 
   @Get('/my-orders/:orderId')
-  async getOrderDetails(@Param('orderId') orderId: number): Promise<Response<OrderResponseDto>> {
-      const result = await this.sendCommand<OrderResponseDto>({ cmd: 'get_order_details' }, { orderId });
+  async getOrderDetails(
+      @Req() request: any,
+      @Param('orderId') orderId: number
+  ): Promise<Response<OrderResponseDto>> {
+      const userId = request.user.userId;
+      const role = request.user.role;
+      const result = await this.sendCommand<OrderResponseDto>({ cmd: 'get_order_details' }, { role, userId, orderId });
+
       return {
           message: 'Get order details successfully!',
           success: true,
@@ -43,12 +51,32 @@ export class OrderController extends BaseController {
   }
 
   @Post('/my-orders/:orderId')
-  async checkOut(@Param('orderId') orderId: number): Promise<Response<any>> {
-      const url = await this.sendCommand<string>({ cmd: 'check_out' }, { orderId });
+  async checkOut(
+      @Req() request: any,
+      @Param('orderId') orderId: number
+  ): Promise<Response<any>> {
+      const userId = request.user.userId;
+      const role = request.user.role;
+      const url = await this.sendCommand<string>({ cmd: 'check_out' }, { role, userId, orderId });
       return {
           message: `Check out order ${orderId} sucessfully!`,
           success: true,
           data: url,
+      }
+  }
+
+  @Delete('/my-orders/:orderId')
+  async cancelOrder(
+      @Req() request: any,
+      @Param('orderId') orderId: number
+  ): Promise<Response<any>> {
+      const userId = request.user.userId;
+      const role = request.user.role;
+      const message = await this.sendCommand<string>({ cmd: 'cancel_order' }, { role, userId, orderId });
+      return {
+          message,
+          success: true,
+          data: null,
       }
   }
 }

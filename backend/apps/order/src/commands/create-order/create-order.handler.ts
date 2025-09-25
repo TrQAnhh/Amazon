@@ -1,14 +1,15 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CreateOrderCommand } from './create-order.command';
-import { OrderEntity } from '../../entity/order.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { OrderItemEntity } from '../../entity/order-items.entity';
-import { getOrderProducts } from '../../helpers/get-order-products.helper';
-import { ErrorCode, SERVICE_NAMES } from '@app/common';
-import { Inject } from '@nestjs/common';
-import { ClientProxy, RpcException } from '@nestjs/microservices';
+import {CommandBus, CommandHandler, ICommandHandler} from '@nestjs/cqrs';
+import {CreateOrderCommand} from './create-order.command';
+import {OrderEntity} from '../../entity/order.entity';
+import {Repository} from 'typeorm';
+import {InjectRepository} from '@nestjs/typeorm';
+import {OrderItemEntity} from '../../entity/order-items.entity';
+import {getOrderProducts} from '../../helpers/get-order-products.helper';
+import {ErrorCode, PaymentMethod, SERVICE_NAMES} from '@app/common';
+import {Inject} from '@nestjs/common';
+import {ClientProxy, RpcException} from '@nestjs/microservices';
 import {firstValueFrom} from "rxjs";
+import {CheckOutCommand} from "../check-out/check-out.command";
 
 @CommandHandler(CreateOrderCommand)
 export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
@@ -19,10 +20,11 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
     private readonly orderItemRepo: Repository<OrderItemEntity>,
     @Inject(SERVICE_NAMES.PRODUCT)
     private readonly productClient: ClientProxy,
+    private readonly commandBus: CommandBus,
   ) {}
 
-  async execute(command: CreateOrderCommand): Promise<string> {
-    const { userId, createOrderDto } = command;
+  async execute(command: CreateOrderCommand): Promise<string | null> {
+    const { role, userId, createOrderDto } = command;
 
     const orderItems = await getOrderProducts(this.productClient,
         createOrderDto.items.map((item) => {
@@ -74,7 +76,7 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
       items: orderItemEntities,
     });
 
-    await this.orderRepo.save(order);
+    const savedOrder = await this.orderRepo.save(order);
 
     try {
       await firstValueFrom(this.productClient.send({ cmd: 'update_stock' }, { items: updateStockItems }));
@@ -82,6 +84,10 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
       throw new RpcException(err);
     }
 
-    return 'Create new order successfully!';
+    if (createOrderDto.paymentMethod === PaymentMethod.STRIPE) {
+        return await this.commandBus.execute(new CheckOutCommand(role, userId, savedOrder.id));
+    }
+
+    return null;
   }
 }

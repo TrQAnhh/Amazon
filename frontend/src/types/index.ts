@@ -47,15 +47,21 @@ export interface Order {
     id: number;
     createdAt: string;
     totalAmount: string;
-    status: 'PENDING' | 'PAID' | 'SHIPPED' | 'DELIVERED';
+    status: 'PENDING' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELED';
     paymentMethod: string;
     paymentStatus: string;
+    items: OrderItem[];
 }
 
 export interface OrderItem {
-  productId: string;
-  quantity: number;
-  price: number;
+    productId: number;
+    quantity: number;
+    price: string;
+    total: string;
+    product: {
+        name: string;
+        imageUrl: string;
+    };
 }
 
 export interface CreateOrderRequest {

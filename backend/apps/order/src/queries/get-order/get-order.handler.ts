@@ -4,7 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { OrderEntity } from "../../entity/order.entity";
 import { Repository } from "typeorm";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
-import {ErrorCode, OrderItemResponseDto, OrderResponseDto, SERVICE_NAMES} from "@app/common";
+import {ErrorCode, OrderItemResponseDto, OrderResponseDto, SERVICE_NAMES, UserRole} from "@app/common";
 import { Inject } from "@nestjs/common";
 import { getOrderProductDetails } from "../../helpers/get-order-product-details.helper";
 import {plainToInstance} from "class-transformer";
@@ -19,7 +19,7 @@ export class GetOrderHandler implements IQueryHandler<GetOrderQuery> {
     ) {}
 
     async execute(query: GetOrderQuery): Promise<OrderResponseDto> {
-        const { orderId } = query;
+        const { orderId, userId, role } = query;
 
         const order = await this.orderRepo.findOne({
             where: {
@@ -30,6 +30,10 @@ export class GetOrderHandler implements IQueryHandler<GetOrderQuery> {
 
         if (!order) {
             throw new RpcException(ErrorCode.ORDER_NOT_FOUND);
+        }
+
+        if (role !== UserRole.ADMIN && order.userId !== userId) {
+            throw new RpcException(ErrorCode.UNAUTHORIZED);
         }
 
         const products = await getOrderProductDetails(this.productClient, order.items.map((item) => {

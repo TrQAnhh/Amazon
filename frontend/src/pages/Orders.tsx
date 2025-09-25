@@ -52,11 +52,15 @@ export const Orders: React.FC = () => {
         ) : (
             <div className="space-y-4">
                 {orders.map((order) => (
-                    <div key={order.id} className="bg-white p-6 rounded-lg shadow-md flex items-stretch space-x-4">
+                    <Link
+                        to={`/orders/${order.id}`}
+                        key={order.id}
+                        className="bg-white p-6 rounded-lg shadow-md flex items-stretch space-x-4"
+                    >
                         <img
                             src="/images/order-icon-vector.jpg"
                             alt="Order"
-                            className="w-auto h-full max-h-24 object-cover rounded"
+                            className="w-auto h-full max-h-24 object-cover rounded self-center"
                         />
 
                         <div className="flex-1">
@@ -64,7 +68,7 @@ export const Orders: React.FC = () => {
                                 <div>
                                     <h3 className="text-lg font-semibold">Order #{order.id}</h3>
                                     <p className="text-sm text-gray-600">
-                                        Date: {new Date(order.createdAt).toLocaleDateString()}
+                                        Date: {new Date(order.createdAt).toLocaleDateString('vi-VN')}
                                     </p>
                                     <p className="text-sm text-gray-600">Payment: {order.paymentMethod}</p>
                                     <p className="text-sm text-gray-600">Payment Status: {order.paymentStatus}</p>
@@ -88,7 +92,7 @@ export const Orders: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
 

@@ -1,4 +1,5 @@
 import { CreateProductRequest, UpdateProductRequest, CreateOrderRequest, PaymentRequest } from '../types';
+import { authorizedFetch } from "./authFetch.ts";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -36,7 +37,7 @@ export class ApiService {
   }
 
   async createProduct(product: CreateProductRequest) {
-    const response = await fetch(`${API_BASE}/product/create`, {
+    const response = await authorizedFetch(`${API_BASE}/product/create`, {
       method: 'POST',
       headers: this.getAuthHeaders(),
       body: JSON.stringify(product),
@@ -50,7 +51,7 @@ export class ApiService {
   }
 
   async updateProduct(product: UpdateProductRequest) {
-    const response = await fetch(`${API_BASE}/product/${product.id}`, {
+    const response = await authorizedFetch(`${API_BASE}/product/${product.id}`, {
       method: 'PUT',
       headers: this.getAuthHeaders(),
       body: JSON.stringify(product),
@@ -63,9 +64,8 @@ export class ApiService {
     return response.json();
   }
 
-  // Order APIs
   async getOrders() {
-    const response = await fetch(`${API_BASE}/order/my-orders`, {
+    const response = await authorizedFetch(`${API_BASE}/order/my-orders`, {
       headers: this.getAuthHeaders(),
     });
 
@@ -76,8 +76,20 @@ export class ApiService {
     return response.json();
   }
 
+  async getOrderDetails(orderId: number) {
+      const response = await authorizedFetch(`${API_BASE}/order/my-orders/${orderId}`, {
+          headers: this.getAuthHeaders(),
+      })
+
+      if (!response.ok) {
+          throw new Error('Failed to fetch order details');
+      }
+
+      return response.json();
+  }
+
   async createOrder(order: CreateOrderRequest) {
-    const response = await fetch(`${API_BASE}/orders`, {
+    const response = await authorizedFetch(`${API_BASE}/orders`, {
       method: 'POST',
       headers: this.getAuthHeaders(),
       body: JSON.stringify(order),
@@ -90,10 +102,21 @@ export class ApiService {
     return response.json();
   }
 
-  // Payment APIs (Mocked for now)
+  async cancelOrder(orderId: number) {
+      const response = await authorizedFetch(`${API_BASE}/order/my-orders/${orderId}`, {
+          method: 'DELETE',
+          headers: this.getAuthHeaders(),
+      })
+
+      if (!response.ok) {
+          throw new Error('Failed to cancel order');
+      }
+
+      return response.json();
+  }
+
   async processPayment(payment: PaymentRequest) {
-    // Mock Stripe payment - replace with actual Stripe integration
-    const response = await fetch(`${API_BASE}/payments`, {
+    const response = await authorizedFetch(`${API_BASE}/payments`, {
       method: 'POST',
       headers: this.getAuthHeaders(),
       body: JSON.stringify(payment),

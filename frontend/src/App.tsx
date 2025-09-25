@@ -7,7 +7,8 @@ import { SignUp } from './pages/SignUp';
 import { Products } from './pages/Products';
 import { Orders } from './pages/Orders';
 import { Checkout } from './pages/Checkout';
-import {ProductDetail} from "./pages/ProductDetail.tsx";
+import { ProductDetail } from "./pages/ProductDetail.tsx";
+import { OrderDetails } from "./pages/OrderDetails.tsx";
 
 function App() {
   return (
@@ -26,6 +27,14 @@ function App() {
                   <Orders />
                 </ProtectedRoute>
               }
+            />
+            <Route
+                path="/orders/:orderId"
+                element={
+                <ProtectedRoute>
+                    <OrderDetails />
+                </ProtectedRoute>
+                }
             />
             <Route
               path="/checkout"

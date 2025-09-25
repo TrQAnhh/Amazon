@@ -61,27 +61,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initAuth();
   }, []);
 
-  useEffect(() => {
-    if (!isAuthenticated) return;
+    useEffect(() => {
+        if (!isAuthenticated) return;
 
-    const interval = setInterval(async () => {
-      const refreshToken = localStorage.getItem('refreshToken');
-      if (refreshToken) {
-        try {
-          const response = await authService.refreshToken(refreshToken);
-          localStorage.setItem('accessToken', response.data.accessToken);
-          if (response.refreshToken) {
-            localStorage.setItem('refreshToken', response.data.refreshToken);
-          }
-        } catch (error) {
-          console.error('Auto token refresh failed:', error);
-          await signout();
-        }
-      }
-    }, 30 * 60 * 1000);
+        const interval = setInterval(async () => {
+            const refreshToken = localStorage.getItem('refreshToken');
+            if (refreshToken) {
+                try {
+                    const response = await authService.refreshToken(refreshToken);
+                    console.log(response);
+                    localStorage.setItem('accessToken', response.data.accessToken);
+                    if (response.refreshToken) {
+                        localStorage.setItem('refreshToken', response.data.refreshToken);
+                    }
+                } catch (error) {
+                    console.error('Auto token refresh failed:', error);
+                    await signout();
+                }
+            }
+        }, 5 * 60 * 1000);
 
-    return () => clearInterval(interval);
-  }, [isAuthenticated]);
+        return () => clearInterval(interval);
+    }, [isAuthenticated]);
 
   const handleAuthSuccess = (response: AuthResponse) => {
     const { accessToken, refreshToken, user } = response.data;

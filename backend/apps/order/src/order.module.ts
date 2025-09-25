@@ -17,6 +17,7 @@ import { typeOrmConfigAsync } from "./config/typeorm.config";
 import { GetAllOrdersHandler } from "./queries/get-all-orders/get-all-orders.handler";
 import { GetOrderHandler } from "./queries/get-order/get-order.handler";
 import { CheckOutHandler } from "./commands/check-out/check-out.handler";
+import {CancelOrderHandler} from "./commands/cancel-order/cancel-order.handler";
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ dotenv.config();
     GetAllOrdersHandler,
     GetOrderHandler,
     CheckOutHandler,
+    CancelOrderHandler,
     {
       provide: APP_FILTER,
       useClass: OrderExceptionFilter,
