@@ -1,9 +1,12 @@
-import { assertExists, AuthResponseDto, ErrorCode, RedisHelper, SERVICE_NAMES } from '@app/common';
+import {
+    AuthResponseDto,
+    ErrorCode,
+    RedisHelper,
+    RepositoryService,
+    SERVICE_NAMES
+} from '@app/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SignInCommand } from './sign-in.command';
-import { IdentityEntity } from '../../entity/identity.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
@@ -14,22 +17,21 @@ import { Inject } from '@nestjs/common';
 @CommandHandler(SignInCommand)
 export class SignInHandler implements ICommandHandler<SignInCommand> {
   constructor(
-    @InjectRepository(IdentityEntity)
-    private readonly identityRepo: Repository<IdentityEntity>,
-    private readonly jwtService: JwtService,
-    private readonly redisHelper: RedisHelper,
     @Inject(SERVICE_NAMES.PROFILE)
     private readonly profileClient: ClientProxy,
+    private readonly repository: RepositoryService,
+    private readonly jwtService: JwtService,
+    private readonly redisHelper: RedisHelper,
   ) {}
 
   async execute(command: SignInCommand): Promise<AuthResponseDto> {
     const { signInDto } = command;
 
-    const userByEmail = await assertExists<IdentityEntity>(
-      this.identityRepo,
-      { email: signInDto.email },
-      ErrorCode.USER_NOT_FOUND,
-    );
+    const userByEmail = await this.repository.identity.findByEmail(signInDto.email);
+
+    if (!userByEmail) {
+      throw new RpcException(ErrorCode.USER_NOT_FOUND);
+    }
 
     const success = await bcrypt.compare(signInDto.password, userByEmail.password);
 

@@ -7,7 +7,7 @@ import {GetOrderQuery} from "../../queries/get-order/get-order.query";
 import {StripeService} from "../../modules/stripe/service/stripe.service";
 import {PaymentStatus} from "@app/common/constants/payment-status.enum";
 import {RpcException} from "@nestjs/microservices";
-import {ErrorCode} from "@app/common";
+import {ErrorCode, UserRole} from "@app/common";
 
 @CommandHandler(CheckOutCommand)
 export class CheckOutHandler implements ICommandHandler<CheckOutCommand> {
@@ -19,11 +19,15 @@ export class CheckOutHandler implements ICommandHandler<CheckOutCommand> {
     ) {}
 
     async execute(command: CheckOutCommand): Promise<string | null> {
-        const { orderId } = command;
-        const order = await this.queryBus.execute(new GetOrderQuery(orderId));
+        const { role, userId, orderId } = command;
+        const order = await this.queryBus.execute(new GetOrderQuery(role, userId, orderId));
 
         if (order.paymentStatus === PaymentStatus.PAID) {
             throw new RpcException(ErrorCode.ORDER_ALREADY_PAID);
+        }
+
+        if (role !== UserRole.ADMIN && order.userId !== userId) {
+            throw new RpcException(ErrorCode.UNAUTHORIZED);
         }
 
         const lineItems = order.items.map(item => ({
@@ -38,10 +42,8 @@ export class CheckOutHandler implements ICommandHandler<CheckOutCommand> {
             quantity: item.quantity,
         }));
 
-        const session = await this.stripeService.checkout(lineItems);
-
-        order.intentId = session.id;
-        await this.orderRepository.save(order);
+        const session = await this.stripeService.checkout(orderId,lineItems);
+        await this.orderRepository.update({ id: orderId }, { sessionId: session.id });
 
         return session.url;
     }

@@ -6,8 +6,9 @@ import { SignIn } from './pages/SignIn';
 import { SignUp } from './pages/SignUp';
 import { Products } from './pages/Products';
 import { Orders } from './pages/Orders';
-import { Checkout } from './pages/Checkout';
-import {ProductDetail} from "./pages/ProductDetail.tsx";
+import { ProductDetail } from "./pages/ProductDetail.tsx";
+import { OrderDetails } from "./pages/OrderDetails.tsx";
+import {CheckoutSuccess} from "./pages/CheckOutSuccess.tsx";
 
 function App() {
   return (
@@ -28,11 +29,19 @@ function App() {
               }
             />
             <Route
-              path="/checkout"
-              element={
+                path="/orders/:orderId"
+                element={
                 <ProtectedRoute>
-                  <Checkout />
+                    <OrderDetails />
                 </ProtectedRoute>
+                }
+            />
+            <Route
+              path="/checkout/success"
+              element={
+                  <ProtectedRoute>
+                      <CheckoutSuccess />
+                  </ProtectedRoute>
               }
             />
             <Route path="/" element={<Navigate to="/products" replace />} />

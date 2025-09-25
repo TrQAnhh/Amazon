@@ -1,24 +1,18 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DeleteProductCommand } from './delete-product.command';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ProductEntity } from '../../entity/product.entity';
-import { Repository } from 'typeorm';
-import { assertExists, ErrorCode } from '@app/common';
+import {RepositoryService} from "@app/common";
 
 @CommandHandler(DeleteProductCommand)
 export class DeleteProductHandler implements ICommandHandler<DeleteProductCommand> {
   constructor(
-    @InjectRepository(ProductEntity)
-    private readonly productRepo: Repository<ProductEntity>,
+    private readonly repository: RepositoryService
   ) {}
 
   async execute(command: DeleteProductCommand): Promise<string> {
     const { id } = command;
 
-    await assertExists<ProductEntity>(this.productRepo, { id }, ErrorCode.PRODUCT_NOT_FOUND);
+    await this.repository.product.update(id , { isDeleted: true });
 
-    await this.productRepo.update({ id }, { isDeleted: true });
-
-    return `Product with sku ${id} has been deleted successfully!`;
+    return `Product with id ${id} has been deleted successfully!`;
   }
 }

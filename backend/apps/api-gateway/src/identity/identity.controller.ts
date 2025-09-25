@@ -44,7 +44,7 @@ export class IdentityController extends BaseController {
   }
 
   @Public()
-  @Post('refresh-token')
+  @Post('/refresh-token')
   async refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<Response<AuthResponseDto>> {
     const result = await this.sendCommand<AuthResponseDto>({ cmd: 'refresh_token' }, refreshTokenDto);
     return {

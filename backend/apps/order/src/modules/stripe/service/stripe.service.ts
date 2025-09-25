@@ -6,19 +6,31 @@ import { RpcException } from "@nestjs/microservices";
 export class StripeService {
   constructor(@Inject('STRIPE_CLIENT') private readonly stripe: Stripe) {}
 
-  async checkout(line_items: any[]): Promise<Stripe.Checkout.Session> {
+  async checkout(orderId: number, line_items: any[]): Promise<Stripe.Checkout.Session> {
       try {
           const session = await this.stripe.checkout.sessions.create({
               payment_method_types: ['card'],
               line_items,
               mode: 'payment',
-              success_url: 'https://done.com/success',
-              cancel_url: 'https://done.com/cancel',
+              success_url: process.env.SUCCESSFUL_URL,
+              cancel_url: `${process.env.CANCEL_URL}/${orderId}`,
           });
           return session;
       } catch (error) {
           console.error(error);
           throw new RpcException(error);
       }
+  }
+
+  async verifyWebhook(rawBody: Buffer, signature: string): Promise<Stripe.Event> {
+    try {
+        return this.stripe.webhooks.constructEvent(
+            rawBody,
+            signature,
+            process.env.STRIPE_WEBHOOK_SECRET!,
+        );
+    } catch (err) {
+        throw new RpcException(`Webhook signature verification failed: ${err.message}`);
+    }
   }
 }

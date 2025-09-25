@@ -3,7 +3,6 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
 import { ErrorCode, RedisHelper } from '@app/common';
-import now = jest.now;
 
 @QueryHandler(ValidateTokenQuery)
 export class ValidateTokenHandler implements IQueryHandler<ValidateTokenQuery> {

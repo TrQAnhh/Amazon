@@ -4,22 +4,19 @@ import {In, Repository} from "typeorm";
 import {ProductEntity} from "../../entity/product.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {RpcException} from "@nestjs/microservices";
-import {ErrorCode} from "@app/common";
+import {ErrorCode, RepositoryService} from "@app/common";
 
 @CommandHandler(UpdateStockCommand)
 export class UpdateStockHandler implements ICommandHandler<UpdateStockCommand> {
     constructor(
-        @InjectRepository(ProductEntity)
-        private readonly productRepo: Repository<ProductEntity>,
+        private readonly repository: RepositoryService,
     ){}
 
     async execute(command: UpdateStockCommand): Promise<boolean> {
         const { items } = command;
 
         const productIds = items.map(i => i.productId);
-        const products = await this.productRepo.find({
-            where: { id: In(productIds) },
-        });
+        const products = await this.repository.product.findByIds(productIds);
 
         const productMap = new Map(products.map(p => [p.id, p]));
 
@@ -30,7 +27,7 @@ export class UpdateStockHandler implements ICommandHandler<UpdateStockCommand> {
             product.availableStock = item.newStock;
         }
 
-        await this.productRepo.save(Array.from(productMap.values()));
+        await this.repository.product.saveMany(Array.from(productMap.values()));
 
         return true;
     }
