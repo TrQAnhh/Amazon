@@ -1,8 +1,9 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetProductDetailQuery } from './get-product-detail.query';
-import { ErrorCode, ProductResponseDto, RepositoryService } from '@app/common';
+import { ErrorCode, ProductResponseDto } from '@app/common';
 import { plainToInstance } from 'class-transformer';
-import {RpcException} from "@nestjs/microservices";
+import { RpcException } from "@nestjs/microservices";
+import { RepositoryService } from "@repository/repository.service";
 
 @QueryHandler(GetProductDetailQuery)
 export class GetProductDetailHandler implements IQueryHandler<GetProductDetailQuery> {

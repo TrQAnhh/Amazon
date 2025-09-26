@@ -1,9 +1,9 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { GetOrderProductDetailsQuery } from "./get-order-product-details.query";
-import { In } from "typeorm";
 import { GetOrderProductsQuery } from "../get-order-products/get-order-products.query";
 import { plainToInstance } from "class-transformer";
-import {OrderProductDetailDto, RepositoryService} from "@app/common";
+import { OrderProductDetailDto } from "@app/common";
+import { RepositoryService } from "@repository/repository.service";
 
 @QueryHandler(GetOrderProductDetailsQuery)
 export class GetOrderProductDetailsHandler implements IQueryHandler<GetOrderProductDetailsQuery> {

@@ -1,10 +1,11 @@
-import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
+import { ErrorCode, SERVICE_NAMES, UserOrderInfoResponseDto } from "@app/common";
 import { GetUserOrderInfoQuery } from "./get-user-order-info.query";
-import { ErrorCode, ProfileResponseDto, RepositoryService, SERVICE_NAMES, UserOrderInfoResponseDto } from "@app/common";
-import { ClientProxy, RpcException } from "@nestjs/microservices";
 import { getUserIdentity } from "../../helpers/get-identity.helper";
-import { Inject } from "@nestjs/common";
+import { RepositoryService } from "@repository/repository.service";
+import { ClientProxy, RpcException } from "@nestjs/microservices";
+import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { plainToInstance } from "class-transformer";
+import { Inject } from "@nestjs/common";
 
 @QueryHandler(GetUserOrderInfoQuery)
 export class GetUserOrderInfoHandler implements IQueryHandler<GetUserOrderInfoQuery> {

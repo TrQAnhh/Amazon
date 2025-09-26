@@ -1,8 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UpdateProductCommand } from './update-product.command';
-import { ErrorCode, RepositoryService } from '@app/common';
+import { ErrorCode } from '@app/common';
 import { CloudinaryService } from '@app/common/cloudinary/service/cloudinary.service';
 import { RpcException } from "@nestjs/microservices";
+import { RepositoryService } from "@repository/repository.service";
 
 @CommandHandler(UpdateProductCommand)
 export class UpdateProductHandler implements ICommandHandler<UpdateProductCommand> {

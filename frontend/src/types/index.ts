@@ -94,6 +94,7 @@ export interface CartItem {
     price: number;
     imageUrl: string;
     quantity: number;
+    availableStock: number;
 }
 
 export interface PaymentRequest {

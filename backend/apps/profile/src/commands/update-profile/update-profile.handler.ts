@@ -1,9 +1,10 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ErrorCode, ProfileResponseDto, RepositoryService, SERVICE_NAMES} from '@app/common';
-import { UpdateProfileCommand } from './update-profile.command';
-import { Inject } from '@nestjs/common';
-import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { ErrorCode, ProfileResponseDto, SERVICE_NAMES} from '@app/common';
 import { getUserIdentity } from '../../helpers/get-identity.helper';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import {RepositoryService} from "@repository/repository.service";
+import { UpdateProfileCommand } from './update-profile.command';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { Inject } from '@nestjs/common';
 
 @CommandHandler(UpdateProfileCommand)
 export class UpdateProfileHandler implements ICommandHandler<UpdateProfileCommand> {

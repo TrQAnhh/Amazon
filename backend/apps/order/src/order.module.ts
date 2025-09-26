@@ -6,7 +6,7 @@ import { OrderExceptionFilter } from './exception/order-exception.filter';
 import { StripeModule } from './modules/stripe/stripe.module';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { RepositoryModule, SERVICE_NAMES } from '@app/common';
+import {  SERVICE_NAMES } from '@app/common';
 import { CreateOrderHandler } from './commands/create-order/create-order.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 import { typeOrmConfigAsync } from "./config/typeorm.config";
@@ -15,11 +15,10 @@ import { GetOrderHandler } from "./queries/get-order/get-order.handler";
 import { CheckOutHandler } from "./commands/check-out/check-out.handler";
 import { CancelOrderHandler } from "./commands/cancel-order/cancel-order.handler";
 import { StripeWebhookHandler } from "./commands/stripe-webhook/stripe-webhook.handler";
+import { UpdateOrderHandler } from "./commands/update-order/update-order.handler";
+import { RepositoryModule } from "@repository/repository.module";
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
-import {OrderItemEntity} from "./entity/order-items.entity";
-import {OrderEntity} from "./entity/order.entity";
-import {UpdateOrderHandler} from "./commands/update-order/update-order.handler";
 
 dotenv.config();
 

@@ -54,6 +54,7 @@ export const ProductDetail: React.FC = () => {
                     price: product.price,
                     imageUrl: product.imageUrl,
                     quantity,
+                    availableStock: product.availableStock,
                 },
                 product.availableStock
             );

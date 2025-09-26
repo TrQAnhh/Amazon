@@ -1,4 +1,4 @@
-import { PaymentMethod } from "../../../../../../apps/order/src/constants/enums/payment-method.enum";
+import { PaymentMethod } from "../../../constants/payment-method.enum";
 
 export class CreateOrderDto {
   paymentMethod: PaymentMethod;

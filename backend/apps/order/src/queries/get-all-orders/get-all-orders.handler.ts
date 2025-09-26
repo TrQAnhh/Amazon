@@ -1,8 +1,9 @@
-import { ErrorCode, OrderResponseDto, RepositoryService } from "@app/common";
+import { ErrorCode, OrderResponseDto } from "@app/common";
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { GetAllOrdersQuery } from "./get-all-orders.query";
 import { plainToInstance } from "class-transformer";
 import { RpcException } from "@nestjs/microservices";
+import { RepositoryService } from "@repository/repository.service";
 
 @QueryHandler(GetAllOrdersQuery)
 export class GetAllOrdersHandler implements IQueryHandler<GetAllOrdersQuery> {

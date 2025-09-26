@@ -1,10 +1,8 @@
-import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
-import {UpdateStockCommand} from "./update-stock.command";
-import {In, Repository} from "typeorm";
-import {ProductEntity} from "../../entity/product.entity";
-import {InjectRepository} from "@nestjs/typeorm";
-import {RpcException} from "@nestjs/microservices";
-import {ErrorCode, RepositoryService} from "@app/common";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { UpdateStockCommand } from "./update-stock.command";
+import { RpcException } from "@nestjs/microservices";
+import { ErrorCode } from "@app/common";
+import { RepositoryService } from "@repository/repository.service";
 
 @CommandHandler(UpdateStockCommand)
 export class UpdateStockHandler implements ICommandHandler<UpdateStockCommand> {

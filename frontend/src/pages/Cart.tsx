@@ -31,7 +31,10 @@ export const Cart: React.FC = () => {
     const updateQuantity = (sku: string, delta: number) => {
         const updatedCart = cart.map(item => {
             if (item.sku === sku) {
-                const newQuantity = Math.max(1, item.quantity + delta);
+                const newQuantity = Math.min(
+                    Math.max(item.quantity + delta, 1),
+                    item.availableStock
+                );
                 return { ...item, quantity: newQuantity };
             }
             return item;

@@ -1,10 +1,11 @@
-import { AdminProfileResponseDto, ErrorCode, RepositoryService, SERVICE_NAMES } from '@app/common';
-import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { AdminProfileResponseDto, ErrorCode, SERVICE_NAMES } from '@app/common';
 import { GetAllUserProfilesQuery } from './get-all-user-profiles.query';
-import { Inject } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import {RepositoryService} from "@repository/repository.service";
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { plainToInstance } from 'class-transformer';
+import { Inject } from '@nestjs/common';
+import { firstValueFrom } from 'rxjs';
 
 @QueryHandler(GetAllUserProfilesQuery)
 export class GetAllUserProfilesHandler implements IQueryHandler<GetAllUserProfilesQuery> {

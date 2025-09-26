@@ -1,6 +1,7 @@
-import { CloudinaryService, ErrorCode, RepositoryService } from '@app/common';
-import { UploadAvatarCommand } from './upload-avatar.command';
+import { RepositoryService } from "@repository/repository.service";
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { UploadAvatarCommand } from './upload-avatar.command';
+import { CloudinaryService, ErrorCode } from '@app/common';
 import { RpcException } from '@nestjs/microservices';
 
 @CommandHandler(UploadAvatarCommand)

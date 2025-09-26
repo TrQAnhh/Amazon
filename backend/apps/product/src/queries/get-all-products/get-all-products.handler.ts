@@ -1,7 +1,8 @@
 import { GetAllProductsQuery } from './get-all-products.query';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { ProductResponseDto, RepositoryService } from '@app/common';
+import { ProductResponseDto } from '@app/common';
 import { plainToInstance } from 'class-transformer';
+import { RepositoryService } from "@repository/repository.service";
 
 @QueryHandler(GetAllProductsQuery)
 export class GetAllProductsHandler implements IQueryHandler<GetAllProductsQuery> {
