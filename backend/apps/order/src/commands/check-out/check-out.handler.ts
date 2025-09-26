@@ -1,19 +1,15 @@
-import {CommandHandler, ICommandHandler, QueryBus} from "@nestjs/cqrs";
-import {CheckOutCommand} from "./check-out.command";
-import {InjectRepository} from "@nestjs/typeorm";
-import {OrderEntity} from "../../entity/order.entity";
-import {Repository} from "typeorm";
-import {GetOrderQuery} from "../../queries/get-order/get-order.query";
-import {StripeService} from "../../modules/stripe/service/stripe.service";
-import {PaymentStatus} from "@app/common/constants/payment-status.enum";
-import {RpcException} from "@nestjs/microservices";
-import {ErrorCode, UserRole} from "@app/common";
+import { StripeService } from "../../modules/stripe/service/stripe.service";
+import { PaymentStatus } from "@app/common/constants/payment-status.enum";
+import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
+import { GetOrderQuery } from "../../queries/get-order/get-order.query";
+import { ErrorCode, RepositoryService, UserRole } from "@app/common";
+import { CheckOutCommand } from "./check-out.command";
+import { RpcException } from "@nestjs/microservices";
 
 @CommandHandler(CheckOutCommand)
 export class CheckOutHandler implements ICommandHandler<CheckOutCommand> {
     constructor(
-        @InjectRepository(OrderEntity)
-        private readonly orderRepository: Repository<OrderEntity>,
+        private readonly repository: RepositoryService,
         private readonly stripeService: StripeService,
         private readonly queryBus: QueryBus,
     ) {}
@@ -43,7 +39,7 @@ export class CheckOutHandler implements ICommandHandler<CheckOutCommand> {
         }));
 
         const session = await this.stripeService.checkout(orderId,lineItems);
-        await this.orderRepository.update({ id: orderId }, { sessionId: session.id });
+        await this.repository.order.update(orderId, { sessionId: session.id })
 
         return session.url;
     }

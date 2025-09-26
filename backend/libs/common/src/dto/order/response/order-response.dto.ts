@@ -1,5 +1,5 @@
 import { Expose } from "class-transformer";
-import { OrderItemResponseDto } from "@app/common/dto";
+import {OrderItemResponseDto, UserOrderInfoResponseDto} from "@app/common/dto";
 
 export class OrderResponseDto {
     @Expose()
@@ -16,6 +16,9 @@ export class OrderResponseDto {
 
     @Expose()
     paymentStatus: string;
+
+    @Expose()
+    orderInfo: UserOrderInfoResponseDto;
 
     @Expose()
     items: OrderItemResponseDto[];

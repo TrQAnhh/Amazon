@@ -45,8 +45,8 @@ export const Orders: React.FC = () => {
         {orders.length === 0 ? (
             <div className="text-center text-gray-500 mt-8">
                 <p>No orders found.</p>
-                <Link to="/checkout" className="text-blue-500 hover:underline">
-                    Create your first order
+                <Link to="/" className="text-blue-500 hover:underline">
+                    Let's buy something
                 </Link>
             </div>
         ) : (

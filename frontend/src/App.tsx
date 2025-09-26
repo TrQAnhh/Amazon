@@ -8,7 +8,8 @@ import { Products } from './pages/Products';
 import { Orders } from './pages/Orders';
 import { ProductDetail } from "./pages/ProductDetail.tsx";
 import { OrderDetails } from "./pages/OrderDetails.tsx";
-import {CheckoutSuccess} from "./pages/CheckOutSuccess.tsx";
+import { CheckoutSuccess } from "./pages/CheckOutSuccess.tsx";
+import { Cart } from "./pages/Cart.tsx";
 
 function App() {
   return (
@@ -20,6 +21,14 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/products" element={<Products />}/>
             <Route path="/products/:sku" element={<ProductDetail />} />
+            <Route
+              path="/cart"
+              element={
+                  <ProtectedRoute>
+                      <Cart />
+                  </ProtectedRoute>
+              }
+            />
             <Route
               path="/orders"
               element={

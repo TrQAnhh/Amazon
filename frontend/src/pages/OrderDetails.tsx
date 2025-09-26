@@ -16,6 +16,7 @@ export const OrderDetails: React.FC = () => {
             try {
                 setLoading(true);
                 const response = await apiService.getOrderDetails(Number(orderId));
+                console.log(response.data);
                 setOrder(response.data);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load order details');
@@ -75,9 +76,18 @@ export const OrderDetails: React.FC = () => {
                 </p>
             </div>
 
-            <p><strong>Created At:</strong> {new Date(order.createdAt).toLocaleString('vi-VN')}</p>
-            <p><strong>Payment Method:</strong> {order.paymentMethod}</p>
-            <p><strong>Payment Status:</strong> {order.paymentStatus}</p>
+            <div className="flex justify-between items-center border rounded p-4 space-y-2">
+                <div>
+                    <p><strong>Full Name:</strong> {order.orderInfo?.firstName} {order.orderInfo?.middleName} {order.orderInfo?.lastName}</p>
+                    <p><strong>Email:</strong> {order.orderInfo?.email}</p>
+                    <p><strong>Address:</strong> {order.orderInfo?.address}</p>
+                </div>
+                <div>
+                    <p><strong>Created At:</strong> {new Date(order.createdAt).toLocaleString('vi-VN')}</p>
+                    <p><strong>Payment Method:</strong> {order.paymentMethod}</p>
+                    <p><strong>Payment Status:</strong> {order.paymentStatus}</p>
+                </div>
+            </div>
 
             <h2 className="text-2xl font-semibold mt-6 mb-4">Items</h2>
             <div className="space-y-4">
@@ -120,7 +130,7 @@ export const OrderDetails: React.FC = () => {
                 )}
                 </div>
                 <div>
-                    Total Amount: ${parseFloat(order.totalAmount).toFixed(2)}
+                    Total: ${parseFloat(order.totalAmount).toFixed(2)}
                 </div>
             </div>
         </div>

@@ -40,6 +40,7 @@ export const ProductDetail: React.FC = () => {
         try {
             addToCart(
                 {
+                    id: product.id,
                     sku: product.sku,
                     name: product.name,
                     price: product.price,
@@ -76,12 +77,12 @@ export const ProductDetail: React.FC = () => {
                 />
                 <button
                     onClick={handleAddToCart}
-                    className="flex items-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    className="flex items-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-bold"
                 >
                     <ShoppingCart className="w-6 h-6" />
                 </button>
                 <button
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-bold"
                 >
                     Buy Now
                 </button>

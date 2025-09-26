@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CartItem } from "../types";
+import { saveCart } from "../utils/cart.ts";
 
 export const CheckoutSuccess: React.FC = () => {
     const navigate = useNavigate();
     const [countdown, setCountdown] = useState(5);
+    const [,setCart] = useState<CartItem[]>([]);
+
 
     useEffect(() => {
         if (countdown === 0) {
+            setCart([]);
+            saveCart([]);
             navigate('/orders');
             return;
         }

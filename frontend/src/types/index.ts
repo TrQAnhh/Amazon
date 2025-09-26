@@ -50,7 +50,16 @@ export interface Order {
     status: 'PENDING' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELED';
     paymentMethod: string;
     paymentStatus: string;
+    orderInfo: OrderInfo;
     items: OrderItem[];
+}
+
+export interface OrderInfo {
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    email: string;
+    address: string;
 }
 
 export interface OrderItem {
@@ -65,7 +74,20 @@ export interface OrderItem {
 }
 
 export interface CreateOrderRequest {
-  products: OrderItem[];
+    paymentMethod: 'STRIPE' | 'COD';
+    items: {
+        productId: number;
+        quantity: number;
+    }[];
+}
+
+export interface CartItem {
+    id: number;
+    sku: string;
+    name: string;
+    price: number;
+    imageUrl: string;
+    quantity: number;
 }
 
 export interface PaymentRequest {

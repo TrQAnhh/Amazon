@@ -1,24 +1,20 @@
-import {CommandHandler, ICommandHandler, QueryBus} from "@nestjs/cqrs";
-import { CancelOrderCommand } from "./cancel-order.command";
-import { OrderEntity } from "../../entity/order.entity";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { ErrorCode, OrderStatus, SERVICE_NAMES, UserRole } from "@app/common";
-import { ClientProxy, RpcException } from "@nestjs/microservices";
+import { ErrorCode, OrderStatus, RepositoryService, SERVICE_NAMES, UserRole } from "@app/common";
+import { getOrderProducts } from "../../helpers/get-order-products.helper";
 import { PaymentStatus } from "@app/common/constants/payment-status.enum";
+import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { GetOrderQuery } from "../../queries/get-order/get-order.query";
-import { firstValueFrom } from "rxjs";
+import { ClientProxy, RpcException } from "@nestjs/microservices";
+import { CancelOrderCommand } from "./cancel-order.command";
 import { Inject } from "@nestjs/common";
-import {getOrderProducts} from "../../helpers/get-order-products.helper";
+import { firstValueFrom } from "rxjs";
 
 @CommandHandler(CancelOrderCommand)
 export class CancelOrderHandler implements ICommandHandler<CancelOrderCommand> {
     constructor(
-        @InjectRepository(OrderEntity)
-        private readonly orderRepo: Repository<OrderEntity>,
-        private readonly queryBus: QueryBus,
         @Inject(SERVICE_NAMES.PRODUCT)
         private readonly productClient: ClientProxy,
+        private readonly repository: RepositoryService,
+        private readonly queryBus: QueryBus,
     ) {}
 
     async execute(command: CancelOrderCommand): Promise<string> {
@@ -58,10 +54,10 @@ export class CancelOrderHandler implements ICommandHandler<CancelOrderCommand> {
             throw new RpcException(err);
         }
 
-        await this.orderRepo.update(order.id, {
+        await this.repository.order.update(order.id,{
             status: OrderStatus.CANCELED,
             paymentStatus: PaymentStatus.CANCELED,
-        });
+        })
 
         return 'Cancel order successfully';
     }

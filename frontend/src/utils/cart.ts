@@ -1,16 +1,12 @@
-// utils/cart.ts
-export interface CartItem {
-    sku: string;
-    name: string;
-    price: number;
-    imageUrl: string;
-    quantity: number;
-}
+import { CartItem } from "../types";
 
 const CART_KEY = 'my_cart';
 
 export const getCart = (): CartItem[] => {
-    if (typeof window === 'undefined') return [];
+    if (typeof window === 'undefined') {
+        return []
+    }
+
     const cart = localStorage.getItem(CART_KEY);
     return cart ? JSON.parse(cart) : [];
 };

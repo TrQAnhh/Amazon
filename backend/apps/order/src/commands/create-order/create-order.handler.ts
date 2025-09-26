@@ -1,32 +1,26 @@
-import {CommandBus, CommandHandler, ICommandHandler} from '@nestjs/cqrs';
-import {CreateOrderCommand} from './create-order.command';
-import {OrderEntity} from '../../entity/order.entity';
-import {Repository} from 'typeorm';
-import {InjectRepository} from '@nestjs/typeorm';
-import {OrderItemEntity} from '../../entity/order-items.entity';
-import {getOrderProducts} from '../../helpers/get-order-products.helper';
-import {ErrorCode, PaymentMethod, SERVICE_NAMES} from '@app/common';
-import {Inject} from '@nestjs/common';
-import {ClientProxy, RpcException} from '@nestjs/microservices';
-import {firstValueFrom} from "rxjs";
-import {CheckOutCommand} from "../check-out/check-out.command";
+import { ErrorCode, PaymentMethod, RepositoryService, SERVICE_NAMES } from '@app/common';
+import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { getOrderProducts } from '../../helpers/get-order-products.helper';
+import { OrderItemEntity } from '../../entity/order-items.entity';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { CheckOutCommand } from "../check-out/check-out.command";
+import { CreateOrderCommand } from './create-order.command';
+import { Inject } from '@nestjs/common';
+import { firstValueFrom } from "rxjs";
 
 @CommandHandler(CreateOrderCommand)
 export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
   constructor(
-    @InjectRepository(OrderEntity)
-    private readonly orderRepo: Repository<OrderEntity>,
-    @InjectRepository(OrderItemEntity)
-    private readonly orderItemRepo: Repository<OrderItemEntity>,
     @Inject(SERVICE_NAMES.PRODUCT)
     private readonly productClient: ClientProxy,
     private readonly commandBus: CommandBus,
+    private readonly repository: RepositoryService,
   ) {}
 
   async execute(command: CreateOrderCommand): Promise<string | null> {
     const { role, userId, createOrderDto } = command;
 
-    const order = this.orderRepo.create({
+    const order = this.repository.order.create({
       userId,
       paymentMethod: createOrderDto.paymentMethod,
       totalAmount: 0,
@@ -61,7 +55,7 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
       totalAmount += total;
 
       orderItemEntities.push(
-        this.orderItemRepo.create({
+        this.repository.orderItem.create({
             productId: product.id,
             price: product.price,
             quantity: item.quantity,
@@ -77,7 +71,7 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
 
     order.totalAmount = totalAmount;
     order.items = orderItemEntities;
-    const savedOrder = await this.orderRepo.save(order);
+    const savedOrder = await this.repository.order.save(order);
 
     try {
       await firstValueFrom(this.productClient.send({ cmd: 'update_stock' }, { items: updateStockItems }));
