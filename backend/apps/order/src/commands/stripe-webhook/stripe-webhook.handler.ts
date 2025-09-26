@@ -1,17 +1,13 @@
-import {StripeWebhookCommand} from "./stripe-webhook.command";
-import {CommandHandler, ICommandHandler} from "@nestjs/cqrs";
-import {OrderEntity} from "../../entity/order.entity";
-import {InjectRepository} from "@nestjs/typeorm";
-import {Not, Repository} from "typeorm";
-import {StripeService} from "../../modules/stripe/service/stripe.service";
-import { OrderStatus} from "@app/common";
+import { StripeService } from "../../modules/stripe/service/stripe.service";
 import { PaymentStatus} from "@app/common/constants/payment-status.enum";
+import { StripeWebhookCommand } from "./stripe-webhook.command";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { OrderStatus, RepositoryService } from "@app/common";
 
 @CommandHandler(StripeWebhookCommand)
 export class StripeWebhookHandler implements ICommandHandler<StripeWebhookCommand> {
     constructor(
-        @InjectRepository(OrderEntity)
-        private orderRepo: Repository<OrderEntity>,
+        private readonly repository: RepositoryService,
         private readonly stripeService: StripeService,
     ) {}
 
@@ -26,8 +22,7 @@ export class StripeWebhookHandler implements ICommandHandler<StripeWebhookComman
         switch (event.type) {
             case 'checkout.session.completed':
 
-                const result = await this.orderRepo.update(
-                    { sessionId: session.id, status: Not(OrderStatus.PAID) },
+                const result = await this.repository.order.updateBySessionId(session.id,
                     {
                         status: OrderStatus.PAID,
                         paymentStatus: PaymentStatus.PAID,
@@ -43,8 +38,7 @@ export class StripeWebhookHandler implements ICommandHandler<StripeWebhookComman
 
             case 'checkout.session.expired':
             case 'payment_intent.payment_failed':
-                const failResult = await this.orderRepo.update(
-                    { sessionId: session.id, status: Not(OrderStatus.FAILED) },
+                const failResult = await this.repository.order.updateBySessionId(session.id,
                     {
                         status: OrderStatus.FAILED,
                         paymentStatus: PaymentStatus.FAILED,

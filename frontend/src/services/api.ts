@@ -89,7 +89,7 @@ export class ApiService {
   }
 
   async createOrder(order: CreateOrderRequest) {
-    const response = await authorizedFetch(`${API_BASE}/orders`, {
+    const response = await authorizedFetch(`${API_BASE}/order/create`, {
       method: 'POST',
       headers: this.getAuthHeaders(),
       body: JSON.stringify(order),

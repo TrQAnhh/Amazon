@@ -1,24 +1,23 @@
+import { ErrorCode, OrderResponseDto, RepositoryService } from "@app/common";
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { GetAllOrdersQuery } from "./get-all-orders.query";
-import { OrderEntity } from "../../entity/order.entity";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { OrderResponseDto } from "@app/common";
 import { plainToInstance } from "class-transformer";
+import { RpcException } from "@nestjs/microservices";
 
 @QueryHandler(GetAllOrdersQuery)
 export class GetAllOrdersHandler implements IQueryHandler<GetAllOrdersQuery> {
     constructor(
-        @InjectRepository(OrderEntity)
-        private readonly orderRepo: Repository<OrderEntity>,
+        private readonly repository: RepositoryService,
     ) {}
 
     async execute(query: GetAllOrdersQuery): Promise<OrderResponseDto[]> {
         const { userId } = query;
 
-        const orders = await this.orderRepo.find({
-            where: { userId },
-        });
+        const orders = await this.repository.order.findAllByUserId(userId);
+
+        if(!orders) {
+            throw new RpcException(ErrorCode.ORDER_NOT_FOUND);
+        }
 
         return plainToInstance(OrderResponseDto, orders, {
             excludeExtraneousValues: true,

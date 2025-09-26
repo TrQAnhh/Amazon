@@ -1,5 +1,11 @@
 import { Controller, UseFilters } from '@nestjs/common';
-import { AdminProfileResponseDto, ProfileResponseDto, SignUpDto, UpdateProfileDto } from '@app/common';
+import {
+    AdminProfileResponseDto,
+    ProfileResponseDto,
+    SignUpDto,
+    UpdateProfileDto,
+    UserOrderInfoResponseDto
+} from '@app/common';
 import { ProfileExceptionFilter } from '../exception/profile-exception.filter';
 import { MessagePattern } from '@nestjs/microservices';
 import { ProfileEntity } from '../entity/profile.identity';
@@ -9,6 +15,7 @@ import { GetUserProfileQuery } from '../queries/get-user-profile/get-user-profil
 import { GetAllUserProfilesQuery } from '../queries/get-all-user-profiles/get-all-user-profiles.query';
 import { UpdateProfileCommand } from '../commands/update-profile/update-profile.command';
 import { UploadAvatarCommand } from '../commands/upload-avatar/upload-avatar.command';
+import {GetUserOrderInfoQuery} from "../queries/get-user-order-info/get-user-order-info.query";
 
 @Controller()
 @UseFilters(ProfileExceptionFilter)
@@ -26,6 +33,11 @@ export class ProfileController {
   @MessagePattern({ cmd: 'get_user_profile' })
   async getUserProfile(payload: { userId: number }): Promise<ProfileResponseDto> {
     return this.queryBus.execute(new GetUserProfileQuery(payload.userId));
+  }
+
+  @MessagePattern({ cmd: 'get_user_order_info' })
+  async getUserOrderInfo(payload: { userId: number }): Promise<UserOrderInfoResponseDto> {
+    return this.queryBus.execute(new GetUserOrderInfoQuery(payload.userId));
   }
 
   @MessagePattern({ cmd: 'create_profile' })
