@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import {Link, useNavigate, useParams} from 'react-router-dom';
 import { ApiService } from '../services/api';
 import { Product } from '../types';
 import { addToCart } from "../utils/cart.ts";
-import { ShoppingCart } from 'lucide-react';
+import { ArrowLeft, ShoppingCart } from 'lucide-react';
+import { useAuth } from "../context/AuthContext.tsx";
 
 export const ProductDetail: React.FC = () => {
+    const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
     const { sku } = useParams<{ sku: string }>();
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
@@ -37,6 +40,11 @@ export const ProductDetail: React.FC = () => {
     const handleAddToCart = () => {
         if (!product) return;
 
+        if (!isAuthenticated) {
+            navigate('/signin');
+            return;
+        }
+
         try {
             addToCart(
                 {
@@ -46,6 +54,7 @@ export const ProductDetail: React.FC = () => {
                     price: product.price,
                     imageUrl: product.imageUrl,
                     quantity,
+                    availableStock: product.availableStock,
                 },
                 product.availableStock
             );
@@ -55,9 +64,36 @@ export const ProductDetail: React.FC = () => {
         }
     };
 
+    const handleBuy = () => {
+        if (!product) return;
+
+        if (!isAuthenticated) {
+            navigate("/signin");
+            return;
+        }
+
+        navigate("/buy-now", {
+            state: {
+                product: {
+                    id: product.id,
+                    sku: product.sku,
+                    name: product.name,
+                    price: product.price,
+                    imageUrl: product.imageUrl,
+                    quantity: quantity,
+                },
+                quantity,
+            },
+        });
+    };
 
     return (
         <div className="max-w-3xl mx-auto p-6">
+            <Link to="/" className="flex items-center text-blue-600 font-bold mb-4">
+                <ArrowLeft className="w-3 h-3 mr-2" />
+                Continue shopping
+            </Link>
+
             <img src={product.imageUrl} alt={product.name} className="w-full h-80 object-cover rounded mb-4" />
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
             <p className="text-gray-700 mb-4">{product.description}</p>
@@ -82,6 +118,7 @@ export const ProductDetail: React.FC = () => {
                     <ShoppingCart className="w-6 h-6" />
                 </button>
                 <button
+                    onClick={handleBuy}
                     className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-bold"
                 >
                     Buy Now

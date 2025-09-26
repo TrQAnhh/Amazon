@@ -1,10 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateProductCommand } from './create-product.command';
 import { RpcException } from '@nestjs/microservices';
-import { ErrorCode, RepositoryService } from '@app/common';
+import { ErrorCode } from '@app/common';
 import { CloudinaryService } from '@app/common/cloudinary/service/cloudinary.service';
 import { ProductResponseDto } from '@app/common/dto/product/response';
 import { plainToInstance } from 'class-transformer';
+import { RepositoryService } from "@repository/repository.service";
 
 @CommandHandler(CreateProductCommand)
 export class CreateProductHandler implements ICommandHandler<CreateProductCommand> {

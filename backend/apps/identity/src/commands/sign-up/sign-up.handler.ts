@@ -1,4 +1,4 @@
-import { AuthResponseDto, ErrorCode, RepositoryService, RedisHelper, SERVICE_NAMES } from '@app/common';
+import { AuthResponseDto, ErrorCode, RedisHelper, SERVICE_NAMES } from '@app/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SignUpCommand } from './sign-up.command';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
@@ -7,6 +7,7 @@ import { firstValueFrom } from 'rxjs';
 import { Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
+import { RepositoryService } from "@repository/repository.service";
 
 @CommandHandler(SignUpCommand)
 export class SignUpHandler implements ICommandHandler<SignUpCommand> {

@@ -1,21 +1,23 @@
-import { Module } from '@nestjs/common';
-import { IdentityController } from './controller/identity.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { IdentityEntity } from './entity/identity.entity';
-import { typeOrmConfigAsync } from './config/typeorm.config';
-import { JwtModule } from '@nestjs/jwt';
-import { APP_FILTER } from '@nestjs/core';
-import { IdentityExceptionFilter } from './exception/identity-exception.filter';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { CqrsModule } from '@nestjs/cqrs';
-import { GetUserIdentityHandler } from './queries/get-user-identity/get-user-identity.handler';
 import { GetUserIdentitiesHandler } from './queries/get-user-identities/get-user-identities.handler';
+import { GetUserIdentityHandler } from './queries/get-user-identity/get-user-identity.handler';
+import { ValidateTokenHandler } from './queries/validate-token/validate-token.handler';
+import { IdentityExceptionFilter } from './exception/identity-exception.filter';
+import { RefreshTokenHandler } from './commands/refresh-token/refresh-token.handler';
+import { IdentityController } from './controller/identity.controller';
+import { SignOutHandler } from './commands/sign-out/sign-out.handler';
+import { RedisConfig, RedisModule, SERVICE_NAMES } from '@app/common';
 import { SignUpHandler } from './commands/sign-up/sign-up.handler';
 import { SignInHandler } from './commands/sign-in/sign-in.handler';
-import { ValidateTokenHandler } from './queries/validate-token/validate-token.handler';
-import { RedisConfig, RedisModule, RepositoryModule, SERVICE_NAMES } from '@app/common';
-import { RefreshTokenHandler } from './commands/refresh-token/refresh-token.handler';
-import { SignOutHandler } from './commands/sign-out/sign-out.handler';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { RepositoryModule } from "@repository/repository.module";
+import { typeOrmConfigAsync } from './config/typeorm.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CqrsModule } from '@nestjs/cqrs';
+import { APP_FILTER } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
+import { Module } from '@nestjs/common';
+
+
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
 

@@ -14,6 +14,7 @@ export class StripeService {
               mode: 'payment',
               success_url: process.env.SUCCESSFUL_URL,
               cancel_url: `${process.env.CANCEL_URL}/${orderId}`,
+              expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
           });
           return session;
       } catch (error) {

@@ -1,7 +1,8 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetUserIdentityQuery } from './get-user-identity.query';
 import { RpcException } from '@nestjs/microservices';
-import { ErrorCode, IdentityResponseDto, RepositoryService } from '@app/common';
+import { ErrorCode, IdentityResponseDto } from '@app/common';
+import { RepositoryService } from "@repository/repository.service";
 
 @QueryHandler(GetUserIdentityQuery)
 export class GetUserIdentityHandler implements IQueryHandler<GetUserIdentityQuery> {

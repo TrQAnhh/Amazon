@@ -1,7 +1,8 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { OrderStatus, PaymentMethod } from '@app/common';
-import { PaymentStatus } from '@app/common/constants/payment-status.enum';
 import { OrderItemEntity } from './order-items.entity';
+import { OrderStatus } from "@app/common/constants/order-status.enum";
+import { PaymentStatus } from "@app/common/constants/payment-status.enum";
+import { PaymentMethod } from "@app/common/constants/payment-method.enum";
 
 @Entity()
 export class OrderEntity {

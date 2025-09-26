@@ -1,30 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ApiService } from '../services/api';
-import { Order } from "../types";
+import { Order, PaymentMethod } from "../types";
 
 export const OrderDetails: React.FC = () => {
     const { orderId } = useParams<{ orderId: string }>();
     const [order, setOrder] = useState<Order | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>();
 
     const apiService = new ApiService();
 
-    useEffect(() => {
-        const fetchOrder = async () => {
-            try {
-                setLoading(true);
-                const response = await apiService.getOrderDetails(Number(orderId));
-                console.log(response.data);
-                setOrder(response.data);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to load order details');
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchOrder = async () => {
+        try {
+            setLoading(true);
+            const response = await apiService.getOrderDetails(Number(orderId));
+            setPaymentMethod(response.data.paymentMethod);
+            setOrder(response.data);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to load order details');
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchOrder();
     }, [orderId]);
 
@@ -43,6 +45,20 @@ export const OrderDetails: React.FC = () => {
             } catch (error: any) {
                 alert(error.message || 'Failed to cancel order');
             }
+        }
+    };
+
+    const handleOrderUpdate = async () => {
+        if (!order) return;
+        try {
+            await apiService.updateOrder(order.id, {
+             paymentMethod: paymentMethod as PaymentMethod,
+            });
+            setIsEditing(false);
+            alert("Order updated successfully");
+            fetchOrder();
+        } catch (err: any) {
+            alert(err.message || "Failed to update order");
         }
     };
 
@@ -84,7 +100,21 @@ export const OrderDetails: React.FC = () => {
                 </div>
                 <div>
                     <p><strong>Created At:</strong> {new Date(order.createdAt).toLocaleString('vi-VN')}</p>
-                    <p><strong>Payment Method:</strong> {order.paymentMethod}</p>
+                    <p>
+                        <strong>Payment Method:</strong>{' '}
+                        {isEditing ? (
+                            <select
+                                value={paymentMethod}
+                                onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
+                                className="border rounded px-2 py-1"
+                            >
+                                <option value="STRIPE">STRIPE</option>
+                                <option value="COD">COD</option>
+                            </select>
+                        ) : (
+                            order.paymentMethod
+                        )}
+                    </p>
                     <p><strong>Payment Status:</strong> {order.paymentStatus}</p>
                 </div>
             </div>
@@ -110,9 +140,15 @@ export const OrderDetails: React.FC = () => {
 
             <div className="flex justify-between mt-6 border-t pt-4 text-right text-xl font-bold">
                 <div className="space-x-4">
-                {!(order.status.toLowerCase() === 'canceled' || order.paymentStatus.toLowerCase() === 'paid') && (
+                {!(
+                    order.status.toLowerCase() === 'canceled' ||
+                    order.paymentStatus.toLowerCase() === 'paid' ||
+                    order.paymentStatus.toLowerCase() === 'processing'
+                ) && (
                     <>
-                        {!(order.paymentMethod.toLowerCase() === 'cod') && (
+                        {!(
+                            order.paymentMethod.toLowerCase() === 'cod'
+                        ) && (
                             <button
                                 onClick={() => handleCheckout()}
                                 className="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded"
@@ -126,6 +162,21 @@ export const OrderDetails: React.FC = () => {
                         >
                             Cancel
                         </button>
+                        {!isEditing ? (
+                            <button
+                                onClick={() => setIsEditing(true)}
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded"
+                            >
+                                Update
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => handleOrderUpdate()}
+                                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-5 py-2 rounded"
+                            >
+                                Save
+                            </button>
+                        )}
                     </>
                 )}
                 </div>

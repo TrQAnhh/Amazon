@@ -10,6 +10,7 @@ import { ProductDetail } from "./pages/ProductDetail.tsx";
 import { OrderDetails } from "./pages/OrderDetails.tsx";
 import { CheckoutSuccess } from "./pages/CheckOutSuccess.tsx";
 import { Cart } from "./pages/Cart.tsx";
+import { BuyNow } from "./pages/BuyNow.tsx";
 
 function App() {
   return (
@@ -50,6 +51,14 @@ function App() {
               element={
                   <ProtectedRoute>
                       <CheckoutSuccess />
+                  </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/buy-now"
+              element={
+                  <ProtectedRoute>
+                      <BuyNow />
                   </ProtectedRoute>
               }
             />

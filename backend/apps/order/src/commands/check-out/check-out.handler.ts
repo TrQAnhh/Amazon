@@ -1,10 +1,10 @@
+import { ErrorCode, UserRole, PaymentStatus } from "@app/common";
 import { StripeService } from "../../modules/stripe/service/stripe.service";
-import { PaymentStatus } from "@app/common/constants/payment-status.enum";
 import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { GetOrderQuery } from "../../queries/get-order/get-order.query";
-import { ErrorCode, RepositoryService, UserRole } from "@app/common";
 import { CheckOutCommand } from "./check-out.command";
 import { RpcException } from "@nestjs/microservices";
+import { RepositoryService } from "@repository/repository.service";
 
 @CommandHandler(CheckOutCommand)
 export class CheckOutHandler implements ICommandHandler<CheckOutCommand> {
@@ -20,6 +20,10 @@ export class CheckOutHandler implements ICommandHandler<CheckOutCommand> {
 
         if (order.paymentStatus === PaymentStatus.PAID) {
             throw new RpcException(ErrorCode.ORDER_ALREADY_PAID);
+        }
+
+        if (order.paymentStatus === PaymentStatus.PROCESSING) {
+            throw new RpcException(ErrorCode.ORDER_PROCESSING);
         }
 
         if (role !== UserRole.ADMIN && order.userId !== userId) {
@@ -39,7 +43,10 @@ export class CheckOutHandler implements ICommandHandler<CheckOutCommand> {
         }));
 
         const session = await this.stripeService.checkout(orderId,lineItems);
-        await this.repository.order.update(orderId, { sessionId: session.id })
+        await this.repository.order.update(orderId, {
+            sessionId: session.id,
+            paymentStatus: PaymentStatus.PROCESSING,
+        })
 
         return session.url;
     }

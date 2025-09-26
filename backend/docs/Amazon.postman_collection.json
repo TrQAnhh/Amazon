@@ -33,7 +33,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"nvclong2512@gmail.com\",\r\n    \"password\": \"Tranquocanh@123\",\r\n    \"firstName\": \"Long\",\r\n    \"middleName\": \"Vu Cao\",\r\n    \"lastName\": \"Ngo\",\r\n    \"deviceId\": \"device-4\"\r\n}",
+							"raw": "{\r\n    \"email\": \"tranqanh2810@gmail.com\",\r\n    \"password\": \"Tranquocanh@123\",\r\n    \"firstName\": \"Anh\",\r\n    \"middleName\": \"Quoc\",\r\n    \"lastName\": \"Tran\",\r\n    \"deviceId\": \"device-1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -177,7 +177,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n   \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsInRva2VuSWQiOiIyODUxYWRiZi0xM2M5LTRhODktYWQ1Ny00MWMxNTczODYyOTgiLCJkZXZpY2VJZCI6ImRldmljZS0xIiwiaWF0IjoxNzU4NTM1MjI2LCJleHAiOjE3NTkxNDAwMjZ9.0IRMWbZfK9cdFJ_O7ud5d4LrrFNaYdOfBHLN7IiuJek\"\r\n}",
+							"raw": "{\r\n   \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsInRva2VuSWQiOiI4ZGQ5MzA1NC1iZGYxLTQ0MmItYjliOS1jMjYxOGZmMTIyZjYiLCJkZXZpY2VJZCI6ImRldmljZS0xIiwiaWF0IjoxNzU4NzY1NTIxLCJleHAiOjE3NTkzNzAzMjF9.yNsJUDY5RSw_hjmGAMDshikQRuO3SlnaU9INQ9DcI2M\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -413,7 +413,7 @@
 									"type": "text"
 								},
 								{
-									"key": "quantity",
+									"key": "availableStock",
 									"value": "7",
 									"type": "text"
 								},
@@ -492,7 +492,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"description\": \"The Konica Aiborg is a modern film camera with advanced autofocus and compact design.\"\r\n}",
+							"raw": "{\r\n    \"availableStock\": 10\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -500,7 +500,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product/update/KONICA-AIBORG",
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product/update/20",
 							"protocol": "{{PROTOCOL}}",
 							"host": [
 								"{{SERVER_IP}}"
@@ -509,7 +509,7 @@
 							"path": [
 								"product",
 								"update",
-								"KONICA-AIBORG"
+								"20"
 							]
 						}
 					},
@@ -565,7 +565,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product/KONICA-AIBORG",
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product/19",
 							"protocol": "{{PROTOCOL}}",
 							"host": [
 								"{{SERVER_IP}}"
@@ -573,7 +573,7 @@
 							"port": "{{PORT}}",
 							"path": [
 								"product",
-								"KONICA-AIBORG"
+								"19"
 							]
 						}
 					},
@@ -600,11 +600,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"paymentMethod\": \"COD\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": 22,\r\n      \"quantity\": 2\r\n    }\r\n  ]\r\n}\r\n",
+							"raw": "{\r\n  \"paymentMethod\": \"STRIPE\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": 22,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"productId\": 20,\r\n      \"quantity\": 1\r\n    },\r\n    {\r\n      \"productId\": 19,\r\n      \"quantity\": 3\r\n    }\r\n  ]\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -621,6 +631,187 @@
 							"path": [
 								"order",
 								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all orders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"order",
+								"my-orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get order details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/47",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"order",
+								"my-orders",
+								"47"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "check out",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/47",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"order",
+								"my-orders",
+								"47"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cancle order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/4",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"order",
+								"my-orders",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"paymentMethod\": \"COD\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/47",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"order",
+								"my-orders",
+								"47"
 							]
 						}
 					},

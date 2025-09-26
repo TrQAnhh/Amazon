@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { ProfileEntity } from "../../../../apps/profile/src/entity/profile.identity";
+import { ProfileEntity } from "../profile/src/entity/profile.identity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 

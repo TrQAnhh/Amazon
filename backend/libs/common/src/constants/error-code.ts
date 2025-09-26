@@ -12,6 +12,7 @@ export class ErrorCode {
   static readonly PRODUCT_NOT_FOUND = new ErrorCode(404, 'Product with given information does not exis', HttpStatus.NOT_FOUND);
   static readonly ORDER_NOT_FOUND = new ErrorCode(404, 'Order with given information does not exis', HttpStatus.NOT_FOUND);
   static readonly INVALID_JWT_TOKEN = new ErrorCode(401, 'Invalid or expired JWT token', HttpStatus.UNAUTHORIZED);
+  static readonly ORDER_PROCESSING = new ErrorCode(409, 'Order is currently being processed for payment', HttpStatus.CONFLICT);
   static readonly ORDER_ALREADY_PAID = new ErrorCode(409, 'Order has already been paid', HttpStatus.CONFLICT);
   static readonly EMAIL_EXISTED = new ErrorCode(409, 'Email has already been registered', HttpStatus.CONFLICT);
   static readonly USER_PROFILE_EXISTED = new ErrorCode(409, 'User profile already exists', HttpStatus.CONFLICT);
