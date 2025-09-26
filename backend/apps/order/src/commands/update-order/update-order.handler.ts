@@ -18,8 +18,6 @@ export class UpdateOrderHandler implements ICommandHandler<UpdateOrderCommand> {
 
         const order = await this.queryBus.execute(new GetOrderQuery(role, userId, orderId));
 
-        console.log(order);
-
         if (role !== UserRole.ADMIN && order.userId !== userId) {
             throw new RpcException(ErrorCode.UNAUTHORIZED);
         }

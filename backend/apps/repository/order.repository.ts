@@ -22,6 +22,7 @@ export class OrderRepository {
     async findAllByUserId(userId: number): Promise<OrderEntity[]> {
         return this.repo.find({
             where: { userId },
+            order: { createdAt: 'DESC' },
         });
     }
 
