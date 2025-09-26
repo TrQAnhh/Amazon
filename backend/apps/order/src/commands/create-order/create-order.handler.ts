@@ -1,6 +1,7 @@
-import { ErrorCode, PaymentMethod, RepositoryService, SERVICE_NAMES } from '@app/common';
+import { ErrorCode, RepositoryService, SERVICE_NAMES } from '@app/common';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { getOrderProducts } from '../../helpers/get-order-products.helper';
+import { PaymentMethod } from "../../constants/enums/payment-method.enum";
 import { OrderItemEntity } from '../../entity/order-items.entity';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { CheckOutCommand } from "../check-out/check-out.command";

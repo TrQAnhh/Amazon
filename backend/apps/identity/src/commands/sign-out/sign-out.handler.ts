@@ -9,12 +9,12 @@ export class SignOutHandler implements ICommandHandler<SignOutCommand> {
   async execute(command: SignOutCommand): Promise<string> {
     const { user } = command;
 
-    const redisKey = `access:${user.deviceId}`;
+    const redisKey = `access:${user.tokenId}`;
 
     const now = Math.floor(Date.now() / 1000);
     const ttl = user.exp - now;
 
-    await this.redisHelper.sadd(redisKey, user.tokenId, ttl);
+    await this.redisHelper.set(redisKey, '1', ttl);
     await this.redisHelper.del(`refresh:${user.deviceId}`);
     await this.redisHelper.del(`validated:${user.deviceId}`);
 

@@ -1,8 +1,9 @@
 import { StripeService } from "../../modules/stripe/service/stripe.service";
-import { PaymentStatus} from "@app/common/constants/payment-status.enum";
+import { PaymentStatus} from "../../constants/enums/payment-status.enum";
 import { StripeWebhookCommand } from "./stripe-webhook.command";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { OrderStatus, RepositoryService } from "@app/common";
+import { RepositoryService } from "@app/common";
+import { OrderStatus } from "../../constants/enums/order-status.enum";
 
 @CommandHandler(StripeWebhookCommand)
 export class StripeWebhookHandler implements ICommandHandler<StripeWebhookCommand> {

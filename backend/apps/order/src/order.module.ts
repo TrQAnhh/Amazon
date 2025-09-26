@@ -17,6 +17,9 @@ import { CancelOrderHandler } from "./commands/cancel-order/cancel-order.handler
 import { StripeWebhookHandler } from "./commands/stripe-webhook/stripe-webhook.handler";
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
+import {OrderItemEntity} from "./entity/order-items.entity";
+import {OrderEntity} from "./entity/order.entity";
+import {UpdateOrderHandler} from "./commands/update-order/update-order.handler";
 
 dotenv.config();
 
@@ -55,6 +58,7 @@ dotenv.config();
     GetAllOrdersHandler,
     GetOrderHandler,
     CheckOutHandler,
+    UpdateOrderHandler,
     CancelOrderHandler,
     StripeWebhookHandler,
     {

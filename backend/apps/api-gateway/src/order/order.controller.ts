@@ -1,7 +1,7 @@
-import {Body, Controller, Delete, Get, Inject, Param, Post, Req} from '@nestjs/common';
-import { CreateOrderDto, OrderResponseDto, SERVICE_NAMES } from '@app/common';
+import {Body, Controller, Delete, Get, Inject, Param, Patch, Post, Req} from '@nestjs/common';
+import { CreateOrderDto, OrderResponseDto, SERVICE_NAMES, UpdateOrderDto } from '@app/common';
 import { Response } from '../common/interceptors/transform/transform.interceptor';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, Payload } from '@nestjs/microservices';
 import { BaseController } from '../common/base/base.controller';
 
 @Controller('order')
@@ -61,6 +61,22 @@ export class OrderController extends BaseController {
           message: `Check out order ${orderId} sucessfully!`,
           success: true,
           data: url,
+      }
+  }
+
+  @Patch('/my-orders/:orderId')
+  async updateOrder(
+      @Req() request: any,
+      @Payload() updateOrderDto: UpdateOrderDto,
+      @Param('orderId') orderId: number,
+  ) {
+      const role = request.user.role;
+      const userId = request.user.userId;
+      const message = await this.sendCommand<string>({ cmd: 'update_order' }, { role, userId, orderId, updateOrderDto });
+      return {
+          message: message,
+          success: true,
+          data: null,
       }
   }
 

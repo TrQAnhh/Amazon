@@ -43,12 +43,14 @@ export interface UpdateProductRequest {
   stock?: number;
 }
 
+export type PaymentMethod = "STRIPE" | "COD";
+
 export interface Order {
     id: number;
     createdAt: string;
     totalAmount: string;
     status: 'PENDING' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELED';
-    paymentMethod: string;
+    paymentMethod: PaymentMethod;
     paymentStatus: string;
     orderInfo: OrderInfo;
     items: OrderItem[];
@@ -74,11 +76,15 @@ export interface OrderItem {
 }
 
 export interface CreateOrderRequest {
-    paymentMethod: 'STRIPE' | 'COD';
+    paymentMethod: PaymentMethod;
     items: {
         productId: number;
         quantity: number;
     }[];
+}
+
+export interface UpdateOrderRequest {
+    paymentMethod: PaymentMethod;
 }
 
 export interface CartItem {

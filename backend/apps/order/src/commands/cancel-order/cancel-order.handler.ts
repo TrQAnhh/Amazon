@@ -1,6 +1,7 @@
-import { ErrorCode, OrderStatus, RepositoryService, SERVICE_NAMES, UserRole } from "@app/common";
+import { ErrorCode, RepositoryService, SERVICE_NAMES, UserRole } from "@app/common";
 import { getOrderProducts } from "../../helpers/get-order-products.helper";
-import { PaymentStatus } from "@app/common/constants/payment-status.enum";
+import { PaymentStatus } from "../../constants/enums/payment-status.enum";
+import { OrderStatus } from "../../constants/enums/order-status.enum";
 import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { GetOrderQuery } from "../../queries/get-order/get-order.query";
 import { ClientProxy, RpcException } from "@nestjs/microservices";

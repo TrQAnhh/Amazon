@@ -83,15 +83,25 @@ export const Cart: React.FC = () => {
 
             <div className="space-y-4">
                 {cart.map(item => (
-                    <div key={item.sku} className="flex items-center justify-between border-b pb-4">
+                    <div
+                        key={item.sku}
+                        className="grid grid-cols-[3fr_1fr_2fr_auto] items-center border-b pb-4 gap-4"
+                    >
                         <div className="flex items-center gap-4">
-                            <img src={item.imageUrl} alt={item.name} className="w-24 h-24 object-cover rounded" />
-                            <div>
-                                <h2 className="text-xl font-semibold">{item.name}</h2>
+                            <img
+                                src={item.imageUrl}
+                                alt={item.name}
+                                className="w-24 h-24 object-cover rounded flex-shrink-0"
+                            />
+                            <div className="min-w-0">
+                                <h2 className="text-xl font-semibold truncate max-w-[300px]">
+                                    {item.name}
+                                </h2>
                                 <p className="text-gray-500">${Number(item.price).toFixed(2)}</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2">
+
+                        <div className="flex items-center gap-2 justify-center">
                             <button
                                 onClick={() => updateQuantity(item.sku, -1)}
                                 className="p-1 bg-gray-200 rounded hover:bg-gray-300"
@@ -106,15 +116,19 @@ export const Cart: React.FC = () => {
                                 <Plus className="w-4 h-4" />
                             </button>
                         </div>
-                        <div className="text-lg font-semibold">
+
+                        <div className="text-lg font-semibold text-center">
                             ${(Number(item.price) * item.quantity).toFixed(2)}
                         </div>
-                        <button
-                            onClick={() => removeItem(item.sku)}
-                            className="p-1 bg-red-500 text-white rounded hover:bg-red-600"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </button>
+
+                        <div className="text-center">
+                            <button
+                                onClick={() => removeItem(item.sku)}
+                                className="p-1 bg-red-500 text-white rounded hover:bg-red-600"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
+                        </div>
                     </div>
                 ))}
             </div>
