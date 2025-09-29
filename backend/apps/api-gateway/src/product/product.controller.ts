@@ -1,15 +1,3 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Inject,
-  Param,
-  Patch,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
 import { BaseController } from '../common/base/base.controller';
 import { CreateProductDto, SERVICE_NAMES, UpdateProductDto, UserRole } from '@app/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -19,7 +7,29 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from '../common/decorators/roles.decorator';
 import { ProductResponseDto } from '@app/common/dto/product/response';
 import { Public } from '../common/decorators/public.decorator';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Inject,
+    Param,
+    Patch,
+    Post,
+    UploadedFile,
+    UseInterceptors,
+} from '@nestjs/common';
 
+import {
+    ApiBearerAuth,
+    ApiBody,
+    ApiConsumes,
+    ApiTags
+} from "@nestjs/swagger";
+
+import { ApiAdminResponse } from "../common/decorators/api-admin-response.decorator";
+
+@ApiTags('Product service')
 @Roles(UserRole.ADMIN)
 @Controller('product')
 export class ProductController extends BaseController {
@@ -28,6 +38,10 @@ export class ProductController extends BaseController {
   }
 
   @Post('create')
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateProductDto })
+  @ApiAdminResponse('Create new product successfully')
   @UseInterceptors(FileInterceptor('image'))
   async createProduct(
     @Body() createProductDto: CreateProductDto,
@@ -49,7 +63,7 @@ export class ProductController extends BaseController {
     );
 
     return {
-      message: 'Create new product successfully!',
+      message: 'Create new product successfully',
       success: true,
       data: result,
     };
@@ -78,6 +92,10 @@ export class ProductController extends BaseController {
   }
 
   @Patch('/update/:id')
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: UpdateProductDto })
+  @ApiAdminResponse('Update product with id successfully')
   @UseInterceptors(FileInterceptor('image'))
   async updateProduct(
     @Param('id') id: number,
@@ -103,6 +121,8 @@ export class ProductController extends BaseController {
   }
 
   @Delete('/:id')
+  @ApiBearerAuth()
+  @ApiAdminResponse('Product with id has been deleted successfully')
   async deleteProduct(@Param('id') id: number): Promise<Response<any>> {
     const message = await this.sendCommand<string>({ cmd: 'delete_product' }, { id });
     return {

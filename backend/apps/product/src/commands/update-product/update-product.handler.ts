@@ -15,6 +15,8 @@ export class UpdateProductHandler implements ICommandHandler<UpdateProductComman
   async execute(command: UpdateProductCommand): Promise<string> {
     const { id, updateProductDto, imagePayload } = command;
 
+    delete updateProductDto.image;
+
     const product = await this.repository.product.findById(id);
 
     if (!product) {
@@ -38,6 +40,6 @@ export class UpdateProductHandler implements ICommandHandler<UpdateProductComman
       },
     );
 
-    return `Update product with id ${id} successfully!`;
+    return `Update product with id ${id} successfully`;
   }
 }

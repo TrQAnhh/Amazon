@@ -1,9 +1,16 @@
-import {Body, Controller, Delete, Get, Inject, Param, Patch, Post, Req} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Req } from '@nestjs/common';
 import { CreateOrderDto, OrderResponseDto, SERVICE_NAMES, UpdateOrderDto } from '@app/common';
 import { Response } from '../common/interceptors/transform/transform.interceptor';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { BaseController } from '../common/base/base.controller';
 
+import {
+    ApiBearerAuth,
+    ApiTags,
+} from "@nestjs/swagger";
+
+@ApiTags('Order service')
+@ApiBearerAuth()
 @Controller('order')
 export class OrderController extends BaseController {
   constructor(@Inject(SERVICE_NAMES.ORDER) protected client: ClientProxy) {
