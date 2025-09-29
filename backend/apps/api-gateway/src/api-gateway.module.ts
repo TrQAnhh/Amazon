@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { IdentityModule } from './identity/identity.module';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { RpcToHttpExceptionFilter } from './exception/api-gateway.filter';
@@ -8,11 +8,13 @@ import { RolesGuard } from './guard/roles.guard';
 import { TransformInterceptor } from './common/interceptors/transform/transform.interceptor';
 import { ErrorsInterceptor } from './common/interceptors/errors/errors.interceptor';
 import { TimeoutInterceptor } from './common/interceptors/errors/timeout.interceptor';
-import * as dotenv from 'dotenv';
 import { ProductModule } from './product/product.module';
 import { AppGuard } from './guard/global.guard';
 import { OrderModule } from './order/order.module';
 import { ConfigModule } from '@nestjs/config';
+import * as dotenv from 'dotenv';
+import { RawBodyMiddleware } from "./common/middleware/raw-body.middleware";
+import {JsonBodyMiddleware} from "./common/middleware/json-body.middleware";
 
 dotenv.config();
 
@@ -52,4 +54,15 @@ dotenv.config();
     },
   ],
 })
-export class ApiGatewayModule {}
+export class ApiGatewayModule {
+    public configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(RawBodyMiddleware)
+            .forRoutes({
+                path: '/stripe/webhook',
+                method: RequestMethod.POST,
+            })
+            .apply(JsonBodyMiddleware)
+            .forRoutes('*');
+    }
+}
