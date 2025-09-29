@@ -1,5 +1,6 @@
 import { BaseController } from '../common/base/base.controller';
 import { CreateProductDto, SERVICE_NAMES, UpdateProductDto, UserRole } from '@app/common';
+import { ApiAdminResponse } from "../common/decorators/api-admin-response.decorator";
 import { ClientProxy } from '@nestjs/microservices';
 import { ProductEntity } from '../../../product/src/entity/product.entity';
 import { Response } from '../common/interceptors/transform/transform.interceptor';
@@ -19,15 +20,13 @@ import {
     UploadedFile,
     UseInterceptors,
 } from '@nestjs/common';
-
 import {
     ApiBearerAuth,
-    ApiBody,
-    ApiConsumes,
-    ApiTags
+    ApiBody, ApiConflictResponse,
+    ApiConsumes, ApiForbiddenResponse, ApiOkResponse,
+    ApiTags, ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 
-import { ApiAdminResponse } from "../common/decorators/api-admin-response.decorator";
 
 @ApiTags('Product service')
 @Roles(UserRole.ADMIN)
@@ -41,7 +40,10 @@ export class ProductController extends BaseController {
   @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateProductDto })
-  @ApiAdminResponse('Create new product successfully')
+  @ApiOkResponse({ description: 'Create new product successfully', type: ProductResponseDto })
+  @ApiUnauthorizedResponse({ description: 'Unauthenticated access' })
+  @ApiForbiddenResponse({ description: 'Unauthorized access' })
+  @ApiConflictResponse({ description: 'Product with this SKU already exists' })
   @UseInterceptors(FileInterceptor('image'))
   async createProduct(
     @Body() createProductDto: CreateProductDto,
@@ -71,10 +73,11 @@ export class ProductController extends BaseController {
 
   @Public()
   @Get()
+  @ApiOkResponse({ description: 'Get all products successfully', type:[ProductResponseDto]  })
   async getAllProducts(): Promise<Response<ProductResponseDto[]>> {
     const result = await this.sendCommand<ProductResponseDto[]>({ cmd: 'get_all_products' });
     return {
-      message: 'Get all products successfully!',
+      message: 'Get all products successfully',
       success: true,
       data: result,
     };
@@ -82,10 +85,11 @@ export class ProductController extends BaseController {
 
   @Public()
   @Get('/:sku')
-  async getProductDetail(@Param('sku') sku: string): Promise<Response<ProductEntity[]>> {
-    const result = await this.sendCommand<ProductEntity[]>({ cmd: 'get_product_detail' }, { sku });
+  @ApiOkResponse({ description: 'Get product details of sku successfully', type:ProductResponseDto  })
+  async getProductDetail(@Param('sku') sku: string): Promise<Response<ProductResponseDto>> {
+    const result = await this.sendCommand<ProductResponseDto>({ cmd: 'get_product_detail' }, { sku });
     return {
-      message: `Get product details of sku ${sku} successfully!`,
+      message: `Get product details of sku ${sku} successfully`,
       success: true,
       data: result,
     };
@@ -95,7 +99,9 @@ export class ProductController extends BaseController {
   @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UpdateProductDto })
-  @ApiAdminResponse('Update product with id successfully')
+  @ApiOkResponse({ description: 'Update product successfully', type: ProductResponseDto })
+  @ApiUnauthorizedResponse({ description: 'Unauthenticated access' })
+  @ApiForbiddenResponse({ description: 'Unauthorized access' })
   @UseInterceptors(FileInterceptor('image'))
   async updateProduct(
     @Param('id') id: number,
