@@ -55,15 +55,16 @@ The frontend is built with **ReactJS** using **Vite** for fast builds and modern
 
 ## 🛠️ Tech Stack
 
-| Layer       | Technology / Tool                        |
-|-------------|-------------------------------------------|
-| Backend     | NestJS (Microservices), TypeORM, MySQL   |
-| Auth        | JWT, Passport, Redis                     |
-| Payment     | Stripe, COD                              |
-| Frontend    | ReactJS, Vite, Lucide Icons              |
-| DevOps      | Docker                                   |
-| Docs        | Swagger, Postman                         |
-| Patterns    | CQRS, Mediator Pattern                   |
+| Layer    | Technology / Tool           |
+|----------|-----------------------------|
+| Backend  | NestJS v10 (Microservices)  |
+| Database | TypeORM, MySQL (migration)  |
+| Auth     | JWT, Passport, Redis        |
+| Payment  | Stripe, COD                 |
+| Frontend | ReactJS, Vite, Lucide Icons |
+| DevOps   | Docker                      |
+| Docs     | Swagger, Postman            |
+| Patterns | CQRS, Mediator Pattern      |
 
 ---
 

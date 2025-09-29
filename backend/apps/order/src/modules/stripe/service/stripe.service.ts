@@ -34,4 +34,19 @@ export class StripeService {
         throw new RpcException(`Webhook signature verification failed: ${err.message}`);
     }
   }
+
+  async retrieveCheckoutUrl(sessionId: string): Promise<string | undefined> {
+    try {
+        const session = await this.stripe.checkout.sessions.retrieve(sessionId);
+
+        if (session.status === 'open') {
+            return session.url ?? undefined;
+        }
+
+        return undefined;
+    } catch (error) {
+        console.error(`Failed to retrieve session ${sessionId}:`, error);
+        return undefined;
+    }
+  }
 }

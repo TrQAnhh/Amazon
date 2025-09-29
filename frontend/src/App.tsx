@@ -9,6 +9,7 @@ import { Orders } from './pages/Orders';
 import { ProductDetail } from "./pages/ProductDetail.tsx";
 import { OrderDetails } from "./pages/OrderDetails.tsx";
 import { CheckoutSuccess } from "./pages/CheckOutSuccess.tsx";
+import { CheckoutFailed } from "./pages/CheckOutFailed.tsx";
 import { Cart } from "./pages/Cart.tsx";
 import { BuyNow } from "./pages/BuyNow.tsx";
 
@@ -47,6 +48,14 @@ function App() {
                 }
             />
             <Route
+              path="/buy-now"
+              element={
+                  <ProtectedRoute>
+                      <BuyNow />
+                  </ProtectedRoute>
+              }
+            />
+            <Route
               path="/checkout/success"
               element={
                   <ProtectedRoute>
@@ -55,10 +64,10 @@ function App() {
               }
             />
             <Route
-              path="/buy-now"
+              path="/checkout/failed/:orderId"
               element={
                   <ProtectedRoute>
-                      <BuyNow />
+                      <CheckoutFailed />
                   </ProtectedRoute>
               }
             />

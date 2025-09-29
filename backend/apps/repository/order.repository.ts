@@ -33,6 +33,13 @@ export class OrderRepository {
         })
     }
 
+    async findBySessionId(sessionId: string): Promise<OrderEntity | null> {
+        return this.repo.findOne({
+            where: { sessionId },
+            relations: ['items'],
+        })
+    }
+
     async update(id: number, partial: Partial<OrderEntity>): Promise<UpdateResult> {
         return this.repo.update(id, partial);
     }

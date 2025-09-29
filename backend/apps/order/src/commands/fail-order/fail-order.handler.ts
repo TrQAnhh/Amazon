@@ -1,32 +1,27 @@
-import { ErrorCode, OrderStatus, PaymentStatus, SERVICE_NAMES, UserRole } from "@app/common";
+import { ErrorCode, OrderStatus, PaymentStatus, SERVICE_NAMES } from "@app/common";
 import { getOrderProducts } from "../../helpers/get-order-products.helper";
-import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
-import { GetOrderQuery } from "../../queries/get-order/get-order.query";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { RepositoryService } from "@repository/repository.service";
 import { ClientProxy, RpcException } from "@nestjs/microservices";
-import { CancelOrderCommand } from "./cancel-order.command";
+import { FailOrderCommand } from "./fail-order.command";
 import { Inject } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 
-@CommandHandler(CancelOrderCommand)
-export class CancelOrderHandler implements ICommandHandler<CancelOrderCommand> {
+@CommandHandler(FailOrderCommand)
+export class FailOrderHandler implements ICommandHandler<FailOrderCommand> {
     constructor(
         @Inject(SERVICE_NAMES.PRODUCT)
         private readonly productClient: ClientProxy,
         private readonly repository: RepositoryService,
-        private readonly queryBus: QueryBus,
     ) {}
 
-    async execute(command: CancelOrderCommand): Promise<string> {
-        const { role, userId, orderId } = command;
+    async execute(command: FailOrderCommand): Promise<void> {
+        const { sessionId } = command;
 
-        const order = await this.queryBus.execute(new GetOrderQuery(role, userId, orderId));
+        const order = await this.repository.order.findBySessionId(sessionId);
 
         if(!order) {
             throw new RpcException(ErrorCode.ORDER_NOT_FOUND);
-        }
-        if (role !== UserRole.ADMIN && order.userId !== userId) {
-            throw new RpcException(ErrorCode.UNAUTHORIZED);
         }
 
         const orderItems = await getOrderProducts(this.productClient,
@@ -53,11 +48,13 @@ export class CancelOrderHandler implements ICommandHandler<CancelOrderCommand> {
             throw new RpcException(err);
         }
 
-        await this.repository.order.update(order.id,{
-            status: OrderStatus.CANCELED,
-            paymentStatus: PaymentStatus.CANCELED,
-        })
+        const failResult = await this.repository.order.updateBySessionId(sessionId, {
+            status: OrderStatus.FAILED,
+            paymentStatus: PaymentStatus.FAILED,
+        });
 
-        return 'Cancel order successfully';
+        if (failResult.affected === 0) {
+            console.warn(`No order updated for failed session ${sessionId}`);
+        }
     }
 }

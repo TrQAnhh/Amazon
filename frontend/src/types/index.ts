@@ -54,6 +54,7 @@ export interface Order {
     paymentStatus: string;
     orderInfo: OrderInfo;
     items: OrderItem[];
+    checkoutUrl: string;
 }
 
 export interface OrderInfo {

@@ -25,4 +25,7 @@ export class OrderResponseDto {
 
     @Expose()
     createdAt: string;
+
+    @Expose()
+    checkoutUrl?: string;
 }

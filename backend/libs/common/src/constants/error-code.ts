@@ -4,6 +4,8 @@ export class ErrorCode {
   static readonly INVALID_INPUT_VALUE = new ErrorCode(400, 'Invalid input value', HttpStatus.BAD_REQUEST);
   static readonly NO_FILE_PROVIDED = new ErrorCode(400, 'No file provided', HttpStatus.BAD_REQUEST);
   static readonly ITEM_OUT_OF_STOCK = new ErrorCode(400, 'Product is out of stock', HttpStatus.BAD_REQUEST);
+  static readonly ORDER_ALREADY_FAILED = new ErrorCode(400, 'Order has already been marked as failed', HttpStatus.BAD_REQUEST);
+  static readonly ORDER_ALREADY_CANCELED = new ErrorCode(400, 'Order has already been canceled', HttpStatus.BAD_REQUEST);
   static readonly INVALID_CREDENTIALS = new ErrorCode(401, 'Invalid email or password', HttpStatus.UNAUTHORIZED);
   static readonly UNAUTHENTICATED = new ErrorCode(401, 'Unauthenticated access', HttpStatus.UNAUTHORIZED);
   static readonly UNAUTHORIZED = new ErrorCode(403, 'Unauthorized access', HttpStatus.FORBIDDEN);

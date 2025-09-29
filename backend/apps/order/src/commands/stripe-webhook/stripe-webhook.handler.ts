@@ -1,14 +1,16 @@
 import { OrderStatus, PaymentStatus } from "@app/common";
 import { StripeService } from "../../modules/stripe/service/stripe.service";
 import { StripeWebhookCommand } from "./stripe-webhook.command";
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { CommandBus, CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { RepositoryService } from "@repository/repository.service";
+import { FailOrderCommand } from "../fail-order/fail-order.command";
 
 @CommandHandler(StripeWebhookCommand)
 export class StripeWebhookHandler implements ICommandHandler<StripeWebhookCommand> {
     constructor(
         private readonly repository: RepositoryService,
         private readonly stripeService: StripeService,
+        private readonly commandBus: CommandBus,
     ) {}
 
     async execute(command: StripeWebhookCommand): Promise<string> {
@@ -38,17 +40,7 @@ export class StripeWebhookHandler implements ICommandHandler<StripeWebhookComman
 
             case 'checkout.session.expired':
             case 'payment_intent.payment_failed':
-                const failResult = await this.repository.order.updateBySessionId(session.id,
-                    {
-                        status: OrderStatus.FAILED,
-                        paymentStatus: PaymentStatus.FAILED,
-                        intentId: session.payment_intent,
-                    }
-                );
-
-                if (failResult.affected === 0) {
-                    console.warn(`No order updated for failed session ${session.id}.`);
-                }
+                await this.commandBus.execute(new FailOrderCommand(session.id));
                 break;
             default:
                 console.log("Unhandled event type: " + event.type);

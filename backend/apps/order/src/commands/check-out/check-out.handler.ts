@@ -1,10 +1,11 @@
-import { ErrorCode, UserRole, PaymentStatus } from "@app/common";
 import { StripeService } from "../../modules/stripe/service/stripe.service";
 import { CommandHandler, ICommandHandler, QueryBus } from "@nestjs/cqrs";
 import { GetOrderQuery } from "../../queries/get-order/get-order.query";
-import { CheckOutCommand } from "./check-out.command";
-import { RpcException } from "@nestjs/microservices";
 import { RepositoryService } from "@repository/repository.service";
+import { validateOrder } from "../../helpers/validate-order.helper";
+import { CheckOutCommand } from "./check-out.command";
+import { PaymentStatus } from "@app/common";
+
 
 @CommandHandler(CheckOutCommand)
 export class CheckOutHandler implements ICommandHandler<CheckOutCommand> {
@@ -18,17 +19,7 @@ export class CheckOutHandler implements ICommandHandler<CheckOutCommand> {
         const { role, userId, orderId } = command;
         const order = await this.queryBus.execute(new GetOrderQuery(role, userId, orderId));
 
-        if (order.paymentStatus === PaymentStatus.PAID) {
-            throw new RpcException(ErrorCode.ORDER_ALREADY_PAID);
-        }
-
-        if (order.paymentStatus === PaymentStatus.PROCESSING) {
-            throw new RpcException(ErrorCode.ORDER_PROCESSING);
-        }
-
-        if (role !== UserRole.ADMIN && order.userId !== userId) {
-            throw new RpcException(ErrorCode.UNAUTHORIZED);
-        }
+        validateOrder( order, userId, role);
 
         const lineItems = order.items.map(item => ({
             price_data: {
