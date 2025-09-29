@@ -2,21 +2,20 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ApiGatewayModule } from './api-gateway.module';
 import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
-import * as bodyParser from 'body-parser';
 import * as dotenv from 'dotenv';
 
 const logger = new Logger('Blog');
 dotenv.config();
 
 async function bootstrap() {
-  const app = await NestFactory.create(ApiGatewayModule);
+  const app = await NestFactory.create(ApiGatewayModule,{
+      bodyParser: false,
+  });
 
   app.enableCors({
     origin: 'http://localhost:5173',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   });
-
-  app.use('/stripe/webhook', bodyParser.raw({ type: 'application/json' }));
 
   const config = new DocumentBuilder()
       .setTitle('E-Commerce')
