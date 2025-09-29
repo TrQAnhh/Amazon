@@ -5,7 +5,9 @@ import { SERVICE_NAMES } from "@app/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { Response } from '../common/interceptors/transform/transform.interceptor';
 import { Public } from "../common/decorators/public.decorator";
+import { ApiExcludeController } from "@nestjs/swagger";
 
+@ApiExcludeController()
 @Public()
 @Controller('stripe')
 export class StripeController extends BaseController {

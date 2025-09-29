@@ -25,6 +25,6 @@ export class UpdateOrderHandler implements ICommandHandler<UpdateOrderCommand> {
             paymentMethod: updateOrderDto.paymentMethod as PaymentMethod,
         })
 
-        return 'Update order successfully!'
+        return 'Update order successfully';
     }
 }

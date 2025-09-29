@@ -13,6 +13,6 @@ export class DeleteProductHandler implements ICommandHandler<DeleteProductComman
 
     await this.repository.product.update(id , { isDeleted: true });
 
-    return `Product with id ${id} has been deleted successfully!`;
+    return `Product with id ${id} has been deleted successfully`;
   }
 }
