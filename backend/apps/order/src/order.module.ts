@@ -17,6 +17,7 @@ import { CancelOrderHandler } from "./commands/cancel-order/cancel-order.handler
 import { StripeWebhookHandler } from "./commands/stripe-webhook/stripe-webhook.handler";
 import { UpdateOrderHandler } from "./commands/update-order/update-order.handler";
 import { RepositoryModule } from "@repository/repository.module";
+import { FailOrderHandler } from "./commands/fail-order/fail-order.handler";
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
 
@@ -60,6 +61,7 @@ dotenv.config();
     UpdateOrderHandler,
     CancelOrderHandler,
     StripeWebhookHandler,
+    FailOrderHandler,
     {
       provide: APP_FILTER,
       useClass: OrderExceptionFilter,
