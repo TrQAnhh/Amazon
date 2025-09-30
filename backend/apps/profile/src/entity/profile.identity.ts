@@ -17,7 +17,7 @@ export class ProfileEntity {
   @Column({ type: 'varchar', length: 255, nullable: false })
   lastName: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: false })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   address: string;
 
   @Column({ type: 'varchar', nullable: true })

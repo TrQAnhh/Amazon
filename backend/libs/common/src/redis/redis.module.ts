@@ -3,10 +3,6 @@ import Redis from 'ioredis';
 import { IOREDIS, REDIS_CONFIG } from './constants/redis.constant';
 import { RedisConfig } from '@app/common/redis/dto/redis-creation.dto';
 import { RedisHelper } from '@app/common/redis/service/redis.service';
-import { RpcException } from '@nestjs/microservices';
-import { ErrorCode } from '@app/common/constants';
-import { AppException } from '../../../../apps/api-gateway/src/exception/app.exception';
-
 @Global()
 @Module({})
 export class RedisModule {

@@ -1,0 +1,124 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./backend/docs/docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  api-gateway:
+    image: api-gateway:1.0.0
+    container_name: api-gateway
+    build:
+      context: ./backend
+      dockerfile: ./apps/api-gateway/Dockerfile
+    command: npm run start:dev:gateway
+    volumes:
+      - ./backend:/usr/src/app
+    env_file:
+      - ./backend/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - identity
+      - profile
+      - product
+      - order
+      - mysql
+
+  identity:
+    image: identity-service:1.0.0
+    container_name: identity-service
+    build:
+      context: ./backend
+      dockerfile: ./apps/identity/Dockerfile
+    command: sh -c "npm run migration:identity:run && npm run start:dev:identity"
+    volumes:
+      - ./backend:/usr/src/app
+    env_file:
+      - ./backend/.env
+    ports:
+      - "4001:4001"
+    depends_on:
+      - profile
+      - mysql
+
+  profile:
+    image: profile-service:1.0.0
+    container_name: profile-service
+    build:
+      context: ./backend
+      dockerfile: ./apps/profile/Dockerfile
+    command: sh -c "npm run migration:profile:run && npm run start:dev:profile"
+    volumes:
+      - ./backend:/usr/src/app
+    env_file:
+      - ./backend/.env
+    ports:
+      - "4003:4003"
+    depends_on:
+      - mysql
+
+  product:
+    image: product-service:1.0.0
+    container_name: product-service
+    build:
+      context: ./backend
+      dockerfile: ./apps/product/Dockerfile
+    command: sh -c "npm run migration:product:run && npm run start:dev:product"
+    volumes:
+      - ./backend:/usr/src/app
+    env_file:
+      - ./backend/.env
+    ports:
+      - "4002:4002"
+    depends_on:
+      - mysql
+
+  order:
+    image: order-service:1.0.0
+    container_name: order-service
+    build:
+      context: ./backend
+      dockerfile: ./apps/order/Dockerfile
+    command: sh -c "npm run migration:order:run && npm run start:dev:order"
+    volumes:
+      - ./backend:/usr/src/app
+    env_file:
+      - ./backend/.env
+    ports:
+      - "4004:4004"
+    depends_on:
+      - product
+      - mysql
+
+  frontend:
+    image: frontend:1.0.0
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api-gateway
+
+volumes:
+  db_data:
+  redis_data:

@@ -13,6 +13,7 @@ async function bootstrap() {
     transports: Transport.TCP,
     options: {
       port: Number(process.env.PRODUCT_SERVICE_PORT),
+      host: '0.0.0.0',
     },
   });
 
