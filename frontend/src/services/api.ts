@@ -1,4 +1,10 @@
-import {CreateProductRequest, UpdateProductRequest, CreateOrderRequest, UpdateOrderRequest} from '../types';
+import {
+    CreateProductRequest,
+    UpdateProductRequest,
+    CreateOrderRequest,
+    UpdateOrderRequest,
+    UpdateProfileDto
+} from '../types';
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -139,5 +145,50 @@ export class ApiService {
       }
 
       return response.json();
+  }
+
+  async getProfileDetails() {
+    const response = await fetch(`${API_BASE}/profile/me`, {
+        method: 'GET',
+        headers: this.getAuthHeaders(),
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to checkout order');
+    }
+
+    return response.json();
+  }
+
+  async updateProfileDetails(data: Partial<UpdateProfileDto>) {
+    const response = await fetch(`${API_BASE}/profile/update`, {
+        method: 'PATCH',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+        throw new Error('Failed to update profile');
+    }
+    return response.json();
+  }
+
+  async uploadAvatar(file: File) {
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    const token = localStorage.getItem('accessToken');
+
+    const response = await fetch(`${API_BASE}/profile/avatar`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to upload avatar');
+    }
+    return response.json();
   }
 }

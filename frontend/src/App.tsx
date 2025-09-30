@@ -12,6 +12,7 @@ import { CheckoutSuccess } from "./pages/CheckOutSuccess.tsx";
 import { CheckoutFailed } from "./pages/CheckOutFailed.tsx";
 import { Cart } from "./pages/Cart.tsx";
 import { BuyNow } from "./pages/BuyNow.tsx";
+import { ProfileDetail } from "./pages/ProfileDetail.tsx";
 
 function App() {
   return (
@@ -23,6 +24,14 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/products" element={<Products />}/>
             <Route path="/products/:sku" element={<ProductDetail />} />
+            <Route
+              path="/profile"
+              element={
+                  <ProtectedRoute>
+                      <ProfileDetail />
+                  </ProtectedRoute>
+              }
+            />
             <Route
               path="/cart"
               element={

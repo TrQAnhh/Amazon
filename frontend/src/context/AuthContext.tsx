@@ -8,6 +8,7 @@ interface AuthContextType {
   signin: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, firstName: string, middleName: string, lastName: string) => Promise<void>;
   signout: () => Promise<void>;
+  setUser: (user: User) => void;
   isAuthenticated: boolean;
 }
 
@@ -137,6 +138,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         signup,
         signout,
         isAuthenticated,
+        setUser,
       }}
     >
       {children}

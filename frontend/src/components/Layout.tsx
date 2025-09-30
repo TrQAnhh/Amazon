@@ -62,6 +62,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                                     {showMenu && (
                                         <div className="absolute right-4 w-40 bg-white border rounded shadow-md z-10">
                                             <button
+                                                onClick={() => {
+                                                    setShowMenu(false);
+                                                    navigate("/profile");
+                                                }}
                                                 className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                                             >
                                                 Profile

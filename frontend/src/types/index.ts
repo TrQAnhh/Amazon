@@ -7,6 +7,24 @@ export interface User {
   bio: string;
 }
 
+export interface ProfileDetails {
+    email: string;
+    firstName: string;
+    middleName?: string;
+    lastName: string;
+    address?: string;
+    avatarUrl?: string;
+    bio?: string;
+}
+
+export interface UpdateProfileDto {
+    firstName?: string;
+    middleName?: string;
+    lastName?: string;
+    address?: string;
+    bio?: string;
+}
+
 export interface AuthResponse {
   success: boolean;
   message: string;
@@ -96,10 +114,4 @@ export interface CartItem {
     imageUrl: string;
     quantity: number;
     availableStock: number;
-}
-
-export interface PaymentRequest {
-  orderId: string;
-  amount: number;
-  currency: string;
 }
