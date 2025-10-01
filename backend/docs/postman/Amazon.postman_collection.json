@@ -177,7 +177,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n   \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsInRva2VuSWQiOiI4ZGQ5MzA1NC1iZGYxLTQ0MmItYjliOS1jMjYxOGZmMTIyZjYiLCJkZXZpY2VJZCI6ImRldmljZS0xIiwiaWF0IjoxNzU4NzY1NTIxLCJleHAiOjE3NTkzNzAzMjF9.yNsJUDY5RSw_hjmGAMDshikQRuO3SlnaU9INQ9DcI2M\"\r\n}",
+							"raw": "{\r\n   \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsInRva2VuSWQiOiIzMDEzN2MxMi02N2JlLTQzYWItYWY1MS1mYjVhYWIxMmU3MGEiLCJkZXZpY2VJZCI6ImRldmljZS0xIiwiaWF0IjoxNzU5MTI5NTc3LCJleHAiOjE3NTk3MzQzNzd9.P3KLXpTJDym5fJo_cwcTfJTSL3YWxoSXOThyuh2w6PE\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -394,33 +394,33 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "Canon Autoboy Jet",
+									"value": "Konica Aiborg",
 									"type": "text"
 								},
 								{
 									"key": "sku",
-									"value": "CANON-AUTOBOY-JET",
+									"value": "KONICA-AIGBORG",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "The Canon Autoboy Jet is a compact 35mm film camera featuring autofocus and automatic exposure, perfect for everyday photography.",
+									"value": "Compact and reliable, the Konica Aiborg 35mm camera offers autofocus and auto exposure for effortless photography on the go.",
 									"type": "text"
 								},
 								{
 									"key": "price",
-									"value": "179.99",
+									"value": "170",
 									"type": "text"
 								},
 								{
 									"key": "availableStock",
-									"value": "7",
+									"value": "20",
 									"type": "text"
 								},
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/C:/Users/DEV.DESKTOP-VKRMBR2/Downloads/canon-autoboy-jet.jpg"
+									"src": "/C:/Users/DEV.DESKTOP-VKRMBR2/Downloads/konica-aiborg.jpg"
 								}
 							]
 						},
@@ -491,16 +491,17 @@
 						"method": "PATCH",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"availableStock\": 10\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/DEV.DESKTOP-VKRMBR2/Downloads/konica-c35-af.jpg"
 								}
-							}
+							]
 						},
 						"url": {
-							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product/update/20",
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product/update/2",
 							"protocol": "{{PROTOCOL}}",
 							"host": [
 								"{{SERVER_IP}}"
@@ -509,7 +510,7 @@
 							"path": [
 								"product",
 								"update",
-								"20"
+								"2"
 							]
 						}
 					},

@@ -6,7 +6,7 @@ import { OrderExceptionFilter } from './exception/order-exception.filter';
 import { StripeModule } from './modules/stripe/stripe.module';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import {  SERVICE_NAMES } from '@app/common';
+import {RedisConfig, RedisModule, SERVICE_NAMES} from '@app/common';
 import { CreateOrderHandler } from './commands/create-order/create-order.handler';
 import { CqrsModule } from '@nestjs/cqrs';
 import { typeOrmConfigAsync } from "./config/typeorm.config";
@@ -51,6 +51,11 @@ dotenv.config();
           },
       },
     ]),
+    RedisModule.register({
+      host: process.env.REDIS_HOST,
+      port: Number(process.env.REDIS_PORT),
+      accessKey: process.env.REDIS_ACCESS_KEY,
+    } as RedisConfig),
   ],
   controllers: [OrderController],
   providers: [
