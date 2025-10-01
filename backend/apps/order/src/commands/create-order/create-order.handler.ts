@@ -1,4 +1,4 @@
-import { ErrorCode, SERVICE_NAMES, PaymentMethod } from '@app/common';
+import {ErrorCode, SERVICE_NAMES, PaymentMethod, RedisHelper} from '@app/common';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { getOrderProducts } from '../../helpers/get-order-products.helper';
 import { OrderItemEntity } from '../../entity/order-items.entity';
@@ -16,10 +16,16 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
     private readonly productClient: ClientProxy,
     private readonly commandBus: CommandBus,
     private readonly repository: RepositoryService,
+    private readonly redisHelper: RedisHelper,
+
   ) {}
 
   async execute(command: CreateOrderCommand): Promise<string | null> {
     const { role, userId, createOrderDto } = command;
+
+    const productIds = createOrderDto.items.map((product) => {
+        return product.productId.toString();
+    });
 
     const order = this.repository.order.create({
       userId,
@@ -27,61 +33,66 @@ export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
       totalAmount: 0,
     });
 
-    const orderItems = await getOrderProducts(this.productClient,
-        createOrderDto.items.map((item) => {
-            return item.productId;
-        })
-    );
+   // const savedOrder = await this.redisHelper.withResourceLock(productIds,async() => {
 
-    const products = new Map(orderItems.map((product) => {
-        return [product.id, product];
-    }));
+        const orderItems = await getOrderProducts(this.productClient,
+            createOrderDto.items.map((item) => {
+                return item.productId;
+            })
+        );
 
-    let totalAmount = 0;
-    const orderItemEntities: OrderItemEntity[] = [];
-    const updateStockItems: { productId: number; newStock: number }[] = [];
+        const products = new Map(orderItems.map((product) => {
+            return [product.id, product];
+        }));
 
-    for (const item of createOrderDto.items) {
-      const product = products.get(item.productId);
+        let totalAmount = 0;
+        const orderItemEntities: OrderItemEntity[] = [];
+        const updateStockItems: { productId: number; newStock: number }[] = [];
 
-      if (!product) {
-          throw new RpcException(ErrorCode.PRODUCT_NOT_FOUND);
-      }
+        for (const item of createOrderDto.items) {
+            const product = products.get(item.productId);
 
-      if (item.quantity > product.availableStock) {
-          throw new RpcException(ErrorCode.ITEM_OUT_OF_STOCK);
-      }
+            if (!product) {
+                throw new RpcException(ErrorCode.PRODUCT_NOT_FOUND);
+            }
 
-      const total = product.price * item.quantity;
-      totalAmount += total;
+            if (item.quantity > product.availableStock) {
+                throw new RpcException(ErrorCode.ITEM_OUT_OF_STOCK);
+            }
 
-      orderItemEntities.push(
-        this.repository.orderItem.create({
-            productId: product.id,
-            price: product.price,
-            quantity: item.quantity,
-            total,
-        }),
-      );
+            const total = product.price * item.quantity;
+            totalAmount += total;
 
-      updateStockItems.push({
-        productId: product.id,
-        newStock: product.availableStock - item.quantity,
-      });
-    }
+            orderItemEntities.push(
+                this.repository.orderItem.create({
+                    productId: product.id,
+                    price: product.price,
+                    quantity: item.quantity,
+                    total,
+                }),
+            );
 
-    order.totalAmount = totalAmount;
-    order.items = orderItemEntities;
-    const savedOrder = await this.repository.order.save(order);
+            updateStockItems.push({
+                productId: product.id,
+                newStock: product.availableStock - item.quantity,
+            });
+        }
 
-    try {
-      await firstValueFrom(this.productClient.send({ cmd: 'update_stock' }, { items: updateStockItems }));
-    } catch (err) {
-      throw new RpcException(err);
-    }
+        order.totalAmount = totalAmount;
+        order.items = orderItemEntities;
+        const savedOrder = await this.repository.order.save(order);
+
+        try {
+            await firstValueFrom(this.productClient.send({ cmd: 'update_stock' }, { items: updateStockItems }));
+        } catch (err) {
+            throw new RpcException(err);
+        }
+
+       // return savedOrder;
+    // });
 
     if (createOrderDto.paymentMethod === PaymentMethod.STRIPE) {
-        return await this.commandBus.execute(new CheckOutCommand(role, userId, savedOrder.id));
+      return await this.commandBus.execute(new CheckOutCommand(role, userId, savedOrder.id));
     }
 
     return null;
