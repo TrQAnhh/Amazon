@@ -15,11 +15,17 @@ import { GetOrderHandler } from "./queries/get-order/get-order.handler";
 import { CheckOutHandler } from "./commands/check-out/check-out.handler";
 import { CancelOrderHandler } from "./commands/cancel-order/cancel-order.handler";
 import { StripeWebhookHandler } from "./commands/stripe-webhook/stripe-webhook.handler";
+import { CollectTicketHandler } from "./commands/collect-ticket/collect-ticket.handler";
+import { CreateTicketHandler } from "./commands/create-ticket/create-ticket.handler";
 import { UpdateOrderHandler } from "./commands/update-order/update-order.handler";
 import { RepositoryModule } from "@repository/repository.module";
 import { FailOrderHandler } from "./commands/fail-order/fail-order.handler";
+import { TicketController } from "./controller/ticket.controller";
+
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
+import {GetTicketDetailHandler} from "./queries/get-ticket-detail/get-ticket-detail.handler";
+import {GetAllTicketHandler} from "./queries/get-all-ticket/get-all-ticket.handler";
 
 dotenv.config();
 
@@ -57,7 +63,7 @@ dotenv.config();
       accessKey: process.env.REDIS_ACCESS_KEY,
     } as RedisConfig),
   ],
-  controllers: [OrderController],
+  controllers: [OrderController, TicketController],
   providers: [
     CreateOrderHandler,
     GetAllOrdersHandler,
@@ -67,6 +73,10 @@ dotenv.config();
     CancelOrderHandler,
     StripeWebhookHandler,
     FailOrderHandler,
+    CreateTicketHandler,
+    CollectTicketHandler,
+    GetTicketDetailHandler,
+    GetAllTicketHandler,
     {
       provide: APP_FILTER,
       useClass: OrderExceptionFilter,

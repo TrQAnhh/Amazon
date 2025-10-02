@@ -15,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as dotenv from 'dotenv';
 import { RawBodyMiddleware } from "./common/middleware/raw-body.middleware";
 import {JsonBodyMiddleware} from "./common/middleware/json-body.middleware";
+import {TicketController} from "./order/ticket.controller";
 
 dotenv.config();
 

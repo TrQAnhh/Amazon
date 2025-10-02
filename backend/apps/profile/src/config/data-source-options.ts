@@ -1,7 +1,7 @@
 import { DataSourceOptions } from 'typeorm';
+import { ProfileEntity } from '../entity/profile.identity';
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
-import { ProfileEntity } from '../entity/profile.identity';
 dotenv.config();
 
 const dataSourceOptions: DataSourceOptions = {

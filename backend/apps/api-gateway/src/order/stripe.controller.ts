@@ -1,4 +1,4 @@
-import {Controller, Inject, Post, Req, Headers, HttpCode} from "@nestjs/common";
+import { Controller, Inject, Post, Req, Headers, HttpCode } from "@nestjs/common";
 import type { RawBodyRequest } from '@nestjs/common';
 import { BaseController } from "../common/base/base.controller";
 import { SERVICE_NAMES } from "@app/common";

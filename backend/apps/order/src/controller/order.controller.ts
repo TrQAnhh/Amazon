@@ -1,14 +1,16 @@
-import { Controller, Get } from '@nestjs/common';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { MessagePattern } from '@nestjs/microservices';
-import { CreateOrderDto, OrderResponseDto, UpdateOrderDto } from '@app/common';
-import { CreateOrderCommand } from '../commands/create-order/create-order.command';
-import { GetAllOrdersQuery } from "../queries/get-all-orders/get-all-orders.query";
-import { GetOrderQuery } from "../queries/get-order/get-order.query";
-import { CheckOutCommand } from "../commands/check-out/check-out.command";
-import { CancelOrderCommand } from "../commands/cancel-order/cancel-order.command";
+import { CreateOrderDto, CreateTicketDto, OrderResponseDto, TicketDetailResponseDto, UpdateOrderDto } from '@app/common';
+import { GetTicketDetailQuery } from "../queries/get-ticket-detail/get-ticket-detail.query";
 import { StripeWebhookCommand } from "../commands/stripe-webhook/stripe-webhook.command";
+import { CreateTicketCommand } from "../commands/create-ticket/create-ticket.command";
+import { CancelOrderCommand } from "../commands/cancel-order/cancel-order.command";
 import { UpdateOrderCommand } from "../commands/update-order/update-order.command";
+import { GetAllOrdersQuery } from "../queries/get-all-orders/get-all-orders.query";
+import { CreateOrderCommand } from '../commands/create-order/create-order.command';
+import { CheckOutCommand } from "../commands/check-out/check-out.command";
+import { GetOrderQuery } from "../queries/get-order/get-order.query";
+import { MessagePattern } from '@nestjs/microservices';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { Controller } from '@nestjs/common';
 
 @Controller()
 export class OrderController {
@@ -50,5 +52,15 @@ export class OrderController {
   @MessagePattern({ cmd: 'stripe_webhook' })
   async stripeWebhook(payload: { rawBody: string, signature: string }): Promise<string> {
       return this.commandBus.execute(new StripeWebhookCommand(payload.rawBody, payload.signature));
+  }
+
+  @MessagePattern({ cmd: 'create_ticket' })
+  async createTicket(payload: { role: string, createTicketDto: CreateTicketDto }): Promise<string> {
+    return this.commandBus.execute(new CreateTicketCommand(payload.role, payload.createTicketDto));
+  }
+
+  @MessagePattern({ cmd: 'get_ticket_details' })
+  async getTicketDetails(payload: {ticketId: number }): Promise<TicketDetailResponseDto> {
+      return this.queryBus.execute(new GetTicketDetailQuery(payload.ticketId));
   }
 }

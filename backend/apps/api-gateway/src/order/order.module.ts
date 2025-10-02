@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { OrderController } from './order.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { SERVICE_NAMES } from '@app/common';
+import { StripeController  } from "./stripe.controller";
+import { TicketController } from "./ticket.controller";
 import process from 'node:process';
-import {StripeController } from "./stripe.controller";
 
 @Module({
   imports: [
@@ -18,7 +19,11 @@ import {StripeController } from "./stripe.controller";
       },
     ]),
   ],
-  controllers: [StripeController, OrderController],
+  controllers: [
+      StripeController,
+      OrderController,
+      TicketController
+  ],
   providers: [],
 })
 export class OrderModule {}
