@@ -1,12 +1,16 @@
 import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Req } from '@nestjs/common';
-import { CreateOrderDto, OrderResponseDto, SERVICE_NAMES, UpdateOrderDto } from '@app/common';
+import {
+    CreateOrderDto,
+    OrderResponseDto,
+    SERVICE_NAMES,
+    UpdateOrderDto
+} from '@app/common';
 import { Response } from '../common/interceptors/transform/transform.interceptor';
 import { ClientProxy, Payload } from '@nestjs/microservices';
 import { BaseController } from '../common/base/base.controller';
-
 import {
     ApiBadRequestResponse,
-    ApiBearerAuth, ApiConflictResponse,
+    ApiBearerAuth,
     ApiOkResponse,
     ApiTags,
     ApiUnauthorizedResponse,
@@ -112,4 +116,6 @@ export class OrderController extends BaseController {
           data: null,
       }
   }
+
+
 }

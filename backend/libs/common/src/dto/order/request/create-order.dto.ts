@@ -20,4 +20,10 @@ export class CreateOrderDto {
     productId: number;
     quantity: number;
   }[];
+
+  @ApiProperty({ type: 'number', required: false })
+  freeshipId?: number;
+
+  @ApiProperty({ type: 'number', required: false })
+  discountId?: number;
 }

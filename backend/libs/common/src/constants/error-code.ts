@@ -6,6 +6,7 @@ export class ErrorCode {
   static readonly ITEM_OUT_OF_STOCK = new ErrorCode(400, 'Product is out of stock', HttpStatus.BAD_REQUEST);
   static readonly ORDER_ALREADY_FAILED = new ErrorCode(400, 'Order has already been marked as failed', HttpStatus.BAD_REQUEST);
   static readonly ORDER_ALREADY_CANCELED = new ErrorCode(400, 'Order has already been canceled', HttpStatus.BAD_REQUEST);
+  static readonly TICKET_ALREADY_COLLECTED = new ErrorCode(400, 'This ticket has already been collected', HttpStatus.BAD_REQUEST);
   static readonly INVALID_CREDENTIALS = new ErrorCode(401, 'Invalid email or password', HttpStatus.UNAUTHORIZED);
   static readonly UNAUTHENTICATED = new ErrorCode(401, 'Unauthenticated access', HttpStatus.UNAUTHORIZED);
   static readonly UNAUTHORIZED = new ErrorCode(403, 'Unauthorized access', HttpStatus.FORBIDDEN);
@@ -13,12 +14,14 @@ export class ErrorCode {
   static readonly PROFILE_NOT_FOUND = new ErrorCode(404, "User's profile not found", HttpStatus.NOT_FOUND);
   static readonly PRODUCT_NOT_FOUND = new ErrorCode(404, 'Product with given information does not exis', HttpStatus.NOT_FOUND);
   static readonly ORDER_NOT_FOUND = new ErrorCode(404, 'Order with given information does not exis', HttpStatus.NOT_FOUND);
+  static readonly TICKET_NOT_FOUND = new ErrorCode(404, 'Ticket not found', HttpStatus.NOT_FOUND);
   static readonly INVALID_JWT_TOKEN = new ErrorCode(401, 'Invalid or expired JWT token', HttpStatus.UNAUTHORIZED);
   static readonly ORDER_PROCESSING = new ErrorCode(409, 'Order is currently being processed for payment', HttpStatus.CONFLICT);
   static readonly ORDER_ALREADY_PAID = new ErrorCode(409, 'Order has already been paid', HttpStatus.CONFLICT);
   static readonly EMAIL_EXISTED = new ErrorCode(409, 'Email has already been registered', HttpStatus.CONFLICT);
   static readonly USER_PROFILE_EXISTED = new ErrorCode(409, 'User profile already exists', HttpStatus.CONFLICT);
   static readonly PRODUCT_EXISTED = new ErrorCode(409, 'Product with this SKU already exists', HttpStatus.CONFLICT);
+  static readonly TICKET_ALREADY_EXISTED = new ErrorCode(409, 'Discount ticket with given code already exists', HttpStatus.CONFLICT);
   static readonly REDIS_COMMAND_ERROR = new ErrorCode(500, 'Redis command execution error', HttpStatus.INTERNAL_SERVER_ERROR);
   static readonly CLOUDINARY_NO_RESULT = new ErrorCode(500, 'No result returned from Cloudinary', HttpStatus.INTERNAL_SERVER_ERROR);
   static readonly UNCATEGORIZED = new ErrorCode(500, 'Uncategorized error', HttpStatus.INTERNAL_SERVER_ERROR);
