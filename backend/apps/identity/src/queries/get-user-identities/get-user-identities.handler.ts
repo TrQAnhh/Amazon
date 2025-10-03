@@ -2,13 +2,11 @@ import { ErrorCode, IdentityResponseDto } from '@app/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetUserIdentitiesQuery } from './get-user-identities.query';
 import { RpcException } from '@nestjs/microservices';
-import { RepositoryService } from "@repository/repository.service";
+import { RepositoryService } from '@repository/repository.service';
 
 @QueryHandler(GetUserIdentitiesQuery)
 export class GetUserIdentitiesHandler implements IQueryHandler<GetUserIdentitiesQuery> {
-  constructor(
-    private readonly repository: RepositoryService,
-  ) {}
+  constructor(private readonly repository: RepositoryService) {}
 
   async execute(query: GetUserIdentitiesQuery): Promise<Record<number, IdentityResponseDto>> {
     if (!query.userIds || query.userIds.length === 0) {

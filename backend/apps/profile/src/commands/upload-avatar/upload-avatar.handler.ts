@@ -1,4 +1,4 @@
-import { RepositoryService } from "@repository/repository.service";
+import { RepositoryService } from '@repository/repository.service';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UploadAvatarCommand } from './upload-avatar.command';
 import { CloudinaryService, ErrorCode } from '@app/common';
@@ -16,8 +16,8 @@ export class UploadAvatarHandler implements ICommandHandler<UploadAvatarCommand>
 
     const profile = await this.repository.profile.findByUserId(userId);
 
-    if(!profile) {
-        throw new RpcException(ErrorCode.PROFILE_NOT_FOUND);
+    if (!profile) {
+      throw new RpcException(ErrorCode.PROFILE_NOT_FOUND);
     }
 
     if (!avatarPayload) {
@@ -30,7 +30,7 @@ export class UploadAvatarHandler implements ICommandHandler<UploadAvatarCommand>
       avatarPayload.mimetype,
     );
 
-    await this.repository.profile.updateByUserId(userId ,{avatarUrl});
+    await this.repository.profile.updateByUserId(userId, { avatarUrl });
     return avatarUrl;
   }
 }

@@ -2,8 +2,8 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UpdateProductCommand } from './update-product.command';
 import { ErrorCode } from '@app/common';
 import { CloudinaryService } from '@app/common/cloudinary/service/cloudinary.service';
-import { RpcException } from "@nestjs/microservices";
-import { RepositoryService } from "@repository/repository.service";
+import { RpcException } from '@nestjs/microservices';
+import { RepositoryService } from '@repository/repository.service';
 
 @CommandHandler(UpdateProductCommand)
 export class UpdateProductHandler implements ICommandHandler<UpdateProductCommand> {
@@ -20,7 +20,7 @@ export class UpdateProductHandler implements ICommandHandler<UpdateProductComman
     const product = await this.repository.product.findById(id);
 
     if (!product) {
-        throw new RpcException(ErrorCode.PRODUCT_NOT_FOUND);
+      throw new RpcException(ErrorCode.PRODUCT_NOT_FOUND);
     }
 
     let imageUrl: string | undefined;
@@ -32,13 +32,10 @@ export class UpdateProductHandler implements ICommandHandler<UpdateProductComman
       );
     }
 
-    await this.repository.product.update(
-      id,
-      {
-        ...updateProductDto,
-        ...(imageUrl ? { imageUrl } : {}),
-      },
-    );
+    await this.repository.product.update(id, {
+      ...updateProductDto,
+      ...(imageUrl ? { imageUrl } : {}),
+    });
 
     return `Update product with id ${id} successfully`;
   }

@@ -1,7 +1,7 @@
 import { AdminProfileResponseDto, ErrorCode, SERVICE_NAMES } from '@app/common';
 import { GetAllUserProfilesQuery } from './get-all-user-profiles.query';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import {RepositoryService} from "@repository/repository.service";
+import { RepositoryService } from '@repository/repository.service';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { plainToInstance } from 'class-transformer';
 import { Inject } from '@nestjs/common';

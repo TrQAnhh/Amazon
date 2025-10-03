@@ -1,5 +1,5 @@
-import { PaymentMethod } from "@app/common/constants";
-import {ApiProperty} from "@nestjs/swagger";
+import { PaymentMethod } from '@app/common/constants';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateOrderDto {
   @ApiProperty({ enum: PaymentMethod })
@@ -8,12 +8,12 @@ export class CreateOrderDto {
   @ApiProperty({
     type: 'array',
     items: {
-        type: 'object',
-        properties: {
-            productId: { type: 'number' },
-            quantity: { type: 'number' },
-        },
-        required: ['productId', 'quantity'],
+      type: 'object',
+      properties: {
+        productId: { type: 'number' },
+        quantity: { type: 'number' },
+      },
+      required: ['productId', 'quantity'],
     },
   })
   items: {

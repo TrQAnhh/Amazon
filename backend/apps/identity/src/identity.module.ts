@@ -9,14 +9,13 @@ import { RedisConfig, RedisModule, SERVICE_NAMES } from '@app/common';
 import { SignUpHandler } from './commands/sign-up/sign-up.handler';
 import { SignInHandler } from './commands/sign-in/sign-in.handler';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { RepositoryModule } from "@repository/repository.module";
+import { RepositoryModule } from '@repository/repository.module';
 import { typeOrmConfigAsync } from './config/typeorm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CqrsModule } from '@nestjs/cqrs';
 import { APP_FILTER } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { Module } from '@nestjs/common';
-
 
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';

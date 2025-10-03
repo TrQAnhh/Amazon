@@ -1,6 +1,6 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { Stripe } from 'stripe';
-import { StripeService } from "./service/stripe.service";
+import { StripeService } from './service/stripe.service';
 
 @Module({})
 export class StripeModule {

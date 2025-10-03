@@ -1,7 +1,7 @@
-import { ErrorCode, ProfileResponseDto, SERVICE_NAMES} from '@app/common';
+import { ErrorCode, ProfileResponseDto, SERVICE_NAMES } from '@app/common';
 import { getUserIdentity } from '../../helpers/get-identity.helper';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import {RepositoryService} from "@repository/repository.service";
+import { RepositoryService } from '@repository/repository.service';
 import { UpdateProfileCommand } from './update-profile.command';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
@@ -20,7 +20,7 @@ export class UpdateProfileHandler implements ICommandHandler<UpdateProfileComman
     const existingProfile = await this.repository.profile.findByUserId(userId);
 
     if (!existingProfile) {
-        throw new RpcException(ErrorCode.PROFILE_NOT_FOUND);
+      throw new RpcException(ErrorCode.PROFILE_NOT_FOUND);
     }
 
     const updated = this.repository.profile.merge(existingProfile, updateProfileDto);

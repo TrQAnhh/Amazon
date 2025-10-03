@@ -1,5 +1,3 @@
 export class GetOrderProductDetailsQuery {
-    constructor(
-        public readonly productIds: number[],
-    ) {}
+  constructor(public readonly productIds: number[]) {}
 }

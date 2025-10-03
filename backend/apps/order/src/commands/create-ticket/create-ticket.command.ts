@@ -1,8 +1,8 @@
-import { CreateTicketDto } from "@app/common";
+import { CreateTicketDto } from '@app/common';
 
 export class CreateTicketCommand {
-    constructor(
-        public readonly role: string,
-        public readonly createTicketDto: CreateTicketDto
-    ) {}
+  constructor(
+    public readonly role: string,
+    public readonly createTicketDto: CreateTicketDto,
+  ) {}
 }

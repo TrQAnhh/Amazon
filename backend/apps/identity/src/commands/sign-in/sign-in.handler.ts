@@ -1,9 +1,4 @@
-import {
-    AuthResponseDto,
-    ErrorCode,
-    RedisHelper,
-    SERVICE_NAMES
-} from '@app/common';
+import { AuthResponseDto, ErrorCode, RedisHelper, SERVICE_NAMES } from '@app/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SignInCommand } from './sign-in.command';
 import { JwtService } from '@nestjs/jwt';
@@ -12,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { getUserProfile } from '../../helpers/get-profile.helper';
 import { Inject } from '@nestjs/common';
-import { RepositoryService } from "@repository/repository.service";
+import { RepositoryService } from '@repository/repository.service';
 
 @CommandHandler(SignInCommand)
 export class SignInHandler implements ICommandHandler<SignInCommand> {

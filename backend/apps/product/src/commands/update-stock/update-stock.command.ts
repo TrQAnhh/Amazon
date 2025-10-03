@@ -1,8 +1,8 @@
 export class UpdateStockCommand {
-    constructor(
-        public readonly items:{
-            productId: number,
-            newStock: number,
-        }[],
-    ){}
+  constructor(
+    public readonly items: {
+      productId: number;
+      newStock: number;
+    }[],
+  ) {}
 }

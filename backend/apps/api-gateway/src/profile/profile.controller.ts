@@ -6,14 +6,15 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { Response } from '../common/interceptors/transform/transform.interceptor';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
-    ApiBadRequestResponse,
-    ApiBearerAuth, ApiBody,
-    ApiConsumes,
-    ApiForbiddenResponse,
-    ApiOkResponse,
-    ApiTags,
-    ApiUnauthorizedResponse,
-} from "@nestjs/swagger";
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 @ApiTags('Profile service')
 @ApiBearerAuth()
@@ -74,16 +75,16 @@ export class ProfileController extends BaseController {
   @UseInterceptors(FileInterceptor('avatar'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
-      schema: {
-          type: 'object',
-          properties: {
-              avatar: {
-                  type: 'string',
-                  format: 'binary',
-              },
-          },
-          required: ['avatar'],
+    schema: {
+      type: 'object',
+      properties: {
+        avatar: {
+          type: 'string',
+          format: 'binary',
+        },
       },
+      required: ['avatar'],
+    },
   })
   @ApiOkResponse({ description: 'Upload avatar successfully' })
   async uploadUserAvatar(@Req() request: any, @UploadedFile() avatar: Express.Multer.File): Promise<Response<string>> {

@@ -12,17 +12,12 @@ import { UpdateProductHandler } from './commands/update-product/update-product.h
 import { GetProductDetailHandler } from './queries/get-product-detail/get-product-detail.handler';
 import { DeleteProductHandler } from './commands/delete-product/delete-product.handler';
 import { GetOrderProductsHandler } from './queries/get-order-products/get-order-products.handler';
-import { UpdateStockHandler } from "./commands/update-stock/update-stock.handler";
-import { GetOrderProductDetailsHandler } from "./queries/get-order-product-details/get-order-product-details.handler";
-import { RepositoryModule } from "@repository/repository.module";
+import { UpdateStockHandler } from './commands/update-stock/update-stock.handler';
+import { GetOrderProductDetailsHandler } from './queries/get-order-product-details/get-order-product-details.handler';
+import { RepositoryModule } from '@repository/repository.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRootAsync(typeOrmConfigAsync),
-    CloudinaryModule,
-    CqrsModule,
-    RepositoryModule,
-  ],
+  imports: [TypeOrmModule.forRootAsync(typeOrmConfigAsync), CloudinaryModule, CqrsModule, RepositoryModule],
   controllers: [ProductController],
   providers: [
     CreateProductHandler,

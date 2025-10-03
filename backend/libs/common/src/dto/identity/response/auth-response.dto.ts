@@ -1,6 +1,6 @@
 import { ProfileResponseDto } from '@app/common/dto';
 import { UserRole } from '@app/common/constants';
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthResponseDto {
   @ApiProperty({ type: 'string' })
