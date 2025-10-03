@@ -7,7 +7,7 @@ import { firstValueFrom } from 'rxjs';
 import { Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
-import { RepositoryService } from "@repository/repository.service";
+import { RepositoryService } from '@repository/repository.service';
 
 @CommandHandler(SignUpCommand)
 export class SignUpHandler implements ICommandHandler<SignUpCommand> {

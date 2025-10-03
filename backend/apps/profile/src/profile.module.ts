@@ -15,8 +15,8 @@ import { GetAllUserProfilesHandler } from './queries/get-all-user-profiles/get-a
 import { UpdateProfileHandler } from './commands/update-profile/update-profile.handler';
 import { UploadAvatarHandler } from './commands/upload-avatar/upload-avatar.handler';
 import { CloudinaryModule } from '@app/common';
-import {GetUserOrderInfoHandler} from "./queries/get-user-order-info/get-user-order-info.handler";
-import {RepositoryModule} from "@repository/repository.module";
+import { GetUserOrderInfoHandler } from './queries/get-user-order-info/get-user-order-info.handler';
+import { RepositoryModule } from '@repository/repository.module';
 
 dotenv.config();
 

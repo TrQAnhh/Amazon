@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { UserRole } from "@app/common";
+import { UserRole } from '@app/common';
 
 @Entity()
 export class IdentityEntity {

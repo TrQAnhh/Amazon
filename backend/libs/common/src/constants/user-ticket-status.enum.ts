@@ -1,4 +1,4 @@
 export enum UserTicketStatus {
-    AVAILABLE = 'AVAILABLE',
-    USED = 'USED',
+  AVAILABLE = 'AVAILABLE',
+  USED = 'USED',
 }

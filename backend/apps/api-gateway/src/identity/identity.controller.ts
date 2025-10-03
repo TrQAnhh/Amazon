@@ -5,14 +5,14 @@ import { BaseController } from '../common/base/base.controller';
 import { Public } from '../common/decorators/public.decorator';
 import { ClientProxy } from '@nestjs/microservices';
 import {
-    ApiBadRequestResponse,
-    ApiBearerAuth,
-    ApiConflictResponse,
-    ApiCreatedResponse,
-    ApiOkResponse,
-    ApiTags,
-    ApiUnauthorizedResponse
-} from "@nestjs/swagger";
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 @ApiTags('Identity service')
 @Controller('auth')
@@ -23,7 +23,7 @@ export class IdentityController extends BaseController {
 
   @Public()
   @Post('sign-up')
-  @ApiCreatedResponse({ description: 'Created user object as response',  type: AuthResponseDto })
+  @ApiCreatedResponse({ description: 'Created user object as response', type: AuthResponseDto })
   @ApiConflictResponse({ description: 'Email has already been registered' })
   async signUp(@Body() signUpDto: SignUpDto): Promise<Response<AuthResponseDto>> {
     const result = await this.sendCommand<AuthResponseDto>({ cmd: 'sign_up' }, signUpDto);

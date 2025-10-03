@@ -1,23 +1,25 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import { IOREDIS } from '@app/common/redis/constants/redis.constant';
-import Redlock from "redlock";
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
+import { ErrorCode } from '@app/common';
+import * as Redis from 'ioredis';
+import Redlock from 'redlock';
 
 @Injectable()
 export class RedisHelper {
-    private redlock: Redlock;
-    private readonly logger = new Logger(RedisHelper.name);
+  private redlock: Redlock;
+  private readonly logger = new Logger(RedisHelper.name);
 
-    constructor(
-        @Inject(IOREDIS)
-        private readonly redis: Redis.Redis
-    ) {
-        this.redlock = new Redlock([this.redis], {
-            retryCount: 30,
-            retryDelay: 100,
-            retryJitter: 50,
-        });
-    }
+  constructor(
+    @Inject(IOREDIS)
+    private readonly redis: Redis.Redis,
+  ) {
+    this.redlock = new Redlock([this.redis], {
+      retryCount: Number(process.env.REDLOCK_RETRY_COUNT),
+      retryDelay: Number(process.env.REDLOCK_RETRY_DELAY),
+      retryJitter: Number(process.env.REDLOCK_RETRY_JITTER),
+    });
+  }
 
   async get(key: Redis.RedisKey): Promise<string | null> {
     return this.redis.get(key);
@@ -41,19 +43,30 @@ export class RedisHelper {
 
   async withResourceLock<T>(resourceIds: string[], fn: () => Promise<T>): Promise<T> {
     const resources = resourceIds.map((resourceId) => {
-        return `lock:${resourceId}`;
+      return `lock:${resourceId}`;
     });
 
-    const ttl = 10000;
-
-    const lock = await this.redlock.acquire(resources, ttl);
-    this.logger.log(`Lock acquired for ${resources}`);
+    const ttl = Number(process.env.REDLOCK_TTL);
+    let lock;
 
     try {
-        return await fn();
+      lock = await this.redlock.acquire(resources, ttl);
+      this.logger.log(`Lock acquired for ${resources.join(', ')}`);
+      return await fn();
+    } catch (error) {
+      if (error?.name === 'LockError' || error?.name === 'ExecutionError') {
+        throw new RpcException(ErrorCode.RESOURCE_BUSY);
+      }
+      throw error;
     } finally {
-        await lock.release();
-        this.logger.log(`Lock released for ${resources}`);
+      if (lock) {
+        try {
+          await lock.release();
+          this.logger.log(`Lock released for ${resources.join(', ')}`);
+        } catch (releaseErr) {
+          this.logger.error(`Failed to release lock for ${resources.join(', ')}: ${releaseErr.message}`);
+        }
+      }
     }
   }
 }
