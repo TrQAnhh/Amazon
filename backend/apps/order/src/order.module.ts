@@ -22,6 +22,7 @@ import { RepositoryModule } from '@repository/repository.module';
 import { FailOrderHandler } from './commands/fail-order/fail-order.handler';
 import { TicketController } from './controller/ticket.controller';
 import { GetTicketDetailHandler } from './queries/get-ticket-detail/get-ticket-detail.handler';
+import { GetUserTicketHandler } from './queries/get-user-ticket/get-user-ticket.handler';
 import { GetAllTicketHandler } from './queries/get-all-ticket/get-all-ticket.handler';
 
 import * as dotenv from 'dotenv';
@@ -77,6 +78,7 @@ dotenv.config();
     CollectTicketHandler,
     GetTicketDetailHandler,
     GetAllTicketHandler,
+    GetUserTicketHandler,
     {
       provide: APP_FILTER,
       useClass: OrderExceptionFilter,

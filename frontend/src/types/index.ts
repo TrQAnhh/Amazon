@@ -1,10 +1,10 @@
 export interface User {
-  email: string;
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  avatarUrl: string;
-  bio: string;
+    email: string;
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    avatarUrl: string;
+    bio: string;
 }
 
 export interface ProfileDetails {
@@ -26,39 +26,39 @@ export interface UpdateProfileDto {
 }
 
 export interface AuthResponse {
-  success: boolean;
-  message: string;
-  role: string;
-  data: {
-    user: User;
-    accessToken: string;
-    refreshToken: string;
-  };
+    success: boolean;
+    message: string;
+    role: string;
+    data: {
+        user: User;
+        accessToken: string;
+        refreshToken: string;
+    };
 }
 
 export interface Product {
-  id: number;
-  sku: string;
-  name: string;
-  description: string;
-  imageUrl: string;
-  price: number;
-  availableStock: number;
+    id: number;
+    sku: string;
+    name: string;
+    description: string;
+    imageUrl: string;
+    price: number;
+    availableStock: number;
 }
 
 export interface CreateProductRequest {
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
+    name: string;
+    description: string;
+    price: number;
+    stock: number;
 }
 
 export interface UpdateProductRequest {
-  id: string;
-  name?: string;
-  description?: string;
-  price?: number;
-  stock?: number;
+    id: string;
+    name?: string;
+    description?: string;
+    price?: number;
+    stock?: number;
 }
 
 export type PaymentMethod = "STRIPE" | "COD";
@@ -67,7 +67,10 @@ export interface Order {
     id: number;
     createdAt: string;
     totalAmount: string;
-    status: 'PENDING' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELED';
+    discountAmount?: number;
+    finalAmount: string;
+    freeshipApplied?: boolean;
+    status: "PENDING" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELED";
     paymentMethod: PaymentMethod;
     paymentStatus: string;
     orderInfo: OrderInfo;
@@ -92,6 +95,32 @@ export interface OrderItem {
         name: string;
         imageUrl: string;
     };
+}
+
+export interface Ticket {
+    id: number;
+    code: string;
+    type: "PERCENT" | "FIXED";
+    value: string;
+    minOrderAmount: string;
+    maxDiscount: string;
+    startDate: string;
+    endDate: string;
+    status: "ACTIVE" | "INACTIVE" | "EXPIRED";
+}
+
+export interface TicketDetail {
+    id: number;
+    code: string;
+    type: "PERCENT" | "FIXED";
+    value: string;
+    minOrderAmount: string;
+    maxDiscount: string;
+    startDate: string;
+    endDate: string;
+    total: number;
+    usageLimit: number;
+    status: "ACTIVE" | "INACTIVE" | "EXPIRED" | "AVAILABLE";
 }
 
 export interface CreateOrderRequest {

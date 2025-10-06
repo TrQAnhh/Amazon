@@ -16,6 +16,9 @@ export class OrderEntity {
   @Column('decimal', { precision: 10, scale: 2 })
   totalAmount: number;
 
+  @Column('decimal', { precision: 10, scale: 2 })
+  finalAmount: number;
+
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
 

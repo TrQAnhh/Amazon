@@ -11,6 +11,18 @@ export class OrderResponseDto {
   @Expose()
   totalAmount: number;
 
+  @ApiProperty({ type: 'number' })
+  @Expose()
+  discountAmount: number;
+
+  @ApiProperty({ type: 'number' })
+  @Expose()
+  finalAmount: number;
+
+  @ApiProperty({ type: 'boolean' })
+  @Expose()
+  freeshipApplied: boolean;
+
   @ApiProperty({ type: 'string' })
   @Expose()
   status: string;

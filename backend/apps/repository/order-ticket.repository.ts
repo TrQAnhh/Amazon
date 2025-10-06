@@ -10,19 +10,24 @@ export class OrderTicketRepository {
     private readonly repo: Repository<OrderTicketEntity>,
   ) {}
 
+  async findByOrderId(orderId: number): Promise<OrderTicketEntity[]> {
+    return await this.repo.find({
+      where: {
+        order: { id: orderId },
+      },
+      relations: {
+        userTicket: {
+          ticket: true,
+        },
+      },
+    });
+  }
+
   create(data: Partial<OrderTicketEntity>): OrderTicketEntity {
     return this.repo.create(data);
   }
 
   async save(orderTicket: Partial<OrderTicketEntity>): Promise<OrderTicketEntity> {
     return this.repo.save(orderTicket);
-  }
-
-  async saveMany(orderTickets: Partial<OrderTicketEntity>[]): Promise<OrderTicketEntity[]> {
-    return this.repo.save(orderTickets);
-  }
-
-  async findByOrderId(orderId: number): Promise<OrderTicketEntity[]> {
-    return this.repo.find({ where: { order: { id: orderId } }, relations: ['userTicket'] });
   }
 }

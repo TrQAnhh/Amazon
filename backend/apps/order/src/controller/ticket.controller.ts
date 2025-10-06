@@ -6,6 +6,7 @@ import { MessagePattern } from '@nestjs/microservices';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Controller } from '@nestjs/common';
 import { CollectTicketCommand } from '../commands/collect-ticket/collect-ticket.command';
+import { GetUserTicketQuery } from '../queries/get-user-ticket/get-user-ticket.query';
 
 @Controller()
 export class TicketController {
@@ -16,6 +17,11 @@ export class TicketController {
   @MessagePattern({ cmd: 'create_ticket' })
   async createTicket(payload: { role: string; createTicketDto: CreateTicketDto }): Promise<string> {
     return this.commandBus.execute(new CreateTicketCommand(payload.role, payload.createTicketDto));
+  }
+
+  @MessagePattern({ cmd: 'get_user_tickets' })
+  async getUserTickets(payload: { userId: number }): Promise<TicketDetailResponseDto[]> {
+    return this.queryBus.execute(new GetUserTicketQuery(payload.userId));
   }
 
   @MessagePattern({ cmd: 'get_ticket_details' })
