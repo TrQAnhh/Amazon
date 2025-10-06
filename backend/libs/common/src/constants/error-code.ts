@@ -4,6 +4,11 @@ export class ErrorCode {
   static readonly INVALID_INPUT_VALUE = new ErrorCode(400, 'Invalid input value', HttpStatus.BAD_REQUEST);
   static readonly NO_FILE_PROVIDED = new ErrorCode(400, 'No file provided', HttpStatus.BAD_REQUEST);
   static readonly ITEM_OUT_OF_STOCK = new ErrorCode(400, 'Product is out of stock', HttpStatus.BAD_REQUEST);
+  static readonly MIN_ORDER_AMOUNT_NOT_REACHED = new ErrorCode(
+    400,
+    'Order amount does not meet the minimum requirement for this discount',
+    HttpStatus.BAD_REQUEST,
+  );
   static readonly ORDER_ALREADY_FAILED = new ErrorCode(
     400,
     'Order has already been marked as failed',
@@ -26,15 +31,15 @@ export class ErrorCode {
   static readonly PROFILE_NOT_FOUND = new ErrorCode(404, "User's profile not found", HttpStatus.NOT_FOUND);
   static readonly PRODUCT_NOT_FOUND = new ErrorCode(
     404,
-    'Product with given information does not exis',
+    'Product with given information does not exist',
     HttpStatus.NOT_FOUND,
   );
   static readonly ORDER_NOT_FOUND = new ErrorCode(
     404,
-    'Order with given information does not exis',
+    'Order with given information does not exist',
     HttpStatus.NOT_FOUND,
   );
-  static readonly TICKET_NOT_FOUND = new ErrorCode(404, 'Ticket not found', HttpStatus.NOT_FOUND);
+  static readonly TICKET_NOT_FOUND = new ErrorCode(404, 'Ticket not found or already used', HttpStatus.NOT_FOUND);
   static readonly INVALID_JWT_TOKEN = new ErrorCode(401, 'Invalid or expired JWT token', HttpStatus.UNAUTHORIZED);
   static readonly ORDER_PROCESSING = new ErrorCode(
     409,

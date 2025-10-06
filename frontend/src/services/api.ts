@@ -18,9 +18,7 @@ export class ApiService {
   }
 
   async getProducts() {
-    const response = await fetch(`${API_BASE}/product`, {
-      headers: this.getAuthHeaders(),
-    });
+    const response = await fetch(`${API_BASE}/product`);
 
     if (!response.ok) {
       throw new Error('Failed to fetch products');
@@ -30,9 +28,7 @@ export class ApiService {
   }
 
   async getProductDetails(sku: string) {
-      const response = await fetch(`${API_BASE}/product/${sku}`, {
-          headers: this.getAuthHeaders(),
-      });
+      const response = await fetch(`${API_BASE}/product/${sku}`);
 
       if (!response.ok) {
           throw new Error('Failed to fetch products');
@@ -145,6 +141,54 @@ export class ApiService {
       }
 
       return response.json();
+  }
+
+  async getUserTickets() {
+      const response = await fetch(`${API_BASE}/ticket/user/package`, {
+          headers: this.getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to fetch user\'s tickets');
+      }
+
+      return response.json();
+  }
+
+  async getTickets() {
+    const response = await fetch(`${API_BASE}/ticket`);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch tickets');
+    }
+
+    return response.json();
+  }
+
+  async getTicketDetail(ticketId: number) {
+      const response = await fetch(`${API_BASE}/ticket/${ticketId}`);
+
+      if (!response.ok) {
+          throw new Error('Failed to fetch ticket details');
+      }
+
+      return response.json();
+  }
+
+  async collectTicket(ticketId: number) {
+      const response = await fetch(`${API_BASE}/ticket/collect`,{
+          method: 'POST',
+          headers: this.getAuthHeaders(),
+          body: JSON.stringify({ ticketId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+          throw new Error(data?.message || 'Failed to collect ticket');
+      }
+
+      return data;
   }
 
   async getProfileDetails() {

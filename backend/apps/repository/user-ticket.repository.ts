@@ -15,6 +15,17 @@ export class UserTicketRepository {
     return this.repo.create(data);
   }
 
+  async findAllUserTickets(userId: number): Promise<UserTicketEntity[]> {
+    return this.repo.find({
+      where: {
+        userId,
+        status: UserTicketStatus.AVAILABLE,
+        quantity: MoreThan(0),
+      },
+      relations: ['ticket'],
+    });
+  }
+
   async findSavedTicket(userId: number, ticketId: number): Promise<UserTicketEntity | null> {
     return await this.repo.findOne({
       where: {

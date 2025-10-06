@@ -1,126 +1,119 @@
-import { DiscountType, ErrorCode, PaymentMethod, RedisHelper, SERVICE_NAMES, UserTicketStatus } from '@app/common';
+import { ErrorCode, PaymentMethod, RedisHelper, SERVICE_NAMES } from '@app/common';
+import { applyDiscountTicket } from '../../helpers/apply-discount-ticket.helper';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { getOrderProducts } from '../../helpers/get-order-products.helper';
+import { RepositoryService } from '@repository/repository.service';
 import { OrderItemEntity } from '../../entity/order-items.entity';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { CheckOutCommand } from '../check-out/check-out.command';
 import { CreateOrderCommand } from './create-order.command';
 import { Inject } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
-import { RepositoryService } from '@repository/repository.service';
-import { CheckOutCommand } from "../check-out/check-out.command";
 
 @CommandHandler(CreateOrderCommand)
 export class CreateOrderHandler implements ICommandHandler<CreateOrderCommand> {
-    constructor(
-        @Inject(SERVICE_NAMES.PRODUCT)
-        private readonly productClient: ClientProxy,
-        private readonly commandBus: CommandBus,
-        private readonly repository: RepositoryService,
-        private readonly redisHelper: RedisHelper,
-    ) {}
+  constructor(
+    @Inject(SERVICE_NAMES.PRODUCT)
+    private readonly productClient: ClientProxy,
+    private readonly commandBus: CommandBus,
+    private readonly repository: RepositoryService,
+    private readonly redisHelper: RedisHelper,
+  ) {}
 
-    async execute(command: CreateOrderCommand): Promise<string | null> {
-        const { role, userId, createOrderDto } = command;
+  async execute(command: CreateOrderCommand): Promise<string | null> {
+    const { role, userId, createOrderDto } = command;
 
-        const lockResources = [
-            ...createOrderDto.items.map((item) => `product:${item.productId}`),
-            ...(createOrderDto.discountId ? [`ticket:${createOrderDto.discountId}`] : []),
-        ];
+    const lockResources = [
+      ...createOrderDto.items.map((item) => `product:${item.productId}`),
+      ...(createOrderDto.freeshipId ? [`freeship:${createOrderDto.freeshipId}`] : []),
+      ...(createOrderDto.discountId ? [`discount:${createOrderDto.discountId}`] : []),
+    ];
 
-        const result = await this.redisHelper.withResourceLock(lockResources, async () => {
+    const order = this.repository.order.create({
+      userId,
+      paymentMethod: createOrderDto.paymentMethod,
+      totalAmount: 0,
+      finalAmount: 0,
+    });
 
-            const orderItems = await getOrderProducts(
-                this.productClient,
-                createOrderDto.items.map((item) => item.productId),
-            );
-            const productsMap = new Map(orderItems.map((p) => [p.id, p]));
+    const savedOrder = await this.redisHelper.withResourceLock(lockResources, async () => {
+      const orderItems = await getOrderProducts(
+        this.productClient,
+        createOrderDto.items.map((item) => item.productId),
+      );
+      const productsMap = new Map(orderItems.map((p) => [p.id, p]));
 
-            const order = this.repository.order.create({
-                userId,
-                paymentMethod: createOrderDto.paymentMethod,
-                totalAmount: 0,
-            });
+      let totalAmount = 0;
+      const orderItemEntities: OrderItemEntity[] = [];
+      const updateStockItems: { productId: number; newStock: number }[] = [];
 
-            let totalAmount = 0;
-            const orderItemEntities: OrderItemEntity[] = [];
-            const updateStockItems: { productId: number; newStock: number }[] = [];
+      for (const item of createOrderDto.items) {
+        const product = productsMap.get(item.productId);
+        if (!product) throw new RpcException(ErrorCode.PRODUCT_NOT_FOUND);
 
-            for (const item of createOrderDto.items) {
-                const product = productsMap.get(item.productId);
-                if (!product) throw new RpcException(ErrorCode.PRODUCT_NOT_FOUND);
-                if (item.quantity > product.availableStock) throw new RpcException(ErrorCode.ITEM_OUT_OF_STOCK);
+        if (item.quantity > product.availableStock) throw new RpcException(ErrorCode.ITEM_OUT_OF_STOCK);
 
-                const total = product.price * item.quantity;
-                totalAmount += total;
+        const total = product.price * item.quantity;
+        totalAmount += total;
 
-                orderItemEntities.push(
-                    this.repository.orderItem.create({
-                        productId: product.id,
-                        price: product.price,
-                        quantity: item.quantity,
-                        total,
-                    }),
-                );
+        orderItemEntities.push(
+          this.repository.orderItem.create({
+            productId: product.id,
+            price: product.price,
+            quantity: item.quantity,
+            total,
+          }),
+        );
 
-                updateStockItems.push({
-                    productId: product.id,
-                    newStock: product.availableStock - item.quantity,
-                });
-            }
-
-            let appliedTicket;
-            let discountAmount = 0;
-
-            if (createOrderDto.discountId) {
-                const ticket = await this.repository.userTicket.findTicket(userId, createOrderDto.discountId!);
-                if (!ticket) throw new RpcException(ErrorCode.TICKET_NOT_FOUND);
-
-                const ticketInfo = ticket.ticket;
-                console.log(ticketInfo);
-                if (ticketInfo.type === DiscountType.PERCENT) {
-                    discountAmount = Math.min(
-                        (totalAmount * Number(ticketInfo.value)) / 100,
-                        Number(ticketInfo.maxDiscount || totalAmount)
-                    );
-                } else {
-                    discountAmount = Number(ticketInfo.value);
-                }
-                discountAmount = Math.min(discountAmount, totalAmount);
-                totalAmount -= discountAmount;
-
-                ticket.quantity -= 1;
-                if (ticket.quantity <= 0) ticket.status = UserTicketStatus.USED;
-
-                ticketInfo.total -= 1;
-
-                await this.repository.userTicket.save(ticket);
-                await this.repository.discountTicket.save(ticketInfo);
-
-                appliedTicket = this.repository.orderTicket.create({
-                    userTicket: ticket,
-                    order,
-                    amount: discountAmount,
-                });
-                await this.repository.orderTicket.save(appliedTicket);
-            }
-
-            order.items = orderItemEntities;
-            order.totalAmount = totalAmount;
-            const savedOrder = await this.repository.order.save(order);
-
-            try {
-                await firstValueFrom(this.productClient.send({ cmd: 'update_stock' }, { items: updateStockItems }));
-            } catch (err) {
-                throw new RpcException(err);
-            }
-
-            return { order: savedOrder, appliedTicket };
+        updateStockItems.push({
+          productId: product.id,
+          newStock: product.availableStock - item.quantity,
         });
+      }
 
-        if (createOrderDto.paymentMethod === PaymentMethod.STRIPE) {
-            return await this.commandBus.execute(new CheckOutCommand(role, userId, result.order.id));
-        }
+      let finalAmount = totalAmount;
+      let discountAmount = 0;
+      let discountTicket: any;
 
-        return `Order created successfully with id ${result.order.id}`;
+      if (createOrderDto.discountId) {
+        const discountResult = await applyDiscountTicket(
+          this.repository,
+          userId,
+          createOrderDto.discountId,
+          totalAmount,
+        );
+        finalAmount = discountResult.finalAmount;
+        discountAmount = discountResult.discountAmount;
+        discountTicket = discountResult.ticket;
+      }
+
+      order.items = orderItemEntities;
+      order.totalAmount = totalAmount;
+      order.finalAmount = finalAmount;
+      const savedOrder = await this.repository.order.save(order);
+
+      if (discountTicket) {
+        const appliedTicket = this.repository.orderTicket.create({
+          order: savedOrder,
+          userTicket: discountTicket,
+          amount: discountAmount,
+        });
+        await this.repository.orderTicket.save(appliedTicket);
+      }
+
+      try {
+        await firstValueFrom(this.productClient.send({ cmd: 'update_stock' }, { items: updateStockItems }));
+      } catch (err) {
+        throw new RpcException(err);
+      }
+
+      return savedOrder;
+    });
+
+    if (createOrderDto.paymentMethod === PaymentMethod.STRIPE) {
+      return await this.commandBus.execute(new CheckOutCommand(role, userId, savedOrder.id));
     }
+
+    return `Order created successfully with id ${savedOrder.id}`;
+  }
 }

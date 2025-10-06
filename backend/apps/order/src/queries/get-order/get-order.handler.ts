@@ -1,4 +1,12 @@
-import { ErrorCode, OrderItemResponseDto, OrderResponseDto, PaymentStatus, SERVICE_NAMES, UserRole } from '@app/common';
+import {
+  DiscountType,
+  ErrorCode,
+  OrderItemResponseDto,
+  OrderResponseDto,
+  PaymentStatus,
+  SERVICE_NAMES,
+  UserRole,
+} from '@app/common';
 import { getOrderProductDetails } from '../../helpers/get-order-product-details.helper';
 import { getUserOrderInfo } from '../../helpers/get-user-order-info.helper';
 import { StripeService } from '../../modules/stripe/service/stripe.service';
@@ -66,12 +74,34 @@ export class GetOrderHandler implements IQueryHandler<GetOrderQuery> {
       checkoutUrl = await this.stripeService.retrieveCheckoutUrl(order.sessionId);
     }
 
+    let discountAmount = 0;
+    let freeshipApplied = false;
+
+    const discount = await this.repository.orderTicket.findByOrderId(orderId);
+
+    if (discount?.length) {
+      for (const ot of discount) {
+        const ticket = ot.userTicket?.ticket;
+        if (!ticket) continue;
+
+        if (ticket.type === DiscountType.PERCENT || ticket.type === DiscountType.FIXED) {
+          discountAmount += Number(ot.amount);
+        }
+
+        if (ticket.type === DiscountType.FREESHIP) {
+          freeshipApplied = true;
+        }
+      }
+    }
+
     return plainToInstance(
       OrderResponseDto,
       {
         ...order,
         items,
         orderInfo,
+        discountAmount,
+        freeshipApplied,
         checkoutUrl,
       },
       { excludeExtraneousValues: true },

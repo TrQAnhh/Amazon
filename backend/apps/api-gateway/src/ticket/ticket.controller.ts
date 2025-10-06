@@ -1,5 +1,5 @@
 import type { Response } from '../common/interceptors/transform/transform.interceptor';
-import { Body, Controller, Get, Inject, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post, Req, UseGuards } from '@nestjs/common';
 import {
   CollectTicketDto,
   CreateTicketDto,
@@ -44,12 +44,26 @@ export class TicketController extends BaseController {
     };
   }
 
+  @Public()
   @Get('/:ticketId')
   @ApiOkResponse({ description: 'Get ticket details successfully', type: TicketDetailResponseDto })
   async getTicketDetails(@Param('ticketId') ticketId: number) {
     const result = await this.sendCommand<TicketDetailResponseDto>({ cmd: 'get_ticket_details' }, { ticketId });
     return {
       message: 'Get ticket details successfully',
+      success: true,
+      data: result,
+    };
+  }
+
+  @Get('/user/package')
+  @ApiOkResponse({ description: 'Get user tickets successfully' })
+  async getUserTickets(@Req() request: any): Promise<Response<TicketDetailResponseDto[]>> {
+    const userId = request.user.userId;
+    const result = await this.sendCommand<TicketDetailResponseDto[]>({ cmd: 'get_user_tickets' }, { userId });
+
+    return {
+      message: 'Get user tickets successfully',
       success: true,
       data: result,
     };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Product, CreateProductRequest, UpdateProductRequest } from '../types';
 import { ApiService } from '../services/api';
 import {useNavigate} from "react-router-dom";
+import {TicketList} from "../components/TicketList.tsx";
 
 export const Products: React.FC = () => {
   const navigate = useNavigate();
@@ -82,6 +83,8 @@ export const Products: React.FC = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Products</h1>
       </div>
+
+      <TicketList/>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">

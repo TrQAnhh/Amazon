@@ -138,8 +138,11 @@ export const OrderDetails: React.FC = () => {
                     </div>
                 ))}
             </div>
+            <div className=" mt-4 space-y-1 text-right font-bold text-xl">
+                Total: ${parseFloat(order.totalAmount).toFixed(2)}
+            </div>
 
-            <div className="flex justify-between mt-6 border-t pt-4 text-right text-xl font-bold">
+            <div className="flex justify-between mt-2 border-t pt-4 text-right text-xl font-bold">
                 <div className="space-x-4">
                 {!(
                     order.status.toLowerCase() === 'canceled' ||
@@ -193,8 +196,14 @@ export const OrderDetails: React.FC = () => {
                     </a>
                 )}
                 </div>
-                <div>
-                    Total: ${parseFloat(order.totalAmount).toFixed(2)}
+                <div className="space-y-1 text-right">
+                    {order.discountAmount ? (
+                        <div className="text-green-700"> -${order.discountAmount.toFixed(2)}</div>
+                    ) : null}
+                    {order.freeshipApplied ? (
+                        <div className="text-blue-700">Freeship Applied</div>
+                    ) : null}
+                    <div>Final: ${parseFloat(order.finalAmount).toFixed(2)}</div>
                 </div>
             </div>
         </div>
