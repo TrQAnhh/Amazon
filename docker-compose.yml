@@ -31,9 +31,11 @@ services:
     build:
       context: ./backend
       dockerfile: ./apps/api-gateway/Dockerfile
+    platform: linux/amd64
     command: npm run start:dev:gateway
     volumes:
       - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
     env_file:
       - ./backend/.env
     ports:
@@ -51,9 +53,11 @@ services:
     build:
       context: ./backend
       dockerfile: ./apps/identity/Dockerfile
+    platform: linux/amd64
     command: sh -c "npm run migration:identity:run && npm run start:dev:identity"
     volumes:
       - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
     env_file:
       - ./backend/.env
     ports:
@@ -68,9 +72,11 @@ services:
     build:
       context: ./backend
       dockerfile: ./apps/profile/Dockerfile
+    platform: linux/amd64
     command: sh -c "npm run migration:profile:run && npm run start:dev:profile"
     volumes:
       - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
     env_file:
       - ./backend/.env
     ports:
@@ -84,9 +90,11 @@ services:
     build:
       context: ./backend
       dockerfile: ./apps/product/Dockerfile
+    platform: linux/amd64
     command: sh -c "npm run migration:product:run && npm run start:dev:product"
     volumes:
       - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
     env_file:
       - ./backend/.env
     ports:
@@ -100,9 +108,11 @@ services:
     build:
       context: ./backend
       dockerfile: ./apps/order/Dockerfile
+    platform: linux/amd64
     command: sh -c "npm run migration:order:run && npm run start:dev:order"
     volumes:
       - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
     env_file:
       - ./backend/.env
     ports:

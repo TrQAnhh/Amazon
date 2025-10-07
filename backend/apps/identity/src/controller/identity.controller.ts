@@ -9,6 +9,7 @@ import { SignInCommand } from '../commands/sign-in/sign-in.command';
 import { ValidateTokenQuery } from '../queries/validate-token/validate-token.query';
 import { RefreshTokenCommand } from '../commands/refresh-token/refresh-token.command';
 import { SignOutCommand } from '../commands/sign-out/sign-out.command';
+import {VerifyEmailQuery} from "../queries/verify-email/verify-email.query";
 
 @Controller()
 export class IdentityController {
@@ -18,13 +19,18 @@ export class IdentityController {
   ) {}
 
   @MessagePattern({ cmd: 'sign_up' })
-  async signUp(signUpDto: SignUpDto): Promise<AuthResponseDto> {
+  async signUp(signUpDto: SignUpDto): Promise<string> {
     return this.commandBus.execute(new SignUpCommand(signUpDto));
   }
 
   @MessagePattern({ cmd: 'sign_in' })
   async signIn(signInDto: SignInDto): Promise<AuthResponseDto> {
     return this.commandBus.execute(new SignInCommand(signInDto));
+  }
+
+  @MessagePattern({ cmd: 'verify_email' })
+  async verifyEmail(payload: { tokenId: string }): Promise<string> {
+      return this.commandBus.execute(new VerifyEmailQuery(payload.tokenId));
   }
 
   @MessagePattern({ cmd: 'sign_out' })

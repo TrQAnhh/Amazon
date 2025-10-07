@@ -26,6 +26,10 @@ export class IdentityRepository {
     return this.repo.create(data);
   }
 
+  async update(id: number, data: Partial<IdentityEntity>): Promise<void> {
+    await this.repo.update(id, data);
+  }
+
   async save(user: IdentityEntity): Promise<IdentityEntity> {
     return this.repo.save(user);
   }

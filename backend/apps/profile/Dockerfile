@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 
+RUN npm install @css-inline/css-inline-linux-x64-musl --save
+
 COPY . .
 RUN npm run build:profile
 
