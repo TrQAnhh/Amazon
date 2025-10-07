@@ -14,7 +14,7 @@ export class RedisHelper {
     @Inject(IOREDIS)
     private readonly redis: Redis.Redis,
   ) {
-    this.redlock = new Redlock([this.redis], {
+    this.redlock = new Redlock([this.redis as any], {
       retryCount: Number(process.env.REDLOCK_RETRY_COUNT),
       retryDelay: Number(process.env.REDLOCK_RETRY_DELAY),
       retryJitter: Number(process.env.REDLOCK_RETRY_JITTER),

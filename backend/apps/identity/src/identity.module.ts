@@ -1,8 +1,9 @@
 import { GetUserIdentitiesHandler } from './queries/get-user-identities/get-user-identities.handler';
 import { GetUserIdentityHandler } from './queries/get-user-identity/get-user-identity.handler';
 import { ValidateTokenHandler } from './queries/validate-token/validate-token.handler';
-import { IdentityExceptionFilter } from './exception/identity-exception.filter';
 import { RefreshTokenHandler } from './commands/refresh-token/refresh-token.handler';
+import { IdentityExceptionFilter } from './exception/identity-exception.filter';
+import { UserRegisteredHandler } from "./event/user-registered.handler";
 import { IdentityController } from './controller/identity.controller';
 import { SignOutHandler } from './commands/sign-out/sign-out.handler';
 import { RedisConfig, RedisModule, SERVICE_NAMES } from '@app/common';
@@ -49,7 +50,9 @@ dotenv.config();
     RepositoryModule,
     CqrsModule,
   ],
-  controllers: [IdentityController],
+  controllers: [
+      IdentityController
+  ],
   providers: [
     {
       provide: APP_FILTER,
@@ -62,6 +65,7 @@ dotenv.config();
     SignOutHandler,
     ValidateTokenHandler,
     RefreshTokenHandler,
+    UserRegisteredHandler,
   ],
 })
 export class IdentityModule {}
