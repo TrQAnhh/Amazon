@@ -18,9 +18,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
+
   return context;
 };
 
@@ -94,9 +96,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.setItem('refreshToken', refreshToken);
 
         try {
-            const userData = await apiService.getProfileDetails();
-            localStorage.setItem('user', JSON.stringify(userData));
-            setUser(userData);
+            const user = await apiService.getProfileDetails();
+            localStorage.setItem('user', JSON.stringify(user.data));
+            setUser(user.data);
         } catch (err) {
             console.error('Failed to fetch user profile:', err);
             clearAuthData();

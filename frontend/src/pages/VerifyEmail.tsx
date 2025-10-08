@@ -7,6 +7,8 @@ export const VerifyEmail: React.FC = () => {
     const [message, setMessage] = useState('Verifying...');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [countdown, setCountdown] = useState(5);
+
     const navigate = useNavigate();
     const { verifyEmail } = useAuth();
     const called = useRef(false);
@@ -20,7 +22,6 @@ export const VerifyEmail: React.FC = () => {
                 await verifyEmail(tokenId);
                 setMessage('Verifying successfully.');
                 setSuccess(true);
-                setTimeout(() => navigate('/products'), 3000);
             } catch (err: any) {
                 setSuccess(false);
                 setError(err.message || 'Email verification failed');
@@ -28,7 +29,19 @@ export const VerifyEmail: React.FC = () => {
         };
 
         verify();
-    }, [tokenId, verifyEmail, navigate]);
+    }, [tokenId, verifyEmail]);
+
+    useEffect(() => {
+        if (!success) return;
+
+        if (countdown === 0) {
+            navigate('/products');
+            return;
+        }
+
+        const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+        return () => clearTimeout(timer);
+    }, [countdown, success, navigate]);
 
     return (
         <div className="max-w-md mx-auto mt-16 text-center">
@@ -48,7 +61,14 @@ export const VerifyEmail: React.FC = () => {
                     </span>
                 )}
             </div>
-            {error ? <div className="text-red-600 text-lg">{error}</div> : <div className="text-green-600 text-lg">{message}</div>}
+            {error ? (
+                <div className="text-red-600 text-lg">{error}</div>
+            ) : (
+                <div className="text-green-600 text-lg">
+                    {message}
+                    {success && <p className="mt-2 text-sm text-gray-700">Redirecting in {countdown} second{countdown !== 1 ? 's' : ''}...</p>}
+                </div>
+            )}
         </div>
     );
 };
