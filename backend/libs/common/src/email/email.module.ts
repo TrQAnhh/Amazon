@@ -22,7 +22,7 @@ import { join } from 'path';
             from: process.env.EMAIL_USER,
         },
         template: {
-            dir: __dirname + 'templates',
+            dir: join(process.cwd(), 'dist/libs/common/email/templates'),
             adapter: new HandlebarsAdapter(),
             options: {
                 strict: true,

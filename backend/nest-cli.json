@@ -27,7 +27,7 @@
       "sourceRoot": "libs/common/src",
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json",
-        "assets": ["src/email/templates/**/*"],
+        "assets": ["email/templates/**/*"],
         "watchAssets": true
       }
     },
@@ -37,7 +37,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/identity/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/identity/tsconfig.app.json"
+        "tsConfigPath": "apps/identity/tsconfig.app.json",
+        "webpackConfigPath": "webpack.config.js"
       }
     },
     "profile": {
