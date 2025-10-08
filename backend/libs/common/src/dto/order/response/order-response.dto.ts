@@ -9,6 +9,10 @@ export class OrderResponseDto {
 
   @ApiProperty({ type: 'number' })
   @Expose()
+  userId: number;
+
+  @ApiProperty({ type: 'number' })
+  @Expose()
   totalAmount: number;
 
   @ApiProperty({ type: 'number' })

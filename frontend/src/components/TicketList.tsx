@@ -44,9 +44,8 @@ export const TicketList: React.FC<TicketListProps> = ({ onCollected }) => {
                 return;
             }
             setCollecting(ticketId);
-            const res = await apiService.collectTicket(ticketId);
-            if (res.success) {
-                alert(res.message);
+            const response = await apiService.collectTicket(ticketId);
+            if (response.success) {
                 if (onCollected) onCollected();
             }
         } catch (err: any) {
@@ -115,7 +114,7 @@ export const TicketList: React.FC<TicketListProps> = ({ onCollected }) => {
 
     if (loading) return <div>Loading tickets...</div>;
     if (error) return <div className="text-red-600">{error}</div>;
-    if (tickets.length === 0) return <div>No active tickets available.</div>;
+    if (tickets.length === 0) return <></>;
 
     return (
         <div className="relative bg-white p-6 rounded-xl shadow-lg mb-8">

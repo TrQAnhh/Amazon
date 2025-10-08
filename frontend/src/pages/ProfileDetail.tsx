@@ -92,7 +92,7 @@ export const ProfileDetail: React.FC = () => {
                     <img
                         src={form.avatarUrl || "/images/default-avatar-profile.jpg"}
                         alt="Avatar"
-                        className={`w-32 h-32 rounded-full border-4 border-gray-200 object-cover ${avatarLoading ? 'opacity-50' : ''}`}
+                        className= { `w-32 h-32 rounded-full border-4 border-gray-200 object-cover ${avatarLoading ? 'bg-gradient-to-r from-gray-100 via-gray-400 to-gray-100 animate-pulse' : ''}`}
                     />
                     <label className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-2 cursor-pointer hover:bg-blue-600">
                         <input type="file" className="hidden" onChange={handleAvatarChange} />

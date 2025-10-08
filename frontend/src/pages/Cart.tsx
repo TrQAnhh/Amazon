@@ -44,7 +44,6 @@ export const Cart: React.FC = () => {
         loadTickets();
     }, []);
 
-    // Scroll button logic
     const updateScrollButtons = () => {
         const el = scrollRef.current;
         if (!el) return;
@@ -202,7 +201,7 @@ export const Cart: React.FC = () => {
             {/* Ticket Apply */}
             { userTickets.length > 0 &&
                 <div className="mt-4 relative">
-                    <h3 className="font-semibold mb-2">Apply Ticket</h3>
+                    <h3 className="font-semibold mb-2">Discount Ticket:</h3>
 
                     {showLeft && (
                         <button
@@ -262,14 +261,25 @@ export const Cart: React.FC = () => {
                                 </div>
 
                                 {selectedTicket?.id !== ticket.id ? (
-                                    <button
-                                        onClick={() => setSelectedTicket(ticket)}
-                                        className="mt-2 w-full py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-                                    >
-                                        Apply
-                                    </button>
+                                    totalPrice >= Number(ticket.minOrderAmount) ? (
+                                        <button
+                                            onClick={() => setSelectedTicket(ticket)}
+                                            className="mt-2 w-full py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                                        >
+                                            Apply
+                                        </button>
+                                    ) : (
+                                        <div className="mt-2 w-full min-h-[32px] flex justify-center items-center">
+                                            <p className="text-sm text-gray-400 text-center">
+                                                Buy ${ (Number(ticket.minOrderAmount) - totalPrice).toFixed(2) } more to apply
+                                            </p>
+                                        </div>
+                                    )
                                 ) : (
-                                    <button onClick={() => setSelectedTicket(null)} className="mt-2 w-full py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm">
+                                    <button
+                                        onClick={() => setSelectedTicket(null)}
+                                        className="mt-2 w-full py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+                                    >
                                         Cancel
                                     </button>
                                 )}
