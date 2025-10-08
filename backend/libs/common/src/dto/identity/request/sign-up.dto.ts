@@ -6,7 +6,7 @@ export class SignUpDto {
   @IsEmail()
   email: string;
 
-  @ApiProperty({ type: 'string', example: 'Tranquocanh@123' })
+  @ApiProperty({ type: 'string', example: 'Example@123' })
   @IsNotEmpty()
   password: string;
 

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, AuthResponse } from '../types';
 import { AuthService } from '../services/auth';
+import {ApiService} from "../services/api.ts";
 
 interface AuthContextType {
   user: User | null;
@@ -9,6 +10,7 @@ interface AuthContextType {
   signup: (email: string, password: string, firstName: string, middleName: string, lastName: string) => Promise<void>;
   signout: () => Promise<void>;
   setUser: (user: User) => void;
+  verifyEmail: (tokenId: string) => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -30,7 +32,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const authService = AuthService.getInstance();
-
+  const apiService = new ApiService();
   const isAuthenticated = !!user;
 
   useEffect(() => {
@@ -85,16 +87,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return () => clearInterval(interval);
     }, [isAuthenticated]);
 
-  const handleAuthSuccess = (response: AuthResponse) => {
-    const { accessToken, refreshToken, user } = response.data;
+    const handleAuthSuccess = async (response: AuthResponse) => {
+        const { accessToken, refreshToken } = response.data;
 
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
-    localStorage.setItem('user', JSON.stringify(user));
-    setUser(user);
-  };
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
 
-  const clearAuthData = () => {
+        try {
+            const userData = await apiService.getProfileDetails();
+            localStorage.setItem('user', JSON.stringify(userData));
+            setUser(userData);
+        } catch (err) {
+            console.error('Failed to fetch user profile:', err);
+            clearAuthData();
+        }
+    };
+
+
+    const clearAuthData = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
@@ -108,7 +118,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       throw new Error(response.message);
     }
 
-    handleAuthSuccess(response);
+    await handleAuthSuccess(response);
   };
 
   const signup = async (email: string, password: string, firstName: string, middleName: string, lastName: string) => {
@@ -117,8 +127,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (!response.success) {
       throw new Error(response.message);
     }
-
-    handleAuthSuccess(response);
   };
 
   const signout = async () => {
@@ -129,7 +137,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     clearAuthData();
   };
 
-  return (
+  const verifyEmail = async (tokenId: string) => {
+    const response = await authService.verifyEmail(tokenId);
+
+    if (!response.success) {
+        throw new Error(response.message || 'Email verification failed');
+    }
+
+    await handleAuthSuccess(response);
+
+    return response;
+  };
+
+    return (
     <AuthContext.Provider
       value={{
         user,
@@ -137,6 +157,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         signin,
         signup,
         signout,
+        verifyEmail,
         isAuthenticated,
         setUser,
       }}

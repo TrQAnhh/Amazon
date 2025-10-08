@@ -14,14 +14,10 @@
     "api-gateway": {
       "type": "application",
       "root": "apps/api-gateway",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/api-gateway/tsconfig.app.json",
-        "assets": [
-          "proto/*.proto"
-        ],
-        "watchAssets": true
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
       }
     },
     "common": {
@@ -30,33 +26,28 @@
       "entryFile": "index",
       "sourceRoot": "libs/common/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/common/tsconfig.lib.json"
+        "tsConfigPath": "libs/common/tsconfig.lib.json",
+        "assets": ["email/templates/**/*"],
+        "watchAssets": true
       }
     },
     "identity": {
       "type": "application",
       "root": "apps/identity",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "entryFile": "main",
+      "sourceRoot": "apps/identity/src",
       "compilerOptions": {
         "tsConfigPath": "apps/identity/tsconfig.app.json",
-        "assets": [
-          "proto/*.proto"
-        ],
-        "watchAssets": true
+        "webpackConfigPath": "webpack.config.js"
       }
     },
     "profile": {
       "type": "application",
       "root": "apps/profile",
-      "entryFile": "src/main",
-      "sourceRoot": "./",
+      "entryFile": "main",
+      "sourceRoot": "apps/profile/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/profile/tsconfig.app.json",
-        "assets": [
-          "proto/*.proto"
-        ],
-        "watchAssets": true
+        "tsConfigPath": "apps/profile/tsconfig.app.json"
       }
     },
     "product": {

@@ -2,6 +2,7 @@ import { DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
 import { IdentityEntity } from '../entity/identity.entity';
+
 dotenv.config();
 
 const dataSourceOptions: DataSourceOptions = {

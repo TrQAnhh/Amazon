@@ -1,9 +1,11 @@
 import { AuthResponseDto, RefreshTokenDto, SERVICE_NAMES, SignInDto, SignUpDto } from '@app/common';
 import { Response } from '../common/interceptors/transform/transform.interceptor';
-import { Controller, Post, Body, Inject, Req } from '@nestjs/common';
+import {Controller, Post, Body, Inject, Req, Get} from '@nestjs/common';
 import { BaseController } from '../common/base/base.controller';
 import { Public } from '../common/decorators/public.decorator';
 import { ClientProxy } from '@nestjs/microservices';
+import { Query } from '@nestjs/common';
+
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -12,6 +14,7 @@ import {
   ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
 } from '@nestjs/swagger';
 
 @ApiTags('Identity service')
@@ -23,22 +26,40 @@ export class IdentityController extends BaseController {
 
   @Public()
   @Post('sign-up')
-  @ApiCreatedResponse({ description: 'Created user object as response', type: AuthResponseDto })
+  @ApiCreatedResponse({ description: 'Please check your email to verify your account' })
   @ApiConflictResponse({ description: 'Email has already been registered' })
-  async signUp(@Body() signUpDto: SignUpDto): Promise<Response<AuthResponseDto>> {
-    const result = await this.sendCommand<AuthResponseDto>({ cmd: 'sign_up' }, signUpDto);
+  @ApiForbiddenResponse({ description: 'Email has not been verified. Please check your inbox to verify your account' })
+  async signUp(@Body() signUpDto: SignUpDto): Promise<Response<any>> {
+    const message = await this.sendCommand<string>({ cmd: 'sign_up' }, signUpDto);
     return {
-      message: 'Register successfully!',
+      message,
       success: true,
-      data: result,
+      data: null,
     };
   }
+
+
+    @Public()
+    @Get('verify-email')
+    @ApiOkResponse({ description: 'Email verified successfully', type: AuthResponseDto })
+    @ApiUnauthorizedResponse({ description: 'Invalid or expired verification token' })
+    async verifyEmail(
+        @Query('tokenId') tokenId: string,
+    ): Promise<Response<AuthResponseDto>> {
+        const result = await this.sendCommand<AuthResponseDto>({ cmd: 'verify_email' }, { tokenId });
+        return {
+            message: 'Email verified successfully',
+            success: true,
+            data: result,
+        };
+    }
 
   @Public()
   @Post('sign-in')
   @ApiOkResponse({ description: 'Login successfully', type: AuthResponseDto })
   @ApiBadRequestResponse({ description: 'User not found' })
   @ApiUnauthorizedResponse({ description: 'Invalid email or password' })
+  @ApiForbiddenResponse({ description: 'Email has been registered and not verified. Please check your inbox to verify your account. Please check your inbox to verify your account' })
   async signIn(@Body() signInDto: SignInDto): Promise<Response<AuthResponseDto>> {
     const result = await this.sendCommand<AuthResponseDto>({ cmd: 'sign_in' }, signInDto);
     return {

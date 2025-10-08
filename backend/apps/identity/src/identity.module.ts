@@ -1,8 +1,9 @@
 import { GetUserIdentitiesHandler } from './queries/get-user-identities/get-user-identities.handler';
 import { GetUserIdentityHandler } from './queries/get-user-identity/get-user-identity.handler';
 import { ValidateTokenHandler } from './queries/validate-token/validate-token.handler';
-import { IdentityExceptionFilter } from './exception/identity-exception.filter';
 import { RefreshTokenHandler } from './commands/refresh-token/refresh-token.handler';
+import { IdentityExceptionFilter } from './exception/identity-exception.filter';
+import { UserRegisteredHandler } from './event/user-registered.handler';
 import { IdentityController } from './controller/identity.controller';
 import { SignOutHandler } from './commands/sign-out/sign-out.handler';
 import { RedisConfig, RedisModule, SERVICE_NAMES } from '@app/common';
@@ -11,6 +12,7 @@ import { SignInHandler } from './commands/sign-in/sign-in.handler';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { RepositoryModule } from '@repository/repository.module';
 import { typeOrmConfigAsync } from './config/typeorm.config';
+import { EmailModule } from '@app/common/email/email.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CqrsModule } from '@nestjs/cqrs';
 import { APP_FILTER } from '@nestjs/core';
@@ -19,6 +21,7 @@ import { Module } from '@nestjs/common';
 
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
+import {VerifyEmailHandler} from "./queries/verify-email/verify-email.handler";
 
 dotenv.config();
 
@@ -47,6 +50,7 @@ dotenv.config();
       accessKey: process.env.REDIS_ACCESS_KEY,
     } as RedisConfig),
     RepositoryModule,
+    EmailModule,
     CqrsModule,
   ],
   controllers: [IdentityController],
@@ -62,6 +66,8 @@ dotenv.config();
     SignOutHandler,
     ValidateTokenHandler,
     RefreshTokenHandler,
+    UserRegisteredHandler,
+    VerifyEmailHandler,
   ],
 })
 export class IdentityModule {}

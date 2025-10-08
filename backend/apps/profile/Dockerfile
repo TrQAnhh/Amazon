@@ -1,13 +1,15 @@
-FROM node:20-alpine AS development
+FROM --platform=linux/amd64 node:20-alpine AS development
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 RUN npm install
 
+RUN npm install @css-inline/css-inline-linux-x64-musl --save
+
 COPY . .
 RUN npm run build:profile
 
-FROM node:20-alpine
+FROM --platform=linux/amd64 node:20-alpine
 WORKDIR /usr/src/app
 
 COPY --from=development /usr/src/app/dist/apps/profile ./dist
@@ -16,4 +18,4 @@ COPY --from=development /usr/src/app/package*.json ./
 
 EXPOSE 4003
 
-CMD ["node", "dist/apps/profile/src/main.js"]
+CMD ["node", "dist/apps/profile/main.js"]

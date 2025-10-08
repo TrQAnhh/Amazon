@@ -1,5 +1,5 @@
 import type { Response } from '../common/interceptors/transform/transform.interceptor';
-import { Body, Controller, Get, Inject, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post, Req } from '@nestjs/common';
 import {
   CollectTicketDto,
   CreateTicketDto,

@@ -12,8 +12,6 @@ import { RepositoryService } from '@repository/repository.service';
 @CommandHandler(SignInCommand)
 export class SignInHandler implements ICommandHandler<SignInCommand> {
   constructor(
-    @Inject(SERVICE_NAMES.PROFILE)
-    private readonly profileClient: ClientProxy,
     private readonly repository: RepositoryService,
     private readonly jwtService: JwtService,
     private readonly redisHelper: RedisHelper,
@@ -28,13 +26,15 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
       throw new RpcException(ErrorCode.USER_NOT_FOUND);
     }
 
+    if (!userByEmail.isVerified) {
+      throw new RpcException(ErrorCode.EMAIL_NOT_VERIFIED);
+    }
+
     const success = await bcrypt.compare(signInDto.password, userByEmail.password);
 
     if (!success) {
       throw new RpcException(ErrorCode.INVALID_CREDENTIALS);
     }
-
-    const profile = await getUserProfile(this.profileClient, userByEmail.id);
 
     const payload = {
       sub: userByEmail.id,
@@ -54,8 +54,6 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
     return {
       accessToken: accessToken,
       refreshToken: refreshToken,
-      role: userByEmail.role,
-      user: profile,
     };
   }
 }

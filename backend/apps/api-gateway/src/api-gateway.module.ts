@@ -12,10 +12,10 @@ import { ProductModule } from './product/product.module';
 import { AppGuard } from './guard/global.guard';
 import { OrderModule } from './order/order.module';
 import { ConfigModule } from '@nestjs/config';
-import * as dotenv from 'dotenv';
 import { RawBodyMiddleware } from './common/middleware/raw-body.middleware';
 import { JsonBodyMiddleware } from './common/middleware/json-body.middleware';
-import { TicketModule } from './ticket/ticket.module';
+
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -28,7 +28,6 @@ dotenv.config();
     ProfileModule,
     ProductModule,
     OrderModule,
-    TicketModule,
   ],
   controllers: [],
   providers: [
