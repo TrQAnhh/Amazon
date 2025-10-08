@@ -17,7 +17,7 @@ const dataSourceOptions: DataSourceOptions = {
   username: process.env.MYSQL_ORDER_USER,
   password: process.env.MYSQL_ORDER_PASSWORD,
   entities: [OrderEntity, OrderItemEntity, DiscountTicketEntity, UserTicketEntity, OrderTicketEntity],
-  migrations: [__dirname + '/../db/migrations/init/*.{js}', __dirname + '/../db/migrations/dev/*.{js}'],
+  migrations: [__dirname + '/../db/migrations/init/*.{ts,js}', __dirname + '/../db/migrations/dev/*.{ts,js}'],
   synchronize: false,
   migrationsRun: false,
 };
