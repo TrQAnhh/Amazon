@@ -54,7 +54,7 @@ services:
       context: ./backend
       dockerfile: ./apps/identity/Dockerfile
     platform: linux/amd64
-    command: sh -c "npm run migration:identity:run && npm run start:dev:identity"
+    command:  sh -c "npm run migration:identity:run && npm run start:dev:identity"
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules

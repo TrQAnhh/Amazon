@@ -22,7 +22,7 @@ import { join } from 'path';
             from: process.env.EMAIL_USER,
         },
         template: {
-            dir: join(__dirname, 'templates'),
+            dir: __dirname + 'templates',
             adapter: new HandlebarsAdapter(),
             options: {
                 strict: true,
