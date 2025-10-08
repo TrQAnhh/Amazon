@@ -29,8 +29,8 @@ export class IdentityController {
   }
 
   @MessagePattern({ cmd: 'verify_email' })
-  async verifyEmail(payload: { tokenId: string }): Promise<string> {
-      return this.commandBus.execute(new VerifyEmailQuery(payload.tokenId));
+  async verifyEmail(payload: { tokenId: string }): Promise<AuthResponseDto> {
+      return this.queryBus.execute(new VerifyEmailQuery(payload.tokenId));
   }
 
   @MessagePattern({ cmd: 'sign_out' })

@@ -4,7 +4,7 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 
 export class AuthService {
   private static instance: AuthService;
-  
+
   static getInstance() {
     if (!AuthService.instance) {
       AuthService.instance = new AuthService();
@@ -69,18 +69,37 @@ export class AuthService {
       }
   }
 
+  async verifyEmail(tokenId: string) {
+    try {
+        const response = await fetch(`http://localhost:3000/auth/verify-email?tokenId=${tokenId}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw error;
+        }
+
+        return await response.json();
+    } catch (err: any) {
+        console.error("Verify email error:", err);
+        return { message: err.message || "Unknown error" };
+    }
+  }
+
   async refreshToken(refreshToken: string) {
-    const response = await fetch(`${API_BASE}/auth/refresh-token`, {
+  const response = await fetch(`${API_BASE}/auth/refresh-token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ refreshToken }),
-    });
+  });
 
-    if (!response.ok) {
-      throw new Error('Token refresh failed');
-    }
+  if (!response.ok) {
+     throw new Error('Token refresh failed');
+  }
 
     return response.json();
   }

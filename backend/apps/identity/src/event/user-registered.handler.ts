@@ -14,14 +14,14 @@ export class UserRegisteredHandler implements IEventHandler<UserRegisteredEvent>
   ) {}
 
   async handle(event: UserRegisteredEvent): Promise<void> {
-    const { userId, email } = event;
+    const { userId, firstName, lastName, email } = event;
 
     const tokenId = uuidv4();
 
     await this.redisHelper.set(`${tokenId}`, userId, Number(process.env.VERIFY_EMAIL_TOKEN_DURATION));
 
     try {
-        await this.emailService.sendEmail(email, tokenId);
+        await this.emailService.sendEmail(email, firstName, lastName, tokenId);
     } catch (error) {
         console.error('Failed to send verification email:', error);
         throw new RpcException(ErrorCode.EMAIL_SEND_FAILED);

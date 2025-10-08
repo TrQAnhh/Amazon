@@ -8,6 +8,7 @@ import { EventBus } from '@nestjs/cqrs';
 import { firstValueFrom } from "rxjs";
 import { Inject } from "@nestjs/common";
 import * as bcrypt from 'bcrypt';
+import {sign} from "node:crypto";
 
 @CommandHandler(SignUpCommand)
 export class SignUpHandler implements ICommandHandler<SignUpCommand> {
@@ -42,7 +43,7 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand> {
 
     await firstValueFrom(this.profileClient.send({ cmd: 'create_profile' }, { userId: savedUser.id, signUpDto }));
 
-    this.eventBus.publish(new UserRegisteredEvent(savedUser.id, savedUser.email));
+    this.eventBus.publish(new UserRegisteredEvent(savedUser.id,signUpDto.firstName, signUpDto.lastName, savedUser.email));
 
     return 'Please check your email to verify your account';
   }

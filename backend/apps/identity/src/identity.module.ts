@@ -2,7 +2,6 @@ import { GetUserIdentitiesHandler } from './queries/get-user-identities/get-user
 import { GetUserIdentityHandler } from './queries/get-user-identity/get-user-identity.handler';
 import { ValidateTokenHandler } from './queries/validate-token/validate-token.handler';
 import { RefreshTokenHandler } from './commands/refresh-token/refresh-token.handler';
-import { VerifyEmailHandler } from "./queries/verify-email/verify-email.handler";
 import { IdentityExceptionFilter } from './exception/identity-exception.filter';
 import { UserRegisteredHandler } from './event/user-registered.handler';
 import { IdentityController } from './controller/identity.controller';
@@ -22,6 +21,7 @@ import { Module } from '@nestjs/common';
 
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
+import {VerifyEmailHandler} from "./queries/verify-email/verify-email.handler";
 
 dotenv.config();
 

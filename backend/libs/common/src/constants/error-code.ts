@@ -4,7 +4,7 @@ export class ErrorCode {
   static readonly INVALID_INPUT_VALUE = new ErrorCode(400, 'Invalid input value', HttpStatus.BAD_REQUEST);
   static readonly NO_FILE_PROVIDED = new ErrorCode(400, 'No file provided', HttpStatus.BAD_REQUEST);
   static readonly ITEM_OUT_OF_STOCK = new ErrorCode(400, 'Product is out of stock', HttpStatus.BAD_REQUEST);
-  static readonly EMAIL_NOT_VERIFIED = new ErrorCode(400, 'Email has not been verified. Please check your inbox to verify your account', HttpStatus.BAD_REQUEST);
+  static readonly EMAIL_NOT_VERIFIED = new ErrorCode(400, 'Email has been registered and not verified. Please check your inbox to verify your account', HttpStatus.BAD_REQUEST);
   static readonly MIN_ORDER_AMOUNT_NOT_REACHED = new ErrorCode(400, 'Order amount does not meet the minimum requirement for this discount', HttpStatus.BAD_REQUEST);
   static readonly ORDER_ALREADY_FAILED = new ErrorCode(400, 'Order has already been marked as failed', HttpStatus.BAD_REQUEST,);
   static readonly ORDER_ALREADY_CANCELED = new ErrorCode(400, 'Order has already been canceled', HttpStatus.BAD_REQUEST);

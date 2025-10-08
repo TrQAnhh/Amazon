@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 export class EmailService {
   constructor(private mailerService: MailerService) {}
 
-  async sendEmail(email: string, tokenId: string) {
+  async sendEmail(email: string,firstName: string, lastName: string, tokenId: string) {
     const url = `${process.env.VERIFY_EMAIL_URL}/${tokenId}`;
 
     await this.mailerService.sendMail({
@@ -13,6 +13,8 @@ export class EmailService {
         subject: 'Welcome to Amazon! Please confirm your Email',
         template: 'verify-email',
         context: {
+          firstName,
+          lastName,
           url,
         },
     });

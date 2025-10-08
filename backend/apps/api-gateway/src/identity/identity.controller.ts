@@ -41,16 +41,16 @@ export class IdentityController extends BaseController {
 
     @Public()
     @Get('verify-email')
-    @ApiOkResponse({ description: 'Email verified successfully' })
+    @ApiOkResponse({ description: 'Email verified successfully', type: AuthResponseDto })
     @ApiUnauthorizedResponse({ description: 'Invalid or expired verification token' })
     async verifyEmail(
         @Query('tokenId') tokenId: string,
-    ): Promise<Response<any>> {
-        const message = await this.sendCommand<string>({ cmd: 'verify_email' }, { tokenId });
+    ): Promise<Response<AuthResponseDto>> {
+        const result = await this.sendCommand<AuthResponseDto>({ cmd: 'verify_email' }, { tokenId });
         return {
-            message,
+            message: 'Email verified successfully',
             success: true,
-            data: null,
+            data: result,
         };
     }
 
@@ -59,7 +59,7 @@ export class IdentityController extends BaseController {
   @ApiOkResponse({ description: 'Login successfully', type: AuthResponseDto })
   @ApiBadRequestResponse({ description: 'User not found' })
   @ApiUnauthorizedResponse({ description: 'Invalid email or password' })
-  @ApiForbiddenResponse({ description: 'Email has not been verified. Please check your inbox to verify your account' })
+  @ApiForbiddenResponse({ description: 'Email has been registered and not verified. Please check your inbox to verify your account. Please check your inbox to verify your account' })
   async signIn(@Body() signInDto: SignInDto): Promise<Response<AuthResponseDto>> {
     const result = await this.sendCommand<AuthResponseDto>({ cmd: 'sign_in' }, signInDto);
     return {
