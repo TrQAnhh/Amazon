@@ -43,7 +43,7 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand> {
 
     await firstValueFrom(this.profileClient.send({ cmd: 'create_profile' }, { userId: savedUser.id, signUpDto }));
 
-    this.eventBus.publish(new UserRegisteredEvent(savedUser.id,signUpDto.firstName, signUpDto.lastName, savedUser.email));
+    this.eventBus.publish(new UserRegisteredEvent(savedUser.id, signUpDto.firstName, signUpDto.lastName, savedUser.email));
 
     return 'Please check your email to verify your account';
   }

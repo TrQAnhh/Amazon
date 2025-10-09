@@ -1,16 +1,15 @@
 import { UserRegisteredEvent } from './user-registered.event';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import {EmailService, ErrorCode, RedisHelper} from '@app/common';
-import { JwtService } from '@nestjs/jwt';
+import { EmailService, ErrorCode, RedisHelper } from '@app/common';
 import { v4 as uuidv4 } from 'uuid';
-import {RpcException} from "@nestjs/microservices";
+import { RepositoryService } from "@repository/repository.service";
 
 @EventsHandler(UserRegisteredEvent)
 export class UserRegisteredHandler implements IEventHandler<UserRegisteredEvent> {
   constructor(
-    private readonly jwtService: JwtService,
     private readonly redisHelper: RedisHelper,
     private readonly emailService: EmailService,
+    private readonly repository: RepositoryService,
   ) {}
 
   async handle(event: UserRegisteredEvent): Promise<void> {
@@ -18,13 +17,13 @@ export class UserRegisteredHandler implements IEventHandler<UserRegisteredEvent>
 
     const tokenId = uuidv4();
 
-    await this.redisHelper.set(`${tokenId}`, userId, Number(process.env.VERIFY_EMAIL_TOKEN_DURATION));
+    const redisKey = `verify-email:${tokenId}`;
+    await this.redisHelper.set(redisKey, userId, Number(process.env.VERIFY_EMAIL_TOKEN_DURATION));
 
-    try {
-        await this.emailService.sendEmail(email, firstName, lastName, tokenId);
-    } catch (error) {
-        console.error('Failed to send verification email:', error);
-        throw new RpcException(ErrorCode.EMAIL_SEND_FAILED);
-    }
+    await this.emailService.sendEmail(email, firstName, lastName, tokenId);
+
+    await this.repository.identity.update( userId, {
+        lastEmailSentAt: new Date(),
+    })
   }
 }

@@ -1,4 +1,4 @@
-import { AuthResponseDto, RefreshTokenDto, SERVICE_NAMES, SignInDto, SignUpDto } from '@app/common';
+import {AuthResponseDto, RefreshTokenDto, ResendEmailDto, SERVICE_NAMES, SignInDto, SignUpDto} from '@app/common';
 import { Response } from '../common/interceptors/transform/transform.interceptor';
 import {Controller, Post, Body, Inject, Req, Get} from '@nestjs/common';
 import { BaseController } from '../common/base/base.controller';
@@ -32,27 +32,42 @@ export class IdentityController extends BaseController {
   async signUp(@Body() signUpDto: SignUpDto): Promise<Response<any>> {
     const message = await this.sendCommand<string>({ cmd: 'sign_up' }, signUpDto);
     return {
-      message,
-      success: true,
-      data: null,
+       message,
+       success: true,
+       data: null,
     };
   }
 
 
-    @Public()
-    @Get('verify-email')
-    @ApiOkResponse({ description: 'Email verified successfully', type: AuthResponseDto })
-    @ApiUnauthorizedResponse({ description: 'Invalid or expired verification token' })
-    async verifyEmail(
-        @Query('tokenId') tokenId: string,
-    ): Promise<Response<AuthResponseDto>> {
-        const result = await this.sendCommand<AuthResponseDto>({ cmd: 'verify_email' }, { tokenId });
-        return {
-            message: 'Email verified successfully',
-            success: true,
-            data: result,
-        };
-    }
+  @Public()
+  @Get('verify-email')
+  @ApiOkResponse({ description: 'Email verified successfully', type: AuthResponseDto })
+  @ApiUnauthorizedResponse({ description: 'Invalid or expired verification token' })
+  async verifyEmail(
+    @Query('tokenId') tokenId: string,
+    @Query('email') email: string,
+  ): Promise<Response<AuthResponseDto>> {
+    const result = await this.sendCommand<AuthResponseDto>({ cmd: 'verify_email' }, { email, tokenId });
+    return {
+       message: 'Email verified successfully',
+       success: true,
+       data: result,
+    };
+  }
+
+  @Public()
+  @Post('resend-email')
+  @ApiOkResponse({ description: 'Please check your email to verify your account' })
+  async resendEmail(
+    @Body() resendEmailDto: ResendEmailDto,
+  ): Promise<Response<any>> {
+    const message = await this.sendCommand<string>({ cmd: 'resend_email' }, resendEmailDto);
+    return {
+        message,
+        success: true,
+        data: null,
+    };
+  }
 
   @Public()
   @Post('sign-in')

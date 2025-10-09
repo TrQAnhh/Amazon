@@ -23,7 +23,7 @@ function App() {
           <Routes>
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/confirm/:tokenId" element={<VerifyEmail />} />
+            <Route path="/confirm" element={<VerifyEmail />} />
             <Route path="/products" element={<Products />}/>
             <Route path="/products/:sku" element={<ProductDetail />} />
             <Route

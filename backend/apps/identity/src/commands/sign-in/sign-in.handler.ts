@@ -2,11 +2,9 @@ import { AuthResponseDto, ErrorCode, RedisHelper, SERVICE_NAMES } from '@app/com
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SignInCommand } from './sign-in.command';
 import { JwtService } from '@nestjs/jwt';
-import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { RpcException } from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-import { getUserProfile } from '../../helpers/get-profile.helper';
-import { Inject } from '@nestjs/common';
 import { RepositoryService } from '@repository/repository.service';
 
 @CommandHandler(SignInCommand)

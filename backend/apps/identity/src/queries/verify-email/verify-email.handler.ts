@@ -15,16 +15,22 @@ export class VerifyEmailHandler implements ICommandHandler<VerifyEmailQuery> {
     ) {}
 
     async execute(query: VerifyEmailQuery): Promise<AuthResponseDto> {
-        const { tokenId } = query;
+        const { email, tokenId } = query;
 
-        const userId = Number(await this.redisHelper.get(tokenId));
+        const redisKey = `verify-email:${tokenId}`;
+        const userId = Number(await this.redisHelper.get(redisKey));
 
         if (!userId) {
-            throw new RpcException(ErrorCode.INVALID_VERIFICATION_TOKEN);
+            throw new RpcException({
+                code: ErrorCode.INVALID_VERIFICATION_TOKEN.code,
+                message: ErrorCode.INVALID_VERIFICATION_TOKEN.message,
+                status: ErrorCode.INVALID_VERIFICATION_TOKEN.status,
+                addition: { email },
+            });
         }
 
         await this.repository.identity.update( userId , { isVerified: true } );
-        await this.redisHelper.del(tokenId);
+        await this.redisHelper.del(redisKey);
 
         const userById = await this.repository.identity.findById(userId);
 

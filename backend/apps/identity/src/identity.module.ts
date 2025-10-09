@@ -22,6 +22,7 @@ import { Module } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import * as process from 'node:process';
 import {VerifyEmailHandler} from "./queries/verify-email/verify-email.handler";
+import {ResendEmailHandler} from "./commands/resend-email/resend-email.handler";
 
 dotenv.config();
 
@@ -68,6 +69,7 @@ dotenv.config();
     RefreshTokenHandler,
     UserRegisteredHandler,
     VerifyEmailHandler,
+    ResendEmailHandler,
   ],
 })
 export class IdentityModule {}

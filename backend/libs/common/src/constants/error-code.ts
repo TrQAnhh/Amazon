@@ -19,6 +19,7 @@ export class ErrorCode {
   static readonly TICKET_NOT_FOUND = new ErrorCode(404, 'Ticket not found or already used', HttpStatus.NOT_FOUND);
   static readonly INVALID_VERIFICATION_TOKEN = new ErrorCode(401, 'Invalid or expired verification token', HttpStatus.UNAUTHORIZED);
   static readonly INVALID_JWT_TOKEN = new ErrorCode(401, 'Invalid or expired JWT token', HttpStatus.UNAUTHORIZED);
+  static readonly EMAIL_ALREADY_VERIFIED = new ErrorCode(409, 'Email has been registered and verified', HttpStatus.CONFLICT);
   static readonly ORDER_PROCESSING = new ErrorCode(409, 'Order is currently being processed for payment', HttpStatus.CONFLICT);
   static readonly ORDER_ALREADY_PAID = new ErrorCode(409, 'Order has already been paid', HttpStatus.CONFLICT);
   static readonly EMAIL_EXISTED = new ErrorCode(409, 'Email has already been registered', HttpStatus.CONFLICT);

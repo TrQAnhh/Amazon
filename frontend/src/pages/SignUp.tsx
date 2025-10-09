@@ -12,7 +12,11 @@ export const SignUp: React.FC = () => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [success, setSuccess] = useState(false);
-    const { signup, isAuthenticated } = useAuth();
+    const [message, setMessage] = useState('');
+    const [resendLoading, setResendLoading] = useState(false);
+    const [showResend, setShowResend] = useState(false);
+
+    const { signup, isAuthenticated, resendEmail } = useAuth();
 
     if (isAuthenticated) {
         return <Navigate to="/products" replace />;
@@ -30,10 +34,14 @@ export const SignUp: React.FC = () => {
         setIsLoading(true);
 
         try {
-            await signup(email, password, firstName, middleName, lastName);
+            const message = await signup(email, password, firstName, middleName, lastName);
+            setMessage(message);
             setSuccess(true);
         } catch (error: any) {
             setError(error instanceof Error ? error.message : 'Sign up failed');
+            if (error.message.toLowerCase().includes('not verified')) {
+                setShowResend(true);
+            }
         } finally {
             setIsLoading(false);
         }
@@ -57,7 +65,7 @@ export const SignUp: React.FC = () => {
             </span>
                     </div>
                     <h2 className="text-xl font-bold mb-2">Registration Successful!</h2>
-                    <p>Please check your email to verify your account.</p>
+                    <p>{message}</p>
                     <p className="mt-4 text-sm text-gray-600">
                         Go back to <Link to="/signin" className="text-blue-500 hover:underline">Sign In</Link>
                     </p>
@@ -65,6 +73,20 @@ export const SignUp: React.FC = () => {
             </div>
         );
     }
+
+    const handleResend = async () => {
+        if (!email) return;
+        setResendLoading(true);
+
+        try {
+            const message = await resendEmail(email);
+            alert(message);
+        } catch (err: any) {
+            alert(err.message || 'Failed to resend email.');
+        } finally {
+            setResendLoading(false);
+        }
+    };
 
     return (
         <div className="max-w-md mx-auto mt-16">
@@ -74,6 +96,30 @@ export const SignUp: React.FC = () => {
                 {error && (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                         {error}
+                        {showResend && (
+                            <div className="mt-3">
+                                <p className="text-sm text-gray-700 mb-3">
+                                    Do you still have access to <b>{email}</b>?
+                                    If yes, click below to receive a new verification email.
+                                </p>
+                                <div className="flex justify-center">
+                                    <button
+                                        onClick={handleResend}
+                                        disabled={resendLoading}
+                                        className={`px-3 py-1.5 rounded-md text-sm font-semibold shadow-sm transition ${
+                                            resendLoading
+                                                ? 'bg-gray-400 cursor-not-allowed text-white'
+                                                : 'bg-red-600 hover:bg-red-700 text-white'
+                                        }`}
+                                    >
+                                        {resendLoading ? 'Sending...' : 'Resend Verification Email'}
+                                    </button>
+                                </div>
+                                <span className="mt-3 text-sm text-gray-700 mb-3">
+                                    If not, please sign up with a different account.
+                                </span>
+                            </div>
+                        )}
                     </div>
                 )}
 

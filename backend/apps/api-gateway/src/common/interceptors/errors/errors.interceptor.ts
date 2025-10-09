@@ -6,6 +6,9 @@ import { AppException } from '../../../exception/app.exception';
 @Injectable()
 export class ErrorsInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next.handle().pipe(catchError((err) => throwError(() => new AppException(err))));
+    return next.handle().pipe(catchError((err) => {
+        const { addition, ...errorInfo } = err;
+        return throwError(() => new AppException(errorInfo,addition));
+    }));
   }
 }

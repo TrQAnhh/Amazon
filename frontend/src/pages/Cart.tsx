@@ -169,11 +169,19 @@ export const Cart: React.FC = () => {
                         </div>
 
                         <div className="flex items-center gap-2 justify-center">
-                            <button onClick={() => updateQuantity(item.sku, -1)} className="p-1 bg-gray-200 rounded hover:bg-gray-300">
+                            <button
+                                onClick={() => updateQuantity(item.sku, -1)}
+                                className="p-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                                disabled={item.quantity <= 1}
+                            >
                                 <Minus className="w-4 h-4" />
                             </button>
                             <span>{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.sku, 1)} className="p-1 bg-gray-200 rounded hover:bg-gray-300">
+                            <button
+                                onClick={() => updateQuantity(item.sku, 1)}
+                                className="p-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                                disabled={item.quantity >= item.availableStock}
+                            >
                                 <Plus className="w-4 h-4" />
                             </button>
                         </div>
