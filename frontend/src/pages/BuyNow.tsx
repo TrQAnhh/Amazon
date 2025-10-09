@@ -144,14 +144,18 @@ export const BuyNow: React.FC = () => {
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                className="p-1 bg-gray-200 rounded hover:bg-gray-300"
+                                className="p-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                                disabled={quantity <= 1}
                             >
                                 <Minus className="w-4 h-4" />
                             </button>
                             <span>{quantity}</span>
                             <button
-                                onClick={() => setQuantity(quantity + 1)}
-                                className="p-1 bg-gray-200 rounded hover:bg-gray-300"
+                                onClick={() =>
+                                    setQuantity((prev) => Math.min(prev + 1, product.availableStock ?? 1))
+                                }
+                                className="p-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                                disabled={quantity >= product.availableStock}
                             >
                                 <Plus className="w-4 h-4" />
                             </button>

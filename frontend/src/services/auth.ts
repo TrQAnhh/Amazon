@@ -69,11 +69,10 @@ export class AuthService {
       }
   }
 
-  async verifyEmail(tokenId: string) {
+  async verifyEmail(tokenId: string, email: string) {
     try {
-        const response = await fetch(`http://localhost:3000/auth/verify-email?tokenId=${tokenId}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
+        const response = await fetch(`http://localhost:3000/auth/verify-email?tokenId=${tokenId}&email=${email}`, {
+            method: "GET"
         });
 
         if (!response.ok) {
@@ -86,6 +85,26 @@ export class AuthService {
         console.error("Verify email error:", err);
         return { message: err.message || "Unknown error" };
     }
+  }
+
+  async resendEmail(email: string) {
+        try {
+            const response = await fetch(`http://localhost:3000/auth/resend-email`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({email}),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw error;
+            }
+
+            return await response.json();
+        } catch (err: any) {
+            console.error("Resend email error:", err);
+            return { message: err.message || "Unknown error" };
+        }
   }
 
   async refreshToken(refreshToken: string) {

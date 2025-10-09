@@ -7,7 +7,11 @@ export const SignIn: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signin, isAuthenticated } = useAuth();
+  const [resendLoading, setResendLoading] = useState(false);
+  const [showResend, setShowResend] = useState(false);
+
+  const { signin, isAuthenticated, resendEmail } = useAuth();
+
 
   if (isAuthenticated) {
     return <Navigate to="/products" replace />;
@@ -20,10 +24,27 @@ export const SignIn: React.FC = () => {
 
     try {
       await signin(email, password);
-    } catch (error) {
+    } catch (error: any) {
       setError(error instanceof Error ? error.message : 'Sign in failed');
+      if (error.message.toLowerCase().includes('not verified')) {
+        setShowResend(true);
+      }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (!email) return;
+    setResendLoading(true);
+
+    try {
+        const message = await resendEmail(email);
+        alert(message);
+    } catch (err: any) {
+        alert(err.message || 'Failed to resend email.');
+    } finally {
+        setResendLoading(false);
     }
   };
 
@@ -35,6 +56,30 @@ export const SignIn: React.FC = () => {
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
+            {showResend && (
+              <div className="mt-3">
+                  <p className="text-sm text-gray-700 mb-3">
+                      Do you still have access to <b>{email}</b>?
+                      If yes, click below to receive a new verification email.
+                  </p>
+                  <div className="flex justify-center">
+                      <button
+                          onClick={handleResend}
+                          disabled={resendLoading}
+                          className={`px-3 py-1.5 rounded-md text-sm font-semibold shadow-sm transition ${
+                              resendLoading
+                                  ? 'bg-gray-400 cursor-not-allowed text-white'
+                                  : 'bg-red-600 hover:bg-red-700 text-white'
+                          }`}
+                      >
+                          {resendLoading ? 'Sending...' : 'Resend Verification Email'}
+                      </button>
+                  </div>
+                  <span className="mt-3 text-sm text-gray-700 mb-3">
+                        If not, please sign in with a different account.
+                  </span>
+              </div>
+            )}
           </div>
         )}
 

@@ -1,6 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRole } from "@app/common";
-// import { UserRole } from '../../../../libs/common/src/constants/user-role.enum';
 
 @Entity()
 export class IdentityEntity {
@@ -25,4 +24,11 @@ export class IdentityEntity {
     default: false,
   })
   isVerified: boolean;
+
+  @Column({
+     type: 'timestamp',
+      nullable: true,
+      default: null,
+  })
+  lastEmailSentAt: Date | null;
 }

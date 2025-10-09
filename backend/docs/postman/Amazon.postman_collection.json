@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "470bf306-4125-404c-bf94-00e031e58a51",
+		"_postman_id": "01df16d2-9835-4567-923d-f1c3e54cc15a",
 		"name": "Amazon",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "37751783",
-		"_collection_link": "https://bigteam-7748.postman.co/workspace/E-Commerce~930edf32-b04f-4308-b3f3-fbb6d5fb613f/collection/37751783-470bf306-4125-404c-bf94-00e031e58a51?action=share&source=collection_link&creator=37751783"
+		"_collection_link": "https://bigteam-7748.postman.co/workspace/E-Commerce~930edf32-b04f-4308-b3f3-fbb6d5fb613f/collection/37751783-01df16d2-9835-4567-923d-f1c3e54cc15a?action=share&source=collection_link&creator=37751783"
 	},
 	"item": [
 		{
@@ -17,9 +17,6 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"let response = pm.response.json();\r",
-									"let token = response.data.accessToken;\r",
-									"pm.environment.set(\"AUTH_TOKEN\", token);\r",
 									""
 								],
 								"type": "text/javascript",
@@ -194,6 +191,49 @@
 							"path": [
 								"auth",
 								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify email",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"paymentMethod\": \"COD\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": 4,\r\n      \"quantity\": 7\r\n    }\r\n  ]\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/auth/verify-email?tokenId=bcfdc587-039a-4483-9507-52cfc3a49744",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"auth",
+								"verify-email"
+							],
+							"query": [
+								{
+									"key": "tokenId",
+									"value": "bcfdc587-039a-4483-9507-52cfc3a49744"
+								}
 							]
 						}
 					},
@@ -394,22 +434,22 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "Pentax ME",
+									"value": "Canon Autoboy Jet",
 									"type": "text"
 								},
 								{
 									"key": "sku",
-									"value": "PENTAX-ME",
+									"value": "CANON-AUTOBOY-JET",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "A lightweight 35mm SLR, the Pentax ME offers full manual control and reliable performance for everyday and creative photography.",
+									"value": "The Canon Autoboy Jet is a compact 35mm point-and-shoot film camera with autofocus and automatic exposure, designed for easy, everyday photography with reliable image quality and user-friendly operation.",
 									"type": "text"
 								},
 								{
 									"key": "price",
-									"value": "155",
+									"value": "199",
 									"type": "text"
 								},
 								{
@@ -420,7 +460,7 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/C:/Users/DEV.DESKTOP-VKRMBR2/Downloads/pentax-me.jpg"
+									"src": "/C:/Users/DEV.DESKTOP-VKRMBR2/Downloads/canon-autoboy-jet.jpg"
 								}
 							]
 						},
@@ -798,7 +838,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"paymentMethod\": \"COD\"\r\n}",
+									"raw": "{\r\n    \"paymentMethod\": \"STRIPE\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -806,7 +846,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/53",
+									"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/1",
 									"protocol": "{{PROTOCOL}}",
 									"host": [
 										"{{SERVER_IP}}"
@@ -815,7 +855,7 @@
 									"path": [
 										"order",
 										"my-orders",
-										"53"
+										"1"
 									]
 								}
 							},
@@ -843,7 +883,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"code\": \"DISCOUNT30\",\r\n  \"type\": \"PERCENT\",\r\n  \"value\": 30,\r\n  \"minOrderAmount\": 0,\r\n  \"maxDiscount\": 100000,\r\n  \"startDate\": \"2025-10-02T00:00:00.000Z\",\r\n  \"endDate\": \"2025-10-10T23:59:59.000Z\",\r\n  \"total\": 100,\r\n  \"usageLimit\": 1\r\n}\r\n",
+									"raw": "{\r\n  \"code\": \"DISCOUNT50\",\r\n  \"type\": \"PERCENT\",\r\n  \"value\": 50,\r\n  \"minOrderAmount\": 1500,\r\n  \"maxDiscount\": 250,\r\n  \"startDate\": \"2025-10-09T00:00:00.000Z\",\r\n  \"endDate\": \"2025-10-15T23:59:59.000Z\",\r\n  \"total\": 100,\r\n  \"usageLimit\": 1\r\n}\r\n",
 									"options": {
 										"raw": {
 											"language": "json"

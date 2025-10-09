@@ -7,10 +7,11 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   signin: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, firstName: string, middleName: string, lastName: string) => Promise<void>;
+  signup: (email: string, password: string, firstName: string, middleName: string, lastName: string) => Promise<string>;
   signout: () => Promise<void>;
   setUser: (user: User) => void;
-  verifyEmail: (tokenId: string) => Promise<void>;
+  verifyEmail: (tokenId: string, email: string) => Promise<void>;
+  resendEmail: (email: string) => Promise<string>;
   isAuthenticated: boolean;
 }
 
@@ -129,6 +130,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (!response.success) {
       throw new Error(response.message);
     }
+
+    return response.message;
   };
 
   const signout = async () => {
@@ -139,11 +142,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     clearAuthData();
   };
 
-  const verifyEmail = async (tokenId: string) => {
-    const response = await authService.verifyEmail(tokenId);
+  const verifyEmail = async (tokenId: string, email: string) => {
+    const response = await authService.verifyEmail(tokenId, email);
 
     if (!response.success) {
-        throw new Error(response.message || 'Email verification failed');
+        throw new Error(response.message);
     }
 
     await handleAuthSuccess(response);
@@ -151,7 +154,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return response;
   };
 
-    return (
+  const resendEmail = async (email: string) => {
+    const response = await authService.resendEmail(email);
+
+    if (!response.success) {
+        throw new Error(response.message);
+    }
+
+    return response.message;
+  };
+
+  return (
     <AuthContext.Provider
       value={{
         user,
@@ -160,6 +173,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         signup,
         signout,
         verifyEmail,
+        resendEmail,
         isAuthenticated,
         setUser,
       }}
