@@ -80,6 +80,3 @@ The frontend is built with **ReactJS** using **Vite** for fast builds and modern
 - **Node.js** v18+
 - **Docker & Docker Compose**
 - **MySQL** (Docker or local installation)
-
-### Clone the Repository
-git clone https://github.com/yourusername/amazon-clone.git
