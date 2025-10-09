@@ -133,6 +133,3 @@ This will start all services:
 - Redis password must match `REDIS_ACCESS_KEY`.
 - Email functionality (registration and verification) requires correct SMTP credentials.
 - Stripe requires valid test API keys to process payments in development.
-
-=======
-- **MySQL** (Docker or local installation)
