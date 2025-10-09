@@ -81,6 +81,7 @@ Before running the project, make sure you have installed:
 
 - **Node.js** v18+
 - **Docker & Docker Compose**
+
 - **MySQL** (Docker or local installation, Docker recommended)
 - **Redis** (Docker or local installation)
 
@@ -133,3 +134,5 @@ This will start all services:
 - Email functionality (registration and verification) requires correct SMTP credentials.
 - Stripe requires valid test API keys to process payments in development.
 
+=======
+- **MySQL** (Docker or local installation)
