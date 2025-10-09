@@ -133,3 +133,23 @@ This will start all services:
 - Redis password must match `REDIS_ACCESS_KEY`.
 - Email functionality (registration and verification) requires correct SMTP credentials.
 - Stripe requires valid test API keys to process payments in development.
+
+---
+### 6. Stripe Webhook (for local development)
+
+To test Stripe payments locally, you need to forward Stripe events to your local API Gateway:
+
+1. Install the Stripe CLI if you haven't:
+```bash
+  npm install -g stripe
+```
+2. Login with your Stripe account:
+```bash
+  stripe login
+```
+3. Start listening to Stripe events and forward them to your local webhook endpoint:
+```bash
+  stripe listen --forward-to localhost:3000/stripe/webhook
+```
+This will forward all test events from Stripe to your local backend.
+Make sure the API Gateway is running on port 3000 and the webhook endpoint is configured correctly.
