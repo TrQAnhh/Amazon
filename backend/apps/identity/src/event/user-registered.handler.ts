@@ -1,8 +1,9 @@
 import { UserRegisteredEvent } from './user-registered.event';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { EmailService, ErrorCode, RedisHelper } from '@app/common';
+import { EmailService, RedisHelper } from '@app/common';
 import { v4 as uuidv4 } from 'uuid';
 import { RepositoryService } from "@repository/repository.service";
+import ms from 'ms';
 
 @EventsHandler(UserRegisteredEvent)
 export class UserRegisteredHandler implements IEventHandler<UserRegisteredEvent> {
@@ -18,7 +19,7 @@ export class UserRegisteredHandler implements IEventHandler<UserRegisteredEvent>
     const tokenId = uuidv4();
 
     const redisKey = `verify-email:${tokenId}`;
-    await this.redisHelper.set(redisKey, userId, Number(process.env.VERIFY_EMAIL_TOKEN_DURATION));
+    await this.redisHelper.set(redisKey, userId, ms(process.env.VERIFY_EMAIL_TOKEN_DURATION));
 
     await this.emailService.sendEmail(email, firstName, lastName, tokenId);
 

@@ -219,7 +219,7 @@
 							"raw": "{\r\n  \"paymentMethod\": \"COD\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": 4,\r\n      \"quantity\": 7\r\n    }\r\n  ]\r\n}\r\n"
 						},
 						"url": {
-							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/auth/verify-email?tokenId=bcfdc587-039a-4483-9507-52cfc3a49744",
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/auth/verify-email?tokenId=6520ce38-0cea-4a00-8d10-27ef30616892&email=tranqanh2810@gmail.com",
 							"protocol": "{{PROTOCOL}}",
 							"host": [
 								"{{SERVER_IP}}"
@@ -232,8 +232,41 @@
 							"query": [
 								{
 									"key": "tokenId",
-									"value": "bcfdc587-039a-4483-9507-52cfc3a49744"
+									"value": "6520ce38-0cea-4a00-8d10-27ef30616892"
+								},
+								{
+									"key": "email",
+									"value": "tranqanh2810@gmail.com"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resend email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"tranqanh2810@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/auth/resend-email",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"auth",
+								"resend-email"
 							]
 						}
 					},

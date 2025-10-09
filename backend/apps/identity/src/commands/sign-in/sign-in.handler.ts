@@ -6,6 +6,7 @@ import { RpcException } from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { RepositoryService } from '@repository/repository.service';
+import ms from 'ms';
 
 @CommandHandler(SignInCommand)
 export class SignInHandler implements ICommandHandler<SignInCommand> {
@@ -47,7 +48,7 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
     });
 
     const redisKey = `refresh:${signInDto.deviceId}`;
-    await this.redisHelper.set(redisKey, payload.tokenId, Number(process.env.JWT_REFRESH_TOKEN_DURATION));
+    await this.redisHelper.set(redisKey, payload.tokenId, ms(process.env.JWT_REFRESH_TOKEN_DURATION));
 
     return {
       accessToken: accessToken,
