@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ErrorCode, RedisHelper, RefreshTokenResponseDto } from '@app/common';
 import { RpcException } from '@nestjs/microservices';
 import { v4 as uuidv4 } from 'uuid';
+import ms from 'ms';
 
 @CommandHandler(RefreshTokenCommand)
 export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand> {
@@ -45,7 +46,7 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
       expiresIn: process.env.JWT_REFRESH_TOKEN_DURATION,
     });
 
-    await this.redisHelper.set(redisKey, newPayload.tokenId, Number(process.env.JWT_REFRESH_TOKEN_DURATION));
+    await this.redisHelper.set(redisKey, newPayload.tokenId, ms(process.env.JWT_REFRESH_TOKEN_DURATION));
 
     return {
       accessToken: accessToken,

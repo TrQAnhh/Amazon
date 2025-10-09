@@ -1,30 +1,35 @@
-import { AuthResponseDto, ErrorCode, RedisHelper, SERVICE_NAMES } from '@app/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { SignUpCommand } from './sign-up.command';
+import { UserRegisteredEvent } from '../../event/user-registered.event';
+import { RepositoryService } from '@repository/repository.service';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { ErrorCode, SERVICE_NAMES } from '@app/common';
+import { SignUpCommand } from './sign-up.command';
+import { EventBus } from '@nestjs/cqrs';
+import { firstValueFrom } from "rxjs";
+import { Inject } from "@nestjs/common";
 import * as bcrypt from 'bcrypt';
-import { firstValueFrom } from 'rxjs';
-import { Inject } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { v4 as uuidv4 } from 'uuid';
-import { RepositoryService } from "@repository/repository.service";
+import {sign} from "node:crypto";
 
 @CommandHandler(SignUpCommand)
 export class SignUpHandler implements ICommandHandler<SignUpCommand> {
   constructor(
-    @Inject(SERVICE_NAMES.PROFILE) private readonly profileClient: ClientProxy,
-    private readonly jwtService: JwtService,
-    private readonly redisHelper: RedisHelper,
+    @Inject(SERVICE_NAMES.PROFILE)
+    private readonly profileClient: ClientProxy,
     private readonly repository: RepositoryService,
+    private readonly eventBus: EventBus,
   ) {}
 
-  async execute(command: SignUpCommand): Promise<AuthResponseDto> {
+  async execute(command: SignUpCommand): Promise<string> {
     const { signUpDto } = command;
 
     const existingUser = await this.repository.identity.findByEmail(signUpDto.email);
 
     if (existingUser) {
-      throw new RpcException(ErrorCode.EMAIL_EXISTED);
+      if (existingUser.isVerified) {
+        throw new RpcException(ErrorCode.EMAIL_EXISTED);
+      } else {
+        throw new RpcException(ErrorCode.EMAIL_NOT_VERIFIED);
+      }
     }
 
     const hashedPassword = await bcrypt.hash(signUpDto.password, Number(process.env.BCRYPT_SALT_ROUNDS) || 10);
@@ -36,30 +41,10 @@ export class SignUpHandler implements ICommandHandler<SignUpCommand> {
 
     const savedUser = await this.repository.identity.save(user);
 
-    const profile = await firstValueFrom(
-      this.profileClient.send({ cmd: 'create_profile' }, { userId: savedUser.id, signUpDto }),
-    );
+    await firstValueFrom(this.profileClient.send({ cmd: 'create_profile' }, { userId: savedUser.id, signUpDto }));
 
-    const payload = {
-      sub: savedUser.id,
-      role: savedUser.role,
-      tokenId: uuidv4(),
-      deviceId: signUpDto.deviceId,
-    };
+    this.eventBus.publish(new UserRegisteredEvent(savedUser.id, signUpDto.firstName, signUpDto.lastName, savedUser.email));
 
-    const accessToken = this.jwtService.sign(payload);
-    const refreshToken = this.jwtService.sign(payload, {
-      expiresIn: process.env.JWT_REFRESH_TOKEN_DURATION,
-    });
-
-    const redisKey = `refresh:${payload.deviceId}`;
-    await this.redisHelper.set(redisKey, payload.tokenId, Number(process.env.JWT_REFRESH_TOKEN_DURATION));
-
-    return {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      role: savedUser.role,
-      user: profile,
-    };
+    return 'Please check your email to verify your account';
   }
 }

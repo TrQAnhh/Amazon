@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Product, CreateProductRequest, UpdateProductRequest } from '../types';
 import { ApiService } from '../services/api';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { TicketList } from "../components/TicketList.tsx";
+import { AlertCircle } from "lucide-react";
 
 export const Products: React.FC = () => {
   const navigate = useNavigate();
@@ -82,6 +84,8 @@ export const Products: React.FC = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Products</h1>
       </div>
+
+      <TicketList/>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -175,7 +179,16 @@ export const Products: React.FC = () => {
                 <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
                 <div className="flex justify-between items-center mb-2 mt-auto">
                     <span className="text-xl font-bold text-red-500">${product.price}</span>
-                    <span className="text-sm text-gray-500">Stock: {product.availableStock}</span>
+                    {product.availableStock > 0 ? (
+                        <span className="text-sm text-gray-500">
+                        Stock: {product.availableStock}
+                    </span>
+                    ) : (
+                        <div className="flex items-center text-red-600 text-sm font-medium">
+                            <AlertCircle size={16} className="mr-1" />
+                            Out of Stock
+                        </div>
+                    )}
                 </div>
             </div>
         ))}

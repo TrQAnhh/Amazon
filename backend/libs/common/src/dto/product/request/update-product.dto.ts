@@ -1,8 +1,7 @@
 import { IsString, IsOptional, IsNumber, Min } from 'class-validator';
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateProductDto {
-
   @ApiProperty({ type: 'string', required: false })
   @IsOptional()
   @IsString()

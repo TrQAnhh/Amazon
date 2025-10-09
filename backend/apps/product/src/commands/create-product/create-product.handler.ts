@@ -5,13 +5,13 @@ import { ErrorCode } from '@app/common';
 import { CloudinaryService } from '@app/common/cloudinary/service/cloudinary.service';
 import { ProductResponseDto } from '@app/common/dto/product/response';
 import { plainToInstance } from 'class-transformer';
-import { RepositoryService } from "@repository/repository.service";
+import { RepositoryService } from '@repository/repository.service';
 
 @CommandHandler(CreateProductCommand)
 export class CreateProductHandler implements ICommandHandler<CreateProductCommand> {
   constructor(
-      private readonly repository: RepositoryService,
-      private readonly cloudinaryService: CloudinaryService,
+    private readonly repository: RepositoryService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async execute(command: CreateProductCommand): Promise<ProductResponseDto> {
@@ -34,8 +34,8 @@ export class CreateProductHandler implements ICommandHandler<CreateProductComman
     );
 
     const product = this.repository.product.create({
-        ...createProductDto,
-        imageUrl,
+      ...createProductDto,
+      imageUrl,
     });
 
     const savedProduct = await this.repository.product.save(product);

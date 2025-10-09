@@ -1,14 +1,17 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, AuthResponse } from '../types';
 import { AuthService } from '../services/auth';
+import {ApiService} from "../services/api.ts";
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   signin: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, firstName: string, middleName: string, lastName: string) => Promise<void>;
+  signup: (email: string, password: string, firstName: string, middleName: string, lastName: string) => Promise<string>;
   signout: () => Promise<void>;
   setUser: (user: User) => void;
+  verifyEmail: (tokenId: string, email: string) => Promise<void>;
+  resendEmail: (email: string) => Promise<string>;
   isAuthenticated: boolean;
 }
 
@@ -16,9 +19,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
+
   return context;
 };
 
@@ -30,7 +35,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const authService = AuthService.getInstance();
-
+  const apiService = new ApiService();
   const isAuthenticated = !!user;
 
   useEffect(() => {
@@ -85,16 +90,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return () => clearInterval(interval);
     }, [isAuthenticated]);
 
-  const handleAuthSuccess = (response: AuthResponse) => {
-    const { accessToken, refreshToken, user } = response.data;
+    const handleAuthSuccess = async (response: AuthResponse) => {
+        const { accessToken, refreshToken } = response.data;
 
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
-    localStorage.setItem('user', JSON.stringify(user));
-    setUser(user);
-  };
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
 
-  const clearAuthData = () => {
+        try {
+            const user = await apiService.getProfileDetails();
+            localStorage.setItem('user', JSON.stringify(user.data));
+            setUser(user.data);
+        } catch (err) {
+            console.error('Failed to fetch user profile:', err);
+            clearAuthData();
+        }
+    };
+
+
+    const clearAuthData = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
@@ -108,7 +121,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       throw new Error(response.message);
     }
 
-    handleAuthSuccess(response);
+    await handleAuthSuccess(response);
   };
 
   const signup = async (email: string, password: string, firstName: string, middleName: string, lastName: string) => {
@@ -118,7 +131,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       throw new Error(response.message);
     }
 
-    handleAuthSuccess(response);
+    return response.message;
   };
 
   const signout = async () => {
@@ -129,6 +142,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     clearAuthData();
   };
 
+  const verifyEmail = async (tokenId: string, email: string) => {
+    const response = await authService.verifyEmail(tokenId, email);
+
+    if (!response.success) {
+        throw new Error(response.message);
+    }
+
+    await handleAuthSuccess(response);
+
+    return response;
+  };
+
+  const resendEmail = async (email: string) => {
+    const response = await authService.resendEmail(email);
+
+    if (!response.success) {
+        throw new Error(response.message);
+    }
+
+    return response.message;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -137,6 +172,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         signin,
         signup,
         signout,
+        verifyEmail,
+        resendEmail,
         isAuthenticated,
         setUser,
       }}

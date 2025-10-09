@@ -12,9 +12,10 @@ import { ProductModule } from './product/product.module';
 import { AppGuard } from './guard/global.guard';
 import { OrderModule } from './order/order.module';
 import { ConfigModule } from '@nestjs/config';
+import { RawBodyMiddleware } from './common/middleware/raw-body.middleware';
+import { JsonBodyMiddleware } from './common/middleware/json-body.middleware';
+
 import * as dotenv from 'dotenv';
-import { RawBodyMiddleware } from "./common/middleware/raw-body.middleware";
-import {JsonBodyMiddleware} from "./common/middleware/json-body.middleware";
 
 dotenv.config();
 
@@ -55,14 +56,14 @@ dotenv.config();
   ],
 })
 export class ApiGatewayModule {
-    public configure(consumer: MiddlewareConsumer) {
-        consumer
-            .apply(RawBodyMiddleware)
-            .forRoutes({
-                path: '/stripe/webhook',
-                method: RequestMethod.POST,
-            })
-            .apply(JsonBodyMiddleware)
-            .forRoutes('*');
-    }
+  public configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(RawBodyMiddleware)
+      .forRoutes({
+        path: '/stripe/webhook',
+        method: RequestMethod.POST,
+      })
+      .apply(JsonBodyMiddleware)
+      .forRoutes('*');
+  }
 }

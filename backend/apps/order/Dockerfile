@@ -1,13 +1,15 @@
-FROM node:20-alpine AS development
+FROM --platform=linux/amd64 node:20-alpine AS development
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 RUN npm install
 
-COPY . .
-RUN npm run build
+RUN npm install @css-inline/css-inline-linux-x64-musl --save
 
-FROM node:20-alpine
+COPY . .
+RUN npm run build:order
+
+FROM --platform=linux/amd64 node:20-alpine
 WORKDIR /usr/src/app
 
 COPY --from=development /usr/src/app/dist/apps/order ./dist

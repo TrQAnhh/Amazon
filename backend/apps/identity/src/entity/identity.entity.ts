@@ -18,4 +18,17 @@ export class IdentityEntity {
     default: UserRole.USER,
   })
   role: UserRole;
+
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  isVerified: boolean;
+
+  @Column({
+     type: 'timestamp',
+      nullable: true,
+      default: null,
+  })
+  lastEmailSentAt: Date | null;
 }

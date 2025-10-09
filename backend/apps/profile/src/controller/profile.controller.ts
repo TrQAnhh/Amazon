@@ -1,10 +1,10 @@
 import { Controller, UseFilters } from '@nestjs/common';
 import {
-    AdminProfileResponseDto,
-    ProfileResponseDto,
-    SignUpDto,
-    UpdateProfileDto,
-    UserOrderInfoResponseDto
+  AdminProfileResponseDto,
+  ProfileResponseDto,
+  SignUpDto,
+  UpdateProfileDto,
+  UserOrderInfoResponseDto,
 } from '@app/common';
 import { ProfileExceptionFilter } from '../exception/profile-exception.filter';
 import { MessagePattern } from '@nestjs/microservices';
@@ -15,7 +15,7 @@ import { GetUserProfileQuery } from '../queries/get-user-profile/get-user-profil
 import { GetAllUserProfilesQuery } from '../queries/get-all-user-profiles/get-all-user-profiles.query';
 import { UpdateProfileCommand } from '../commands/update-profile/update-profile.command';
 import { UploadAvatarCommand } from '../commands/upload-avatar/upload-avatar.command';
-import {GetUserOrderInfoQuery} from "../queries/get-user-order-info/get-user-order-info.query";
+import { GetUserOrderInfoQuery } from '../queries/get-user-order-info/get-user-order-info.query';
 
 @Controller()
 @UseFilters(ProfileExceptionFilter)

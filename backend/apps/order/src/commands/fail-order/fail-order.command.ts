@@ -1,5 +1,3 @@
 export class FailOrderCommand {
-    constructor (
-        public readonly sessionId: string,
-    ) {}
+  constructor(public readonly sessionId: string) {}
 }

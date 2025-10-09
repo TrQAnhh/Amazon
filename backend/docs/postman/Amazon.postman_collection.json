@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "470bf306-4125-404c-bf94-00e031e58a51",
+		"_postman_id": "01df16d2-9835-4567-923d-f1c3e54cc15a",
 		"name": "Amazon",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "37751783",
-		"_collection_link": "https://bigteam-7748.postman.co/workspace/E-Commerce~930edf32-b04f-4308-b3f3-fbb6d5fb613f/collection/37751783-470bf306-4125-404c-bf94-00e031e58a51?action=share&source=collection_link&creator=37751783"
+		"_collection_link": "https://bigteam-7748.postman.co/workspace/E-Commerce~930edf32-b04f-4308-b3f3-fbb6d5fb613f/collection/37751783-01df16d2-9835-4567-923d-f1c3e54cc15a?action=share&source=collection_link&creator=37751783"
 	},
 	"item": [
 		{
@@ -17,9 +17,6 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"let response = pm.response.json();\r",
-									"let token = response.data.accessToken;\r",
-									"pm.environment.set(\"AUTH_TOKEN\", token);\r",
 									""
 								],
 								"type": "text/javascript",
@@ -177,7 +174,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n   \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsInRva2VuSWQiOiI4ZGQ5MzA1NC1iZGYxLTQ0MmItYjliOS1jMjYxOGZmMTIyZjYiLCJkZXZpY2VJZCI6ImRldmljZS0xIiwiaWF0IjoxNzU4NzY1NTIxLCJleHAiOjE3NTkzNzAzMjF9.yNsJUDY5RSw_hjmGAMDshikQRuO3SlnaU9INQ9DcI2M\"\r\n}",
+							"raw": "{\r\n   \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJhZG1pbiIsInRva2VuSWQiOiIzMDEzN2MxMi02N2JlLTQzYWItYWY1MS1mYjVhYWIxMmU3MGEiLCJkZXZpY2VJZCI6ImRldmljZS0xIiwiaWF0IjoxNzU5MTI5NTc3LCJleHAiOjE3NTk3MzQzNzd9.P3KLXpTJDym5fJo_cwcTfJTSL3YWxoSXOThyuh2w6PE\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -194,6 +191,82 @@
 							"path": [
 								"auth",
 								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify email",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTH_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"paymentMethod\": \"COD\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": 4,\r\n      \"quantity\": 7\r\n    }\r\n  ]\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/auth/verify-email?tokenId=6520ce38-0cea-4a00-8d10-27ef30616892&email=tranqanh2810@gmail.com",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"auth",
+								"verify-email"
+							],
+							"query": [
+								{
+									"key": "tokenId",
+									"value": "6520ce38-0cea-4a00-8d10-27ef30616892"
+								},
+								{
+									"key": "email",
+									"value": "tranqanh2810@gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resend email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"tranqanh2810@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/auth/resend-email",
+							"protocol": "{{PROTOCOL}}",
+							"host": [
+								"{{SERVER_IP}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"auth",
+								"resend-email"
 							]
 						}
 					},
@@ -404,17 +477,17 @@
 								},
 								{
 									"key": "description",
-									"value": "The Canon Autoboy Jet is a compact 35mm film camera featuring autofocus and automatic exposure, perfect for everyday photography.",
+									"value": "The Canon Autoboy Jet is a compact 35mm point-and-shoot film camera with autofocus and automatic exposure, designed for easy, everyday photography with reliable image quality and user-friendly operation.",
 									"type": "text"
 								},
 								{
 									"key": "price",
-									"value": "179.99",
+									"value": "199",
 									"type": "text"
 								},
 								{
 									"key": "availableStock",
-									"value": "7",
+									"value": "10",
 									"type": "text"
 								},
 								{
@@ -491,16 +564,17 @@
 						"method": "PATCH",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"availableStock\": 10\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/DEV.DESKTOP-VKRMBR2/Downloads/konica-c35-af.jpg"
 								}
-							}
+							]
 						},
 						"url": {
-							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product/update/20",
+							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/product/update/2",
 							"protocol": "{{PROTOCOL}}",
 							"host": [
 								"{{SERVER_IP}}"
@@ -509,7 +583,7 @@
 							"path": [
 								"product",
 								"update",
-								"20"
+								"2"
 							]
 						}
 					},
@@ -585,237 +659,359 @@
 			"name": "order service",
 			"item": [
 				{
-					"name": "create order",
-					"event": [
+					"name": "order",
+					"item": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
+							"name": "create order",
+							"event": [
 								{
-									"key": "token",
-									"value": "{{AUTH_TOKEN}}",
-									"type": "string"
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
 								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"paymentMethod\": \"STRIPE\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": 22,\r\n      \"quantity\": 2\r\n    },\r\n    {\r\n      \"productId\": 20,\r\n      \"quantity\": 1\r\n    },\r\n    {\r\n      \"productId\": 19,\r\n      \"quantity\": 3\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/create",
-							"protocol": "{{PROTOCOL}}",
-							"host": [
-								"{{SERVER_IP}}"
 							],
-							"port": "{{PORT}}",
-							"path": [
-								"order",
-								"create"
-							]
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTH_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"paymentMethod\": \"COD\",\r\n  \"items\": [\r\n    {\r\n      \"productId\": 4,\r\n      \"quantity\": 7\r\n    }\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/create",
+									"protocol": "{{PROTOCOL}}",
+									"host": [
+										"{{SERVER_IP}}"
+									],
+									"port": "{{PORT}}",
+									"path": [
+										"order",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all orders",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTH_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders",
+									"protocol": "{{PROTOCOL}}",
+									"host": [
+										"{{SERVER_IP}}"
+									],
+									"port": "{{PORT}}",
+									"path": [
+										"order",
+										"my-orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get order details",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTH_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/54",
+									"protocol": "{{PROTOCOL}}",
+									"host": [
+										"{{SERVER_IP}}"
+									],
+									"port": "{{PORT}}",
+									"path": [
+										"order",
+										"my-orders",
+										"54"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "check out",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTH_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/47",
+									"protocol": "{{PROTOCOL}}",
+									"host": [
+										"{{SERVER_IP}}"
+									],
+									"port": "{{PORT}}",
+									"path": [
+										"order",
+										"my-orders",
+										"47"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "cancle order",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTH_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/54",
+									"protocol": "{{PROTOCOL}}",
+									"host": [
+										"{{SERVER_IP}}"
+									],
+									"port": "{{PORT}}",
+									"path": [
+										"order",
+										"my-orders",
+										"54"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update order",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTH_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"paymentMethod\": \"STRIPE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/1",
+									"protocol": "{{PROTOCOL}}",
+									"host": [
+										"{{SERVER_IP}}"
+									],
+									"port": "{{PORT}}",
+									"path": [
+										"order",
+										"my-orders",
+										"1"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "get all orders",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{AUTH_TOKEN}}",
-									"type": "string"
+					"name": "discount-ticket",
+					"item": [
+						{
+							"name": "create new ticket",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTH_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"code\": \"DISCOUNT50\",\r\n  \"type\": \"PERCENT\",\r\n  \"value\": 50,\r\n  \"minOrderAmount\": 1500,\r\n  \"maxDiscount\": 250,\r\n  \"startDate\": \"2025-10-09T00:00:00.000Z\",\r\n  \"endDate\": \"2025-10-15T23:59:59.000Z\",\r\n  \"total\": 100,\r\n  \"usageLimit\": 1\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/ticket/create",
+									"protocol": "{{PROTOCOL}}",
+									"host": [
+										"{{SERVER_IP}}"
+									],
+									"port": "{{PORT}}",
+									"path": [
+										"ticket",
+										"create"
+									]
 								}
-							]
+							},
+							"response": []
 						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
+						{
+							"name": "get ticket details",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTH_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/ticket/3",
+									"protocol": "{{PROTOCOL}}",
+									"host": [
+										"{{SERVER_IP}}"
+									],
+									"port": "{{PORT}}",
+									"path": [
+										"ticket",
+										"3"
+									]
+								}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders",
-							"protocol": "{{PROTOCOL}}",
-							"host": [
-								"{{SERVER_IP}}"
-							],
-							"port": "{{PORT}}",
-							"path": [
-								"order",
-								"my-orders"
-							]
+						{
+							"name": "get all tickets",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTH_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/ticket",
+									"protocol": "{{PROTOCOL}}",
+									"host": [
+										"{{SERVER_IP}}"
+									],
+									"port": "{{PORT}}",
+									"path": [
+										"ticket"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
-				},
-				{
-					"name": "get order details",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{AUTH_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/47",
-							"protocol": "{{PROTOCOL}}",
-							"host": [
-								"{{SERVER_IP}}"
-							],
-							"port": "{{PORT}}",
-							"path": [
-								"order",
-								"my-orders",
-								"47"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "check out",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{AUTH_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/47",
-							"protocol": "{{PROTOCOL}}",
-							"host": [
-								"{{SERVER_IP}}"
-							],
-							"port": "{{PORT}}",
-							"path": [
-								"order",
-								"my-orders",
-								"47"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "cancle order",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{AUTH_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/4",
-							"protocol": "{{PROTOCOL}}",
-							"host": [
-								"{{SERVER_IP}}"
-							],
-							"port": "{{PORT}}",
-							"path": [
-								"order",
-								"my-orders",
-								"4"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "update order",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{AUTH_TOKEN}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"paymentMethod\": \"COD\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{PROTOCOL}}://{{SERVER_IP}}:{{PORT}}/order/my-orders/47",
-							"protocol": "{{PROTOCOL}}",
-							"host": [
-								"{{SERVER_IP}}"
-							],
-							"port": "{{PORT}}",
-							"path": [
-								"order",
-								"my-orders",
-								"47"
-							]
-						}
-					},
-					"response": []
+					]
 				}
 			]
 		}

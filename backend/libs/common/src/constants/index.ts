@@ -4,3 +4,6 @@ export * from './user-role.enum';
 export * from './order-status.enum';
 export * from './payment-status.enum';
 export * from './payment-method.enum';
+export * from './discount-type.enum';
+export * from './discount-status.enum';
+export * from './user-ticket-status.enum';

@@ -1,6 +1,6 @@
 import { BaseController } from '../common/base/base.controller';
 import { CreateProductDto, SERVICE_NAMES, UpdateProductDto, UserRole } from '@app/common';
-import { ApiAdminResponse } from "../common/decorators/api-admin-response.decorator";
+import { ApiAdminResponse } from '../common/decorators/api-admin-response.decorator';
 import { ClientProxy } from '@nestjs/microservices';
 import { ProductEntity } from '../../../product/src/entity/product.entity';
 import { Response } from '../common/interceptors/transform/transform.interceptor';
@@ -9,24 +9,27 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { ProductResponseDto } from '@app/common/dto/product/response';
 import { Public } from '../common/decorators/public.decorator';
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Inject,
-    Param,
-    Patch,
-    Post,
-    UploadedFile,
-    UseInterceptors,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
-    ApiBearerAuth,
-    ApiBody, ApiConflictResponse,
-    ApiConsumes, ApiForbiddenResponse, ApiOkResponse,
-    ApiTags, ApiUnauthorizedResponse
-} from "@nestjs/swagger";
-
+  ApiBearerAuth,
+  ApiBody,
+  ApiConflictResponse,
+  ApiConsumes,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 @ApiTags('Product service')
 @Roles(UserRole.ADMIN)
@@ -73,7 +76,7 @@ export class ProductController extends BaseController {
 
   @Public()
   @Get()
-  @ApiOkResponse({ description: 'Get all products successfully', type:[ProductResponseDto]  })
+  @ApiOkResponse({ description: 'Get all products successfully', type: [ProductResponseDto] })
   async getAllProducts(): Promise<Response<ProductResponseDto[]>> {
     const result = await this.sendCommand<ProductResponseDto[]>({ cmd: 'get_all_products' });
     return {
@@ -85,7 +88,7 @@ export class ProductController extends BaseController {
 
   @Public()
   @Get('/:sku')
-  @ApiOkResponse({ description: 'Get product details of sku successfully', type:ProductResponseDto  })
+  @ApiOkResponse({ description: 'Get product details of sku successfully', type: ProductResponseDto })
   async getProductDetail(@Param('sku') sku: string): Promise<Response<ProductResponseDto>> {
     const result = await this.sendCommand<ProductResponseDto>({ cmd: 'get_product_detail' }, { sku });
     return {

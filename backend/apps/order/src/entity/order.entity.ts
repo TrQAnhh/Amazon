@@ -1,8 +1,9 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { OrderItemEntity } from './order-items.entity';
-import { OrderStatus } from "@app/common/constants/order-status.enum";
-import { PaymentStatus } from "@app/common/constants/payment-status.enum";
-import { PaymentMethod } from "@app/common/constants/payment-method.enum";
+import { OrderStatus } from '@app/common/constants/order-status.enum';
+import { PaymentStatus } from '@app/common/constants/payment-status.enum';
+import { PaymentMethod } from '@app/common/constants/payment-method.enum';
+import { OrderTicketEntity } from './order-ticket.entity';
 
 @Entity()
 export class OrderEntity {
@@ -14,6 +15,9 @@ export class OrderEntity {
 
   @Column('decimal', { precision: 10, scale: 2 })
   totalAmount: number;
+
+  @Column('decimal', { precision: 10, scale: 2 })
+  finalAmount: number;
 
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.PENDING })
   status: OrderStatus;
@@ -35,4 +39,7 @@ export class OrderEntity {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @OneToMany(() => OrderTicketEntity, (orderTicket) => orderTicket.order)
+  orderTickets: OrderTicketEntity[];
 }

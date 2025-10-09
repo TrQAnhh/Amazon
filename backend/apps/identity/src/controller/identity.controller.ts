@@ -1,4 +1,4 @@
-import { AuthResponseDto, IdentityResponseDto, SignInDto, SignUpDto } from '@app/common';
+import {AuthResponseDto, IdentityResponseDto, ResendEmailDto, SignInDto, SignUpDto} from '@app/common';
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { GetUserIdentityQuery } from '../queries/get-user-identity/get-user-identity.query';
@@ -9,6 +9,8 @@ import { SignInCommand } from '../commands/sign-in/sign-in.command';
 import { ValidateTokenQuery } from '../queries/validate-token/validate-token.query';
 import { RefreshTokenCommand } from '../commands/refresh-token/refresh-token.command';
 import { SignOutCommand } from '../commands/sign-out/sign-out.command';
+import {VerifyEmailQuery} from "../queries/verify-email/verify-email.query";
+import {ResendEmailCommand} from "../commands/resend-email/resend-email.command";
 
 @Controller()
 export class IdentityController {
@@ -18,13 +20,23 @@ export class IdentityController {
   ) {}
 
   @MessagePattern({ cmd: 'sign_up' })
-  async signUp(signUpDto: SignUpDto): Promise<AuthResponseDto> {
+  async signUp(signUpDto: SignUpDto): Promise<string> {
     return this.commandBus.execute(new SignUpCommand(signUpDto));
   }
 
   @MessagePattern({ cmd: 'sign_in' })
   async signIn(signInDto: SignInDto): Promise<AuthResponseDto> {
     return this.commandBus.execute(new SignInCommand(signInDto));
+  }
+
+  @MessagePattern({ cmd: 'verify_email' })
+  async verifyEmail(payload: { email: string, tokenId: string }): Promise<AuthResponseDto> {
+      return this.queryBus.execute(new VerifyEmailQuery(payload.email,payload.tokenId));
+  }
+
+  @MessagePattern({ cmd: 'resend_email' })
+  async resendEmail(resendEmailDto: ResendEmailDto): Promise<string> {
+      return this.commandBus.execute(new ResendEmailCommand(resendEmailDto));
   }
 
   @MessagePattern({ cmd: 'sign_out' })

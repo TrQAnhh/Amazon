@@ -1,4 +1,4 @@
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ApiGatewayModule } from './api-gateway.module';
 import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
@@ -8,8 +8,8 @@ const logger = new Logger('Blog');
 dotenv.config();
 
 async function bootstrap() {
-  const app = await NestFactory.create(ApiGatewayModule,{
-      bodyParser: false,
+  const app = await NestFactory.create(ApiGatewayModule, {
+    bodyParser: false,
   });
 
   app.enableCors({
@@ -18,11 +18,11 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-      .setTitle('E-Commerce')
-      .setDescription('The e-commerce platform API description')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build();
+    .setTitle('E-Commerce')
+    .setDescription('The e-commerce platform API description')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

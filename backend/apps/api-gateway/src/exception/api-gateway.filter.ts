@@ -13,10 +13,11 @@ export class RpcToHttpExceptionFilter implements ExceptionFilter {
     const error = exception.getResponse() as any;
     const status = error.status ?? ErrorCode.UNCATEGORIZED.status;
 
-    response.status(status).json({
+    response.status(status ?? ErrorCode.UNCATEGORIZED.status).json({
       success: false,
       message: error.message ?? ErrorCode.UNCATEGORIZED.message,
       code: error.code ?? ErrorCode.UNCATEGORIZED.code,
+      addition: error.addition,
       timestamp: new Date().toISOString(),
       path: request.url,
     });

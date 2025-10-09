@@ -2,11 +2,11 @@ import { Controller } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { MessagePattern } from '@nestjs/microservices';
 import {
-    CreateProductDto,
-    OrderProductDetailDto,
-    OrderProductDto,
-    ProductResponseDto,
-    UpdateProductDto
+  CreateProductDto,
+  OrderProductDetailDto,
+  OrderProductDto,
+  ProductResponseDto,
+  UpdateProductDto,
 } from '@app/common';
 import { CreateProductCommand } from '../commands/create-product/create-product.command';
 import { GetAllProductsQuery } from '../queries/get-all-products/get-all-products.query';
@@ -14,8 +14,8 @@ import { UpdateProductCommand } from '../commands/update-product/update-product.
 import { GetProductDetailQuery } from '../queries/get-product-detail/get-product-detail.query';
 import { DeleteProductCommand } from '../commands/delete-product/delete-product.command';
 import { GetOrderProductsQuery } from '../queries/get-order-products/get-order-products.query';
-import { UpdateStockCommand } from "../commands/update-stock/update-stock.command";
-import { GetOrderProductDetailsQuery } from "../queries/get-order-product-details/get-order-product-details.query";
+import { UpdateStockCommand } from '../commands/update-stock/update-stock.command';
+import { GetOrderProductDetailsQuery } from '../queries/get-order-product-details/get-order-product-details.query';
 
 @Controller()
 export class ProductController {
@@ -50,19 +50,15 @@ export class ProductController {
   }
 
   @MessagePattern({ cmd: 'update_product' })
-  async updateProduct(payload: {
-    id: number;
-    updateProductDto: UpdateProductDto;
-    imagePayload: any;
-  }): Promise<string> {
+  async updateProduct(payload: { id: number; updateProductDto: UpdateProductDto; imagePayload: any }): Promise<string> {
     return this.commandBus.execute(
       new UpdateProductCommand(payload.id, payload.updateProductDto, payload.imagePayload),
     );
   }
 
   @MessagePattern({ cmd: 'update_stock' })
-  async updateStock(payload: { items: {productId: number; newStock: number }[] }): Promise<boolean> {
-      return this.commandBus.execute(new UpdateStockCommand(payload.items));
+  async updateStock(payload: { items: { productId: number; newStock: number }[] }): Promise<boolean> {
+    return this.commandBus.execute(new UpdateStockCommand(payload.items));
   }
 
   @MessagePattern({ cmd: 'delete_product' })
