@@ -74,12 +74,62 @@ The frontend is built with **ReactJS** using **Vite** for fast builds and modern
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started (Detailed)
 
-### Prerequisites
+### 1. Prerequisites
+Before running the project, make sure you have installed:
+
 - **Node.js** v18+
 - **Docker & Docker Compose**
-- **MySQL** (Docker or local installation)
+- **MySQL** (Docker or local installation, Docker recommended)
+- **Redis** (Docker or local installation)
 
-### Clone the Repository
-git clone https://github.com/yourusername/amazon-clone.git
+---
+
+### 2. Clone the Repository
+```bash
+  git clone https://github.com/TrQAnhh/Amazon.git
+```
+---
+
+### 3. Setup Environment Variables
+
+Each service (backend and frontend) requires an environment file which called `.env.example` and has been prepared for you to fill your security data.
+
+**Backend:**
+```bash
+  cp backend/.env.example backend/.env
+```
+**Frontend:**
+```bash
+  cp frontend/.env.example frontend/.env
+```
+
+---
+### 4. Start Services using Docker Compose
+Now with enough data in the `.env` file, you can now run the applicationw with Docker (make sure that you already installed it).
+```bash
+  docker-compose up --build
+```
+This will start all services:
+
+| Service          | Port  | Notes                                |
+|-----------------|-------|--------------------------------------|
+| MySQL           | 3307  | Uses Docker volume `db_data`         |
+| Redis           | 6379  | Requires password from `.env`        |
+| API Gateway     | 3000  | Entry point for frontend             |
+| Identity Service| 4001  | Handles authentication               |
+| Profile Service | 4003  | Handles user profiles                |
+| Product Service | 4002  | Handles products                     |
+| Order Service   | 4004  | Handles orders and checkout          |
+| Frontend        | 5173  | ReactJS frontend                     |
+
+**Note:** Migrations are automatically executed when services start (identity, profile, product, order). Make sure MySQL is running before starting services.
+
+---
+### 5. Notes
+- Ensure `.env` files contain valid credentials before running services.
+- Redis password must match `REDIS_ACCESS_KEY`.
+- Email functionality (registration and verification) requires correct SMTP credentials.
+- Stripe requires valid test API keys to process payments in development.
+
