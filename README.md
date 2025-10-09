@@ -16,6 +16,8 @@ It handles authentication, profiles, product inventory, orders, and payments.
     - JWT authentication with access/refresh tokens.
     - `Redis-based` token blacklisting for logout and session invalidation.
     - Passport strategies (JWT, extendable for OAuth).
+    - **Email confirmation flow** upon registration using Handlebars templates.
+    - **Resend verification email** with Redis-based rate limiting and token expiration control.
 
 - **👤 Profile Service**
     - CRUD operations for user profiles.
@@ -31,10 +33,13 @@ It handles authentication, profiles, product inventory, orders, and payments.
     - Order creation, update, and cancellation.
     - Payment integrations: `Stripe` and Cash on Delivery (COD).
     - Stripe webhook handling for real-time payment status updates.
+    - **Redlock integration** for distributed locking — ensures concurrency safety during critical operations (e.g., discount ticket usage, stock reservation).
 
 #### Additional Backend Details
 - **Database:** MySQL with TypeORM and migrations.
 - **Architecture Patterns:** `CQRS` with `Mediator pattern` for clear separation of commands and queries.
+- **Concurrency Control:** `Redis Redlock` for atomic operations across distributed services.
+- **Rate Limiting:** Implemented via Redis with configurable TTLs for send-confirmation-email feature (`SHORT_RATE_LIMIT_TTL`, `LONG_RATE_LIMIT_TTL`, `VERIFY_EMAIL_TOKEN_DURATION`).
 - **Validation:** `class-validator` & `class-transformer`.
 - **API Gateway:** `TCP-based` communication between services.
 - **Documentation:** Swagger + Postman collections.
@@ -49,6 +54,7 @@ The frontend is built with **ReactJS** using **Vite** for fast builds and modern
 - Product browsing with detail pages.
 - Cart management with intuitive checkout flow.
 - User profile page with Cloudinary avatar upload.
+- Email verification and resend confirmation flow.
 - Consistent UI elements with **Lucide React icons**.
 
 ---
@@ -64,7 +70,7 @@ The frontend is built with **ReactJS** using **Vite** for fast builds and modern
 | Frontend | ReactJS, Vite, Lucide Icons |
 | DevOps   | Docker                      |
 | Docs     | Swagger, Postman            |
-| Patterns | CQRS, Mediator Pattern      |
+| Patterns | CQRS, Mediator, Redlock     |
 
 ---
 
@@ -76,3 +82,4 @@ The frontend is built with **ReactJS** using **Vite** for fast builds and modern
 - **MySQL** (Docker or local installation)
 
 ### Clone the Repository
+git clone https://github.com/yourusername/amazon-clone.git
